@@ -29,6 +29,13 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Karre Game's",
   },
+  // Favicon transparent, K noir en clair / blanc en sombre — suit le thème du
+  // système d'exploitation (prefers-color-scheme), pas le thème choisi dans
+  // l'app : la barre d'onglets du navigateur n'a pas accès au JS de la page.
+  icons: [
+    { url: "/icon-light.png", media: "(prefers-color-scheme: light)" },
+    { url: "/icon-dark.png", media: "(prefers-color-scheme: dark)" },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -19,7 +19,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from .game_engine import InvalidMoveError, apply_move, create_empty_game_state
 from .models import GameState, IncomingMove, Player, ChatMessage
 
-app = FastAPI(title="Karré Realtime Server")
+from contextlib import asynccontextmanager
+from .database import engine, Base, AsyncSessionLocal
+from .crud import save_game_state
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Création des tables au démarrage du serveur si elles n'existent pas
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+    await engine.dispose()
+
+
+app = FastAPI(title="Karré Realtime Server", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -36,6 +49,10 @@ class Room:
 
     async def broadcast(self) -> None:
         payload = self.state.model_dump(mode="json", by_alias=True)
+        # On sauvegarde dans la base de données en arrière-plan
+        async with AsyncSessionLocal() as db:
+            await save_game_state(db, self.state.room_id, self.state)
+        
         for ws in list(self.connections.values()):
             await ws.send_json({"type": "state", "state": payload})
 

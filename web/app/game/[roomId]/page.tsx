@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -13,7 +13,7 @@ import { useRoomSocket } from "@/lib/game/useRoomSocket";
 import { initialsFromName, PLAYER_COLOR_ORDER, PLAYER_COLORS } from "@/lib/types/game";
 import type { EdgeType, GameState, PlayerColor } from "@/lib/types/game";
 import { ProfileMenu } from "@/components/ProfileMenu";
-import { playMusic, stopMusic } from "@/lib/audio";
+import { playMusic, stopMusic, setMusicSpeed } from "@/lib/audio";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 import { useHistoryStore } from "@/lib/store/useHistoryStore";
 import { primeAudio } from "@/lib/sound";
@@ -22,6 +22,14 @@ const BOT_ID = "bot";
 const BOT_MOVE_DELAY_MS = 600;
 
 export default function GamePage({ params }: { params: { roomId: string } }) {
+  return (
+    <Suspense fallback={<div className="flex h-screen items-center justify-center font-display text-2xl text-ink">Chargement...</div>}>
+      <GamePageContent params={params} />
+    </Suspense>
+  );
+}
+
+function GamePageContent({ params }: { params: { roomId: string } }) {
   const searchParams = useSearchParams();
   const isSolo = searchParams.get("mode") === "solo";
 
@@ -30,6 +38,7 @@ export default function GamePage({ params }: { params: { roomId: string } }) {
 
 /** Solo : état local + bot (lib/game/ai.ts), aucun réseau. */
 function SoloGame({ roomId }: { roomId: string }) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
   const { customInitials } = useSettingsStore();
@@ -103,15 +112,55 @@ function SoloGame({ roomId }: { roomId: string }) {
     return () => clearTimeout(timer);
   }, [state]);
 
+  const handleForfeit = () => {
+    setState((prev) => {
+      if (prev.status !== "playing") return prev;
+      return {
+        ...prev,
+        status: "finished",
+        winnerId: BOT_ID, // the bot wins if human forfeits
+      };
+    });
+    setTimeout(() => router.push("/"), 100);
+  };
+
+  const handleRematch = () => {
+    setState((prev) => {
+      const newPlayers = prev.players.map(p => ({ ...p, score: 0 }));
+      const newState = createEmptyGameState({
+        roomId: prev.roomId,
+        size: prev.size,
+        mode: prev.mode,
+        players: newPlayers
+      });
+      return {
+        ...newState,
+        status: "playing",
+        startedAt: new Date().toISOString(),
+      };
+    });
+  };
+
   if (state.status === "waiting") {
     return <WaitingRoom state={state} currentUserId={humanId} selectColor={selectColor} startGame={startGame} />;
   }
 
-  return <GameView roomId={roomId} state={state} currentUserId={humanId} onPlayEdge={handlePlayEdge} />;
+  return (
+    <GameView 
+      roomId={roomId} 
+      state={state} 
+      currentUserId={humanId} 
+      onPlayEdge={handlePlayEdge} 
+      isSolo={true} 
+      onQuit={handleForfeit} 
+      onRematch={handleRematch} 
+    />
+  );
 }
 
 /** Multijoueur : le serveur FastAPI (server/) est la source de vérité, voir useRoomSocket. */
 function MultiplayerGame({ roomId }: { roomId: string }) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const { customInitials } = useSettingsStore();
@@ -122,7 +171,7 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
   
   const size = (searchParams.get("size") as "small" | "medium" | "large") || "large";
 
-  const { state, connected, error, playEdge, selectColor, startGame } = useRoomSocket({
+  const { state, connected, error, playEdge, selectColor, startGame, sendForfeit, sendRematch, sendChat } = useRoomSocket({
     roomId,
     playerId: humanId,
     displayName: humanName,
@@ -134,6 +183,11 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
   if (!humanId) {
     return <CenteredMessage text="Connecte-toi avec Google (depuis le lobby) pour rejoindre une partie." />;
   }
+  const handleForfeit = () => {
+    sendForfeit();
+    router.push("/");
+  };
+
   if (!state) {
     return (
       <CenteredMessage
@@ -146,7 +200,19 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
     return <WaitingRoom state={state} currentUserId={humanId} selectColor={selectColor} startGame={startGame} />;
   }
 
-  return <GameView roomId={roomId} state={state} currentUserId={humanId} onPlayEdge={playEdge} error={error} />;
+  return (
+    <GameView 
+      roomId={roomId} 
+      state={state} 
+      currentUserId={humanId} 
+      onPlayEdge={playEdge} 
+      error={error} 
+      isSolo={false} 
+      onQuit={handleForfeit} 
+      onRematch={sendRematch}
+      onChat={sendChat}
+    />
+  );
 }
 
 function GameView({
@@ -155,12 +221,20 @@ function GameView({
   currentUserId,
   onPlayEdge,
   error,
+  isSolo,
+  onQuit,
+  onRematch,
+  onChat,
 }: {
   roomId: string;
   state: GameState;
   currentUserId?: string;
   onPlayEdge: (type: EdgeType, row: number, col: number) => void;
   error?: string | null;
+  isSolo?: boolean;
+  onQuit?: () => void;
+  onRematch?: () => void;
+  onChat?: (text: string) => void;
 }) {
   const router = useRouter();
   const statusLabel = useMemo(() => {
@@ -213,13 +287,32 @@ function GameView({
     };
   }, [musicEnabled]);
 
+  useEffect(() => {
+    if (!musicEnabled) return;
+    let filled = 0;
+    let total = 0;
+    for (let r = 0; r < state.rows; r++) {
+      for (let c = 0; c < state.cols; c++) {
+        if (state.boxes[r][c] !== "OUTSIDE") {
+          total++;
+          if (state.boxes[r][c] !== null) filled++;
+        }
+      }
+    }
+    if (total > 0 && filled / total > 0.8) {
+      setMusicSpeed(1.25);
+    } else {
+      setMusicSpeed(1.0);
+    }
+  }, [state.boxes, state.rows, state.cols, musicEnabled]);
+
   return (
     <main className="flex min-h-dvh flex-col gap-4 bg-ground p-4 transition-colors lg:flex-row lg:p-8">
       <div className="flex min-w-0 flex-1 flex-col gap-3">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-display text-2xl leading-none text-ink">
-              Karré <span className="text-base font-bold opacity-50">· Salon {roomId}</span>
+              Karre Game's <span className="text-base font-bold opacity-50">· Salon {roomId}</span>
             </h1>
             <div className="flex items-center gap-2">
               <span className="text-sm font-bold text-[var(--player-blue-fill)]">{statusLabel}</span>
@@ -236,7 +329,28 @@ function GameView({
         </div>
       </div>
 
-      <PlayerSidebar state={state} onQuit={() => router.push("/")} className="w-full lg:w-72" />
+      <PlayerSidebar 
+        state={state} 
+        onQuit={onQuit || (() => router.push("/"))} 
+        onRematch={onRematch}
+        onChat={onChat}
+        onInvite={() => {
+          const url = window.location.href;
+          const text = `Je vous invite à me rejoindre pour une partie de Karre Game's avec le code ${roomId} ou depuis ce lien : ${url}\nSalut !!\n\nÀ très bientôt`;
+          if (navigator.share) {
+            navigator.share({
+              title: "Karre Game's",
+              text,
+            }).catch(console.error);
+          } else {
+            navigator.clipboard.writeText(text);
+            alert("Lien d'invitation copié dans le presse-papier !");
+          }
+        }}
+        isSolo={isSolo} 
+        currentUserId={currentUserId}
+        className="w-full lg:w-72" 
+      />
     </main>
   );
 }

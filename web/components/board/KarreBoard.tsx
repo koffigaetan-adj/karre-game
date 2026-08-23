@@ -47,6 +47,7 @@ export function KarreBoard({
 
   const [hoveredEdge, setHoveredEdge] = useState<string | null>(null);
   const [justCaptured, setJustCaptured] = useState<Set<string>>(new Set());
+  const [isShaking, setIsShaking] = useState(false);
   const prevBoxesRef = useRef(state.boxes);
 
   // Détecte les cases nouvellement capturées pour déclencher l'animation de remplissage.
@@ -62,6 +63,9 @@ export function KarreBoard({
     }
     if (changed.size > 0) {
       setJustCaptured(changed);
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 300);
+      
       // Confetti sur chaque case capturée
       changed.forEach((key) => {
         const [r, c] = key.split("-").map(Number);
@@ -116,7 +120,7 @@ export function KarreBoard({
   // No corner seats needed as bases are in the grid
 
   return (
-    <div className={`relative w-full min-w-0 select-none ${className}`}>
+    <div className={`relative w-full min-w-0 select-none ${className} ${isShaking ? "animate-shake" : ""}`}>
       <div
         className="w-full min-w-0 overflow-hidden rounded-xl border-[3px] border-ink bg-surface shadow-stack touch-none transition-colors"
         style={{ aspectRatio: "1 / 1" }}

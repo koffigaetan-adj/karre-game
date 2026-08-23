@@ -61,7 +61,7 @@ export default function LobbyPage() {
       <div className="w-full max-w-md rounded-xl border-[3px] border-ink bg-surface p-8 shadow-stack">
         <div className="mb-8 text-center flex flex-col items-center gap-2">
           <Image src="/logo.jpg" alt="Karré Logo" width={80} height={80} className="rounded-xl border-2 border-ink shadow-stack-sm mb-2" />
-          <h1 className="font-display text-5xl font-black tracking-tight text-ink">Karré</h1>
+          <h1 className="font-display text-5xl font-black tracking-tight text-ink">Karre Game's</h1>
           <p className="text-sm font-bold text-ink/60">Le classique réinventé.</p>
         </div>
         <div className="grid gap-4">

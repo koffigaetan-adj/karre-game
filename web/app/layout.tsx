@@ -16,9 +16,19 @@ const karla = Karla({
   variable: "--font-body",
 });
 
+export const viewport = {
+  themeColor: "#EDE4D3",
+};
+
 export const metadata: Metadata = {
-  title: "Karré",
+  title: "Karre Game's",
   description: "Jeu de stratégie multijoueur sur grille en forme d'arène",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Karre Game's",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

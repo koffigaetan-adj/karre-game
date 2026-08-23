@@ -20,6 +20,9 @@ interface UseRoomSocketResult {
   playEdge: (type: EdgeType, row: number, col: number) => void;
   selectColor: (color: string) => void;
   startGame: () => void;
+  sendForfeit: () => void;
+  sendRematch: () => void;
+  sendChat: (text: string) => void;
 }
 
 /**
@@ -78,5 +81,17 @@ export function useRoomSocket({
     wsRef.current?.send(JSON.stringify({ type: "start_game" }));
   };
 
-  return { state, connected, error, playEdge, selectColor, startGame };
+  const sendForfeit = () => {
+    wsRef.current?.send(JSON.stringify({ type: "forfeit" }));
+  };
+
+  const sendRematch = () => {
+    wsRef.current?.send(JSON.stringify({ type: "rematch" }));
+  };
+
+  const sendChat = (text: string) => {
+    wsRef.current?.send(JSON.stringify({ type: "chat", text }));
+  };
+
+  return { state, connected, error, playEdge, selectColor, startGame, sendForfeit, sendRematch, sendChat };
 }

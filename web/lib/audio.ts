@@ -40,3 +40,8 @@ export function stopMusic() {
   musicAudio.pause();
   musicAudio.currentTime = 0;
 }
+
+export function setMusicSpeed(speed: number) {
+  if (!musicAudio) return;
+  musicAudio.playbackRate = speed;
+}

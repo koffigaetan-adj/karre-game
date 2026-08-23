@@ -34,6 +34,12 @@ class Move(CamelModel):
     col: int
     player_id: str
 
+class ChatMessage(CamelModel):
+    sender_id: str
+    sender_name: str
+    text: str
+    timestamp: str
+
 
 class GameState(CamelModel):
     room_id: str
@@ -50,6 +56,7 @@ class GameState(CamelModel):
     winner_id: Optional[str] = None
     last_move: Optional[Move] = None
     started_at: Optional[str] = None
+    messages: list[ChatMessage] = []
 
 
 class IncomingMove(BaseModel):

@@ -17,7 +17,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
 from .game_engine import InvalidMoveError, apply_move, create_empty_game_state
-from .models import GameState, IncomingMove, Player
+from .models import GameState, IncomingMove, Player, ChatMessage
 
 app = FastAPI(title="Karré Realtime Server")
 
@@ -78,6 +78,38 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
                     room.state.status = "playing"
                     room.state.started_at = datetime.now(timezone.utc).isoformat()
                 await room.broadcast()
+            elif data.get("type") == "forfeit":
+                if room.state.status == "playing":
+                    room.state.status = "finished"
+                    if len(room.state.players) == 2:
+                        other = next(p for p in room.state.players if p.id != player_id)
+                        room.state.winner_id = other.id
+                await room.broadcast()
+            elif data.get("type") == "chat":
+                text = data.get("text", "").strip()
+                if text:
+                    msg = ChatMessage(
+                        sender_id=player_id,
+                        sender_name=display_name,
+                        text=text,
+                        timestamp=datetime.now(timezone.utc).isoformat()
+                    )
+                    room.state.messages.append(msg)
+                    if len(room.state.messages) > 50:
+                        room.state.messages = room.state.messages[-50:]
+                    await room.broadcast()
+            elif data.get("type") == "rematch":
+                if room.state.status == "finished":
+                    old_players = room.state.players
+                    old_messages = room.state.messages
+                    for p in old_players:
+                        p.score = 0
+                    new_state = create_empty_game_state(room_id, room.state.size, old_players)
+                    new_state.messages = old_messages
+                    new_state.status = "playing"
+                    new_state.started_at = datetime.now(timezone.utc).isoformat()
+                    room.state = new_state
+                    await room.broadcast()
             else:
                 move = IncomingMove(**data)
                 try:
@@ -91,4 +123,12 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
         for p in room.state.players:
             if p.id == player_id:
                 p.connected = False
+        
+        # Si la partie est en cours, la déconnexion compte comme un abandon
+        if room.state.status == "playing":
+            room.state.status = "finished"
+            if len(room.state.players) == 2:
+                other = next(p for p in room.state.players if p.id != player_id)
+                room.state.winner_id = other.id
+        
         await room.broadcast()

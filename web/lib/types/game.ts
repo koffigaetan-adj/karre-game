@@ -39,6 +39,13 @@ export interface Move {
   playerId: string;
 }
 
+export interface ChatMessage {
+  senderId: string;
+  senderName: string;
+  text: string;
+  timestamp: string;
+}
+
 export interface GameState {
   roomId: string;
   mode: GameMode;
@@ -60,6 +67,7 @@ export interface GameState {
   createdAt: string;
   /** Horodatage du passage à "playing" ; sert de base au chrono de partie. */
   startedAt: string | null;
+  messages: ChatMessage[];
 }
 
 export interface ColorTheme {

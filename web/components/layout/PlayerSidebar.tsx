@@ -1,19 +1,34 @@
 "use client";
 
+import { useState } from "react";
 import type { ReactNode } from "react";
 import { PLAYER_COLORS } from "@/lib/types/game";
 import type { GameState } from "@/lib/types/game";
-import { LogOut, Share2, SkipForward } from "lucide-react";
+import { LogOut, Share2, SkipForward, RefreshCw, Send } from "lucide-react";
 
 interface PlayerSidebarProps {
   state: GameState;
+  isSolo?: boolean;
+  currentUserId?: string;
   onInvite?: () => void;
   onQuit?: () => void;
+  onRematch?: () => void;
+  onChat?: (text: string) => void;
   className?: string;
 }
 
 /** Tableau de bord desktop (latéral) / barre d'actions mobile (bas d'écran) — un scorepad de jeu de société. */
-export function PlayerSidebar({ state, onInvite, onQuit, className = "" }: PlayerSidebarProps) {
+export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, onQuit, onRematch, onChat, className = "" }: PlayerSidebarProps) {
+  const [showQuitConfirm, setShowQuitConfirm] = useState(false);
+  const [chatText, setChatText] = useState("");
+
+  const handleChatSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (chatText.trim() && onChat) {
+      onChat(chatText);
+      setChatText("");
+    }
+  };
   return (
     <aside className={`flex flex-col gap-4 ${className}`}>
       <div className="rounded-xl border-2 border-line bg-surface p-4 transition-colors">
@@ -64,11 +79,93 @@ export function PlayerSidebar({ state, onInvite, onQuit, className = "" }: Playe
         </div>
       )}
 
+      {state.status === "finished" && onRematch && (
+        <button
+          onClick={onRematch}
+          className="flex items-center justify-center gap-2 rounded-xl border-2 border-ink bg-[var(--player-blue-fill)] px-4 py-3 font-display text-lg text-surface shadow-stack active:translate-x-px active:translate-y-px active:shadow-stack-pressed transition-all"
+        >
+          <RefreshCw size={20} />
+          Rejouer la partie
+        </button>
+      )}
+
+      {/* CHAT BOX */}
+      {!isSolo && state.status !== "waiting" && (
+        <div className="flex flex-col gap-2 rounded-xl border-2 border-line bg-surface p-3 h-48">
+          <h2 className="font-display text-sm uppercase tracking-wide text-ink mb-1">Chat</h2>
+          <div className="flex-1 overflow-y-auto flex flex-col gap-2 text-sm pr-2">
+            {state.messages?.map((msg, idx) => {
+              const isMe = msg.senderId === currentUserId;
+              return (
+                <div key={idx} className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
+                  <span className="text-[10px] font-bold opacity-50 mb-0.5">{msg.senderName}</span>
+                  <div className={`px-2 py-1.5 rounded-lg max-w-[90%] break-words ${isMe ? "bg-ink text-surface rounded-br-none" : "bg-ground border border-line rounded-bl-none text-ink"}`}>
+                    {msg.text}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <form onSubmit={handleChatSubmit} className="flex gap-2 mt-auto pt-2 border-t border-line">
+            <input
+              type="text"
+              value={chatText}
+              onChange={(e) => setChatText(e.target.value)}
+              placeholder="Message..."
+              className="flex-1 rounded-md border border-line bg-ground px-2 py-1.5 text-sm outline-none focus:border-ink"
+            />
+            <button type="submit" disabled={!chatText.trim()} className="rounded-md bg-ink p-1.5 text-surface disabled:opacity-50">
+              <Send size={16} />
+            </button>
+          </form>
+        </div>
+      )}
+
       <div className="mt-auto flex gap-2">
-        <ActionButton icon={<Share2 size={18} />} label="Inviter" onClick={onInvite} />
-        <ActionButton icon={<SkipForward size={18} />} label="Passer" disabled />
-        <ActionButton icon={<LogOut size={18} />} label="Quitter" onClick={onQuit} variant="danger" />
+        {!isSolo && state.status === "waiting" && <ActionButton icon={<Share2 size={18} />} label="Inviter" onClick={onInvite} />}
+        {state.status !== "finished" && <ActionButton icon={<SkipForward size={18} />} label="Passer" disabled />}
+        <ActionButton
+          icon={<LogOut size={18} />}
+          label="Quitter"
+          onClick={() => {
+            if (state.status === "finished" || state.status === "waiting") {
+              onQuit?.();
+            } else {
+              setShowQuitConfirm(true);
+            }
+          }}
+          variant="danger"
+        />
       </div>
+
+      {/* Alerte de confirmation pour quitter */}
+      {showQuitConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-xl border-[3px] border-ink bg-surface p-6 shadow-stack text-center">
+            <h3 className="font-display text-xl text-[var(--player-red-fill)] mb-2">Attention !</h3>
+            <p className="text-sm font-bold text-ink/80 mb-6">
+              Êtes-vous sûr de vouloir quitter la partie ? Si vous quittez maintenant, vous serez déclaré perdant par forfait.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowQuitConfirm(false)}
+                className="flex-1 rounded-lg border-2 border-ink bg-ground px-4 py-2 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={() => {
+                  setShowQuitConfirm(false);
+                  onQuit?.();
+                }}
+                className="flex-1 rounded-lg border-2 border-ink bg-[var(--player-red-fill)] px-4 py-2 font-bold text-surface shadow-stack-sm active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+              >
+                Abandonner
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }

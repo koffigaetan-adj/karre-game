@@ -104,6 +104,7 @@ export function createEmptyGameState(params: {
     lastMove: null,
     createdAt: new Date().toISOString(),
     startedAt: null,
+    messages: [],
   };
 }
 

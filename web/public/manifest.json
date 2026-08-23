@@ -1,0 +1,21 @@
+{
+  "name": "Karre Game's",
+  "short_name": "Karre",
+  "description": "Jeu de stratégie multijoueur sur grille en forme d'arène",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EDE4D3",
+  "theme_color": "#EDE4D3",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

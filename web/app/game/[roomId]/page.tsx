@@ -1,0 +1,379 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+
+import { KarreBoard } from "@/components/board/KarreBoard";
+import { MiniMap } from "@/components/board/MiniMap";
+import { PlayerSidebar } from "@/components/layout/PlayerSidebar";
+import { applyMove, createEmptyGameState } from "@/lib/game/engine";
+import { pickBotMove } from "@/lib/game/ai";
+import { useRoomSocket } from "@/lib/game/useRoomSocket";
+import { initialsFromName, PLAYER_COLOR_ORDER, PLAYER_COLORS } from "@/lib/types/game";
+import type { EdgeType, GameState, PlayerColor } from "@/lib/types/game";
+import { ProfileMenu } from "@/components/ProfileMenu";
+import { playMusic, stopMusic } from "@/lib/audio";
+import { useSettingsStore } from "@/lib/store/useSettingsStore";
+import { useHistoryStore } from "@/lib/store/useHistoryStore";
+import { primeAudio } from "@/lib/sound";
+
+const BOT_ID = "bot";
+const BOT_MOVE_DELAY_MS = 600;
+
+export default function GamePage({ params }: { params: { roomId: string } }) {
+  const searchParams = useSearchParams();
+  const isSolo = searchParams.get("mode") === "solo";
+
+  return isSolo ? <SoloGame roomId={params.roomId} /> : <MultiplayerGame roomId={params.roomId} />;
+}
+
+/** Solo : état local + bot (lib/game/ai.ts), aucun réseau. */
+function SoloGame({ roomId }: { roomId: string }) {
+  const searchParams = useSearchParams();
+  const { data: session } = useSession();
+  const { customInitials } = useSettingsStore();
+  
+  const humanId = session?.user?.email ?? "you";
+  const humanName = session?.user?.name ?? "Joueur";
+  const humanInitials = customInitials || session?.user?.initials || initialsFromName(humanName);
+
+  const [state, setState] = useState<GameState>(() => ({
+    ...createEmptyGameState({
+      roomId,
+      size: (searchParams.get("size") as any) || "large",
+      mode: "solo",
+      players: [
+        { id: humanId, displayName: humanName, initials: humanInitials, color: null, score: 0, connected: true },
+        {
+          id: BOT_ID,
+          displayName: "Robot",
+          initials: "BOT",
+          color: "red",
+          score: 0,
+          connected: true,
+          isAI: true,
+          aiDifficulty: "medium",
+        },
+      ],
+    }),
+    // Le solo passe toujours par la salle d'attente (choix de couleur), même si
+    // les 2 "joueurs" (humain + bot) sont déjà là dès la création de la partie.
+    status: "waiting",
+  }));
+
+  const selectColor = (color: string) => {
+    setState((prev) => ({
+      ...prev,
+      players: prev.players.map((p) => (p.id === humanId ? { ...p, color: color as PlayerColor } : p)),
+    }));
+  };
+
+  const startGame = () => {
+    setState((prev) => ({ ...prev, status: "playing", startedAt: new Date().toISOString() }));
+  };
+
+  const handlePlayEdge = (type: EdgeType, row: number, col: number) => {
+    setState((prev) => {
+      try {
+        return applyMove(prev, type, row, col, prev.players[prev.currentPlayerIndex].id).state;
+      } catch {
+        return prev; // coup invalide (déjà joué, pas le tour, etc.)
+      }
+    });
+  };
+
+  // Coup du bot : se redéclenche à chaque changement d'état, donc rejoue
+  // automatiquement en cascade tant que c'est encore son tour (capture -> rejoue).
+  useEffect(() => {
+    const current = state.players[state.currentPlayerIndex];
+    if (state.status !== "playing" || !current?.isAI) return;
+    const timer = setTimeout(() => {
+      setState((prev) => {
+        const player = prev.players[prev.currentPlayerIndex];
+        if (!player?.isAI) return prev;
+        try {
+          const move = pickBotMove(prev, player.aiDifficulty ?? "easy");
+          return applyMove(prev, move.type, move.row, move.col, player.id).state;
+        } catch {
+          return prev;
+        }
+      });
+    }, BOT_MOVE_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [state]);
+
+  if (state.status === "waiting") {
+    return <WaitingRoom state={state} currentUserId={humanId} selectColor={selectColor} startGame={startGame} />;
+  }
+
+  return <GameView roomId={roomId} state={state} currentUserId={humanId} onPlayEdge={handlePlayEdge} />;
+}
+
+/** Multijoueur : le serveur FastAPI (server/) est la source de vérité, voir useRoomSocket. */
+function MultiplayerGame({ roomId }: { roomId: string }) {
+  const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
+  const { customInitials } = useSettingsStore();
+
+  const humanId = session?.user?.email ?? "";
+  const humanName = session?.user?.name ?? "";
+  const humanInitials = customInitials || session?.user?.initials || (humanName ? initialsFromName(humanName) : "");
+  
+  const size = (searchParams.get("size") as "small" | "medium" | "large") || "large";
+
+  const { state, connected, error, playEdge, selectColor, startGame } = useRoomSocket({
+    roomId,
+    playerId: humanId,
+    displayName: humanName,
+    initials: humanInitials,
+    size,
+    enabled: status === "authenticated" && !!humanId,
+  });
+
+  if (!humanId) {
+    return <CenteredMessage text="Connecte-toi avec Google (depuis le lobby) pour rejoindre une partie." />;
+  }
+  if (!state) {
+    return (
+      <CenteredMessage
+        text={error ?? (connected ? "En attente d'un adversaire…" : "Connexion au serveur de partie…")}
+      />
+    );
+  }
+
+  if (state.status === "waiting") {
+    return <WaitingRoom state={state} currentUserId={humanId} selectColor={selectColor} startGame={startGame} />;
+  }
+
+  return <GameView roomId={roomId} state={state} currentUserId={humanId} onPlayEdge={playEdge} error={error} />;
+}
+
+function GameView({
+  roomId,
+  state,
+  currentUserId,
+  onPlayEdge,
+  error,
+}: {
+  roomId: string;
+  state: GameState;
+  currentUserId?: string;
+  onPlayEdge: (type: EdgeType, row: number, col: number) => void;
+  error?: string | null;
+}) {
+  const router = useRouter();
+  const statusLabel = useMemo(() => {
+    if (state.status === "finished") return "Partie terminée";
+    return `Tour de ${state.players[state.currentPlayerIndex].displayName}`;
+  }, [state]);
+
+  const { musicEnabled } = useSettingsStore();
+  const { addMatch } = useHistoryStore();
+
+  // Enregistrement de l'historique quand la partie se termine
+  useEffect(() => {
+    if (state.status === "finished") {
+      addMatch({
+        id: roomId,
+        date: new Date().toISOString(),
+        mode: state.players.some((p) => p.isAI) ? "solo" : "multiplayer",
+        isDraw: !state.winnerId,
+        players: state.players.map((p) => ({
+          id: p.id,
+          displayName: p.displayName,
+          score: p.score,
+          initials: p.initials,
+          isWinner: p.id === state.winnerId,
+        })),
+      });
+    }
+  }, [state.status, state.winnerId, state.players, roomId, addMatch]);
+
+  // Gestion de la musique avec déblocage au premier clic
+  useEffect(() => {
+    const unlockAudio = () => {
+      primeAudio(); // Débloque le contexte Audio
+      if (musicEnabled) {
+        playMusic(true);
+      }
+      document.removeEventListener("click", unlockAudio);
+    };
+
+    if (musicEnabled) {
+      playMusic(true);
+      document.addEventListener("click", unlockAudio);
+    } else {
+      stopMusic();
+    }
+
+    return () => {
+      stopMusic();
+      document.removeEventListener("click", unlockAudio);
+    };
+  }, [musicEnabled]);
+
+  return (
+    <main className="flex min-h-dvh flex-col gap-4 bg-ground p-4 transition-colors lg:flex-row lg:p-8">
+      <div className="flex min-w-0 flex-1 flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="font-display text-2xl leading-none text-ink">
+              Karré <span className="text-base font-bold opacity-50">· Salon {roomId}</span>
+            </h1>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-[var(--player-blue-fill)]">{statusLabel}</span>
+              <GameTimer startedAt={state.startedAt} running={state.status === "playing"} />
+            </div>
+          </div>
+          <ProfileMenu />
+        </div>
+        {error && <p className="text-xs font-bold text-[var(--player-red-fill)]">{error}</p>}
+
+        <div className="relative mx-auto w-full max-w-2xl">
+          <KarreBoard state={state} currentUserId={currentUserId} onPlayEdge={onPlayEdge} />
+          <MiniMap state={state} className="absolute left-3 top-3" />
+        </div>
+      </div>
+
+      <PlayerSidebar state={state} onQuit={() => router.push("/")} className="w-full lg:w-72" />
+    </main>
+  );
+}
+
+/** Chrono de partie : compte depuis startedAt, s'arrête quand la partie n'est plus "playing". */
+function GameTimer({ startedAt, running }: { startedAt: string | null; running: boolean }) {
+  const [elapsedMs, setElapsedMs] = useState(0);
+
+  useEffect(() => {
+    if (!startedAt) {
+      setElapsedMs(0);
+      return;
+    }
+    const start = new Date(startedAt).getTime();
+    const tick = () => setElapsedMs(Date.now() - start);
+    tick();
+    if (!running) return;
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [startedAt, running]);
+
+  if (!startedAt) return null;
+
+  const totalSeconds = Math.max(0, Math.floor(elapsedMs / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  return (
+    <span className="inline-flex items-center rounded-md border-2 border-ink bg-surface px-2 py-0.5 font-display text-sm text-ink">
+      {minutes}:{seconds.toString().padStart(2, "0")}
+    </span>
+  );
+}
+
+function CenteredMessage({ text }: { text: string }) {
+  return (
+    <main className="relative flex min-h-dvh flex-col items-center justify-center bg-ground px-6 text-center text-ink transition-colors">
+      <div className="absolute right-6 top-6">
+        <ProfileMenu />
+      </div>
+      <div className="rounded-xl border-2 border-ink bg-surface p-8 shadow-stack">
+        <p className="font-bold">{text}</p>
+      </div>
+    </main>
+  );
+}
+
+function WaitingRoom({
+  state,
+  currentUserId,
+  selectColor,
+  startGame,
+}: {
+  state: GameState;
+  currentUserId: string;
+  selectColor: (c: string) => void;
+  startGame: () => void;
+}) {
+  const me = state.players.find((p) => p.id === currentUserId);
+  const isHost = state.players[0]?.id === currentUserId;
+  const allPicked = state.players.every((p) => p.color);
+  
+  // En solo, on a juste 2 joueurs (human + IA). En multi, ça peut être 2 ou 4 (on autorise le lancement si >= 2).
+  const canStart = allPicked && state.players.length >= 2;
+
+  return (
+    <main className="relative flex min-h-dvh flex-col items-center justify-center gap-10 bg-ground px-6 text-ink transition-colors">
+      <div className="absolute right-6 top-6">
+        <ProfileMenu />
+      </div>
+
+      <div className="text-center">
+        <h1 className="font-display text-4xl leading-none text-ink">Salle d&apos;attente</h1>
+        <p className="mt-2 text-sm font-bold uppercase tracking-wide opacity-60">Salon {state.roomId}</p>
+      </div>
+
+      <div className="flex flex-wrap justify-center gap-6">
+        {state.players.map((p) => {
+          const colors = p.color ? PLAYER_COLORS[p.color].light : null;
+          return (
+            <div key={p.id} className="flex flex-col items-center gap-2">
+              <div
+                className="flex h-14 w-14 items-center justify-center rounded-full border-2 font-display text-lg"
+                style={
+                  colors
+                    ? { backgroundColor: colors.fill, color: colors.text, borderColor: colors.ring }
+                    : { backgroundColor: "var(--surface)", color: "var(--line)", borderColor: "var(--line)" }
+                }
+              >
+                {p.initials}
+              </div>
+              <span className="text-sm font-bold">{p.displayName}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="flex w-full max-w-sm flex-col items-center gap-5 rounded-xl border-[3px] border-ink bg-surface p-6 shadow-stack">
+        <h2 className="font-display text-sm uppercase tracking-wide text-ink">Choisis ta couleur</h2>
+        <div className="grid grid-cols-4 gap-4">
+          {PLAYER_COLOR_ORDER.map((c) => {
+            const takenByOther = state.players.some((p) => p.color === c && p.id !== currentUserId);
+            const selected = me?.color === c;
+            return (
+              <button
+                key={c}
+                disabled={takenByOther}
+                onClick={() => selectColor(c)}
+                className={`h-12 w-12 rounded-full border-[3px] transition-transform ${
+                  takenByOther ? "cursor-not-allowed opacity-25 grayscale" : "hover:scale-110 active:scale-95"
+                }`}
+                style={{
+                  backgroundColor: PLAYER_COLORS[c].light.fill,
+                  borderColor: selected ? "var(--ink)" : "transparent",
+                }}
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-col items-center gap-3">
+        {isHost ? (
+          <button
+            disabled={!canStart}
+            onClick={() => {
+              primeAudio();
+              startGame();
+            }}
+            className="rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-8 py-4 font-display text-lg text-[var(--player-blue-text)] shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
+          >
+            Lancer la partie
+          </button>
+        ) : (
+          <p className="text-sm font-bold opacity-60">En attente du créateur du salon…</p>
+        )}
+      </div>
+    </main>
+  );
+}

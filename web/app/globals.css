@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * Système "Kraft & Counters" — voir DESIGN.md à la racine du projet.
+ * Clair = jeu de société déballé en plein jour (kraft chaud).
+ * Sombre = la même table, le soir, sous une lampe (noyer chaud) —
+ * jamais un dashboard sombre froid.
+ */
+@layer base {
+  :root {
+    --ground: #ede4d3;
+    --surface: #f7f1e4;
+    --ink: #2b2320;
+    --line: #8a7860;
+    --shadow-ink: rgba(43, 35, 32, 0.22);
+
+    --player-blue-fill: #1e5aa8;
+    --player-blue-ring: #163f78;
+    --player-blue-text: #ffffff;
+    --player-blue-soft: #1e5aa82a;
+
+    --player-red-fill: #c23b2e;
+    --player-red-ring: #932c22;
+    --player-red-text: #ffffff;
+    --player-red-soft: #c23b2e2a;
+
+    --player-green-fill: #2f7d4f;
+    --player-green-ring: #21603b;
+    --player-green-text: #ffffff;
+    --player-green-soft: #2f7d4f2a;
+
+    --player-yellow-fill: #c68a1e;
+    --player-yellow-ring: #966816;
+    --player-yellow-text: #2b2320;
+    --player-yellow-soft: #c68a1e33;
+
+    --player-purple-fill: #7b4b94;
+    --player-purple-ring: #5c3870;
+    --player-purple-text: #ffffff;
+    --player-purple-soft: #7b4b942a;
+
+    --player-orange-fill: #c1601f;
+    --player-orange-ring: #954917;
+    --player-orange-text: #ffffff;
+    --player-orange-soft: #c1601f2a;
+
+    --player-cyan-fill: #1f7a85;
+    --player-cyan-ring: #175d66;
+    --player-cyan-text: #ffffff;
+    --player-cyan-soft: #1f7a852a;
+
+    --player-pink-fill: #b84368;
+    --player-pink-ring: #8c334f;
+    --player-pink-text: #ffffff;
+    --player-pink-soft: #b843682a;
+  }
+
+  .dark {
+    --ground: #231a14;
+    --surface: #2e2119;
+    --ink: #f0e6d2;
+    --line: #4a392c;
+    --shadow-ink: rgba(0, 0, 0, 0.45);
+
+    --player-blue-fill: #3d74c4;
+    --player-blue-ring: #6fa0e2;
+    --player-blue-text: #ffffff;
+    --player-blue-soft: #3d74c440;
+
+    --player-red-fill: #c9483a;
+    --player-red-ring: #e28376;
+    --player-red-text: #ffffff;
+    --player-red-soft: #c9483a40;
+
+    --player-green-fill: #3d9463;
+    --player-green-ring: #6ec28e;
+    --player-green-text: #ffffff;
+    --player-green-soft: #3d946340;
+
+    --player-yellow-fill: #d6a233;
+    --player-yellow-ring: #e8c878;
+    --player-yellow-text: #2b2320;
+    --player-yellow-soft: #d6a23340;
+
+    --player-purple-fill: #8f5caa;
+    --player-purple-ring: #b98cd1;
+    --player-purple-text: #ffffff;
+    --player-purple-soft: #8f5caa40;
+
+    --player-orange-fill: #cc7530;
+    --player-orange-ring: #e8a268;
+    --player-orange-text: #ffffff;
+    --player-orange-soft: #cc753040;
+
+    --player-cyan-fill: #2c93a0;
+    --player-cyan-ring: #5ec4d1;
+    --player-cyan-text: #ffffff;
+    --player-cyan-soft: #2c93a040;
+
+    --player-pink-fill: #c6577f;
+    --player-pink-ring: #e693af;
+    --player-pink-text: #ffffff;
+    --player-pink-soft: #c6577f40;
+  }
+
+  body {
+    font-family: var(--font-body);
+  }
+}
+
+@keyframes karre-box-pop {
+  0% {
+    transform: scale(0.5) rotate(-6deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08) rotate(2deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.karre-box-pop {
+  animation: karre-box-pop 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}

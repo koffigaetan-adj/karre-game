@@ -1,0 +1,12 @@
+# web
+web/node_modules/
+web/.next/
+web/.env.local
+web/next-env.d.ts
+
+# server
+server/.venv/
+server/__pycache__/
+server/**/__pycache__/
+server/.env
+.env.local

@@ -153,6 +153,27 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
                     if len(room.state.messages) > 50:
                         room.state.messages = room.state.messages[-50:]
                     await room.broadcast()
+            elif data.get("type") == "hover":
+                # Aperçu de survol : pas un coup, pas persisté, juste relayé aux
+                # autres joueurs du salon pour qu'ils voient en direct la ligne
+                # que le joueur actif s'apprête à jouer.
+                edge_type = data.get("edgeType")
+                is_current_player = (
+                    room.state.status == "playing"
+                    and room.state.players
+                    and room.state.players[room.state.current_player_index].id == player_id
+                )
+                if edge_type is None or is_current_player:
+                    payload = {
+                        "type": "opponent_hover",
+                        "playerId": player_id,
+                        "edgeType": edge_type,
+                        "row": data.get("row"),
+                        "col": data.get("col"),
+                    }
+                    for pid, ws in list(room.connections.items()):
+                        if pid != player_id:
+                            await ws.send_json(payload)
             elif data.get("type") == "rematch":
                 if room.state.status == "finished":
                     old_players = room.state.players

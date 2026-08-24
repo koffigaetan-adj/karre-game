@@ -16,9 +16,9 @@ const config: Config = {
         body: ["var(--font-poppins)", "system-ui", "sans-serif"],
       },
       boxShadow: {
-        stack: "3px 3px 0 0 var(--shadow-ink)",
-        "stack-sm": "2px 2px 0 0 var(--shadow-ink)",
-        "stack-pressed": "1px 1px 0 0 var(--shadow-ink)",
+        stack: "2px 2px 0 0 var(--shadow-ink)",
+        "stack-sm": "1.5px 1.5px 0 0 var(--shadow-ink)",
+        "stack-pressed": "0.5px 0.5px 0 0 var(--shadow-ink)",
       },
     },
   },

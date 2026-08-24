@@ -25,9 +25,10 @@ Postgres/Neon en prod, SQLite en local par défaut) plutôt que gardés
 uniquement en mémoire.
 
 Le frontend est une PWA installable (`web/public/manifest.json`) et suit le
-design system "Kraft & Counters" documenté dans `DESIGN.md` : palette
-kraft/noyer, bordures encre épaisses, ombres plates ("stack"), aucun
-gradient. Les sons (clic, musique d'ambiance) sont synthétisés en direct via
+design system "Kraft & Counters" documenté dans `DESIGN.md` : fond clair/sombre
+neutre classique, couleurs de joueurs comme seuls accents vifs, bordures encre
+fines, ombres plates ("stack"), aucun gradient. Les sons (clic, musique
+d'ambiance) sont synthétisés en direct via
 Web Audio (`web/lib/audio.ts`) — aucune dépendance à un fichier audio
 distant.
 

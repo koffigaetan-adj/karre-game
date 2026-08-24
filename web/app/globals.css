@@ -13,17 +13,18 @@ body {
 
 /**
  * Système "Kraft & Counters" — voir DESIGN.md à la racine du projet.
- * Clair = jeu de société déballé en plein jour (kraft chaud).
- * Sombre = la même table, le soir, sous une lampe (noyer chaud) —
- * jamais un dashboard sombre froid.
+ * Fond neutre classique (blanc en clair, gris anthracite en sombre) ;
+ * les couleurs des joueurs restent les seuls accents vifs. Les bordures
+ * épaisses et les ombres plates gardent le caractère "jeu de société",
+ * en version allégée (bordures plus fines, ombres plus discrètes).
  */
 @layer base {
   :root {
-    --ground: #ede4d3;
-    --surface: #f7f1e4;
-    --ink: #2b2320;
-    --line: #8a7860;
-    --shadow-ink: rgba(43, 35, 32, 0.22);
+    --ground: #f2f3f5;
+    --surface: #ffffff;
+    --ink: #1a1c1f;
+    --line: #c7cbd1;
+    --shadow-ink: rgba(20, 22, 26, 0.14);
 
     --player-blue-fill: #1e5aa8;
     --player-blue-ring: #163f78;
@@ -67,11 +68,11 @@ body {
   }
 
   .dark {
-    --ground: #231a14;
-    --surface: #2e2119;
-    --ink: #f0e6d2;
-    --line: #4a392c;
-    --shadow-ink: rgba(0, 0, 0, 0.45);
+    --ground: #16181b;
+    --surface: #202226;
+    --ink: #f1f2f4;
+    --line: #3a3d43;
+    --shadow-ink: rgba(0, 0, 0, 0.4);
 
     --player-blue-fill: #3d74c4;
     --player-blue-ring: #6fa0e2;
@@ -167,4 +168,36 @@ body {
 }
 .animate-toast-in {
   animation: toast-in 200ms ease-out;
+}
+
+@keyframes menu-in {
+  0% {
+    transform: translateY(-6px) scale(0.97);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+.animate-menu-in {
+  animation: menu-in 140ms ease-out;
+}
+
+@keyframes bubble-pop {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.18);
+  }
+  55% {
+    transform: scale(0.94);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.animate-bubble-pop {
+  animation: bubble-pop 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }

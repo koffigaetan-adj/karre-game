@@ -39,13 +39,13 @@ export function ProfileMenu() {
     <div className="relative z-50" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-3 rounded-full border-2 border-ink bg-surface py-1 pl-1 pr-4 shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+        className="flex items-center gap-3 rounded-full border-[1.5px] border-ink bg-surface py-1 pl-1 pr-4 shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
       >
         {session.user?.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={session.user.image} alt="" className="h-8 w-8 rounded-full shadow-sm" />
         ) : (
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-sm">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--player-blue-fill)] text-xs font-bold text-[var(--player-blue-text)] shadow-sm">
             {customInitials || session.user?.initials}
           </div>
         )}
@@ -53,9 +53,9 @@ export function ProfileMenu() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl border-2 border-ink bg-surface p-2 shadow-stack">
-          <div className="mb-2 border-b-2 border-line px-3 pb-2 pt-2">
-            <p className="font-display text-sm text-ink">Paramètres</p>
+        <div className="animate-menu-in absolute right-0 mt-2 w-56 origin-top-right rounded-xl border-[1.5px] border-ink bg-white dark:bg-[#202226] p-2 shadow-stack z-[100]">
+          <div className="mb-2 border-b-[1.5px] border-line px-3 pb-2 pt-2">
+            <p className="font-display text-xs uppercase tracking-wide text-ink/50">Paramètres</p>
           </div>
 
           <button
@@ -83,7 +83,7 @@ export function ProfileMenu() {
               <Music size={18} />
               Musique
             </div>
-            <div className={`h-4 w-8 rounded-full border-2 border-ink transition-colors ${musicEnabled ? "bg-[var(--player-blue-fill)]" : "bg-[var(--line)]"} relative`}>
+            <div className={`h-4 w-8 rounded-full border-[1.5px] border-ink transition-colors ${musicEnabled ? "bg-[var(--player-blue-fill)]" : "bg-[var(--line)]"} relative`}>
               <div className={`absolute top-0.5 h-2 w-2 rounded-full border border-ink bg-white transition-transform ${musicEnabled ? "left-3 translate-x-1" : "left-0.5"}`} />
             </div>
           </button>
@@ -96,12 +96,12 @@ export function ProfileMenu() {
               <Volume2 size={18} />
               Bruitages
             </div>
-            <div className={`h-4 w-8 rounded-full border-2 border-ink transition-colors ${sfxEnabled ? "bg-[var(--player-blue-fill)]" : "bg-[var(--line)]"} relative`}>
+            <div className={`h-4 w-8 rounded-full border-[1.5px] border-ink transition-colors ${sfxEnabled ? "bg-[var(--player-blue-fill)]" : "bg-[var(--line)]"} relative`}>
               <div className={`absolute top-0.5 h-2 w-2 rounded-full border border-ink bg-white transition-transform ${sfxEnabled ? "left-3 translate-x-1" : "left-0.5"}`} />
             </div>
           </button>
 
-          <div className="my-1 border-t-2 border-line" />
+          <div className="my-1 border-t-[1.5px] border-line" />
 
           <div className="px-3 py-2">
             {!isEditingInitials ? (
@@ -124,14 +124,14 @@ export function ProfileMenu() {
                     autoFocus
                     value={initialsInput}
                     onChange={(e) => setInitialsInput(e.target.value.toUpperCase())}
-                    className="w-12 rounded-lg border-2 border-ink bg-surface px-2 py-1 text-center font-display text-sm uppercase text-ink outline-none focus:border-blue-500"
+                    className="w-12 rounded-lg border-[1.5px] border-ink bg-surface px-2 py-1 text-center font-display text-sm uppercase text-ink outline-none focus:border-[var(--player-blue-fill)]"
                   />
                   <button
                     onClick={() => {
                       setCustomInitials(initialsInput || null);
                       setIsEditingInitials(false);
                     }}
-                    className="rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-3 py-1 font-display text-xs text-ink hover:opacity-90 active:translate-y-px"
+                    className="rounded-lg border-[1.5px] border-ink bg-[var(--player-blue-fill)] px-3 py-1 font-display text-xs text-ink hover:opacity-90 active:translate-y-px"
                   >
                     OK
                   </button>
@@ -146,7 +146,7 @@ export function ProfileMenu() {
                         setIsEditingInitials(false);
                       }}
                       className={`flex h-7 w-7 items-center justify-center rounded-md text-base transition-colors hover:bg-[var(--ground)] ${
-                        customInitials === emoji ? "border-2 border-ink bg-[var(--ground)]" : ""
+                        customInitials === emoji ? "border-[1.5px] border-ink bg-[var(--ground)]" : ""
                       }`}
                     >
                       {emoji}
@@ -157,7 +157,7 @@ export function ProfileMenu() {
             )}
           </div>
           
-          <div className="my-1 border-t-2 border-line" />
+          <div className="my-1 border-t-[1.5px] border-line" />
 
           <button
             onClick={() => {
@@ -197,9 +197,9 @@ export function ProfileMenu() {
       )}
 
       {showHistory && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm">
-          <div className="flex max-h-[80vh] w-full max-w-md flex-col overflow-hidden rounded-xl border-[3px] border-ink bg-surface shadow-stack">
-            <div className="flex items-center justify-between border-b-2 border-line p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm">
+          <div className="flex max-h-[80vh] w-full max-w-md flex-col overflow-hidden rounded-xl border-2 border-ink bg-surface shadow-stack">
+            <div className="flex items-center justify-between border-b-[1.5px] border-line p-4">
               <h2 className="font-display text-xl text-ink">Historique</h2>
               <button onClick={() => setShowHistory(false)} className="rounded-lg p-1 text-ink hover:bg-ground">
                 <X size={20} />
@@ -216,7 +216,7 @@ export function ProfileMenu() {
               ) : (
                 <div className="flex flex-col gap-3">
                   {matches.map((match) => (
-                    <div key={match.id} className="rounded-lg border-2 border-line p-3">
+                    <div key={match.id} className="rounded-lg border-[1.5px] border-line p-3">
                       <div className="mb-2 flex items-center justify-between">
                         <span className="text-xs font-bold text-ink/60">
                           {new Date(match.date).toLocaleDateString()}
@@ -244,7 +244,7 @@ export function ProfileMenu() {
             </div>
             
             {matches.length > 0 && (
-              <div className="border-t-2 border-line p-4">
+              <div className="border-t-[1.5px] border-line p-4">
                 <button
                   onClick={() => {
                     clearHistory(); // Efface du state local (Zustand)
@@ -256,7 +256,7 @@ export function ProfileMenu() {
                       }).catch((err) => console.error("Erreur suppression historique:", err));
                     }
                   }}
-                  className="w-full rounded-lg border-2 border-ink bg-[var(--player-red-soft)] px-4 py-2 text-sm font-bold text-[var(--player-red-text)] transition-all hover:opacity-80 active:translate-x-px active:translate-y-px"
+                  className="w-full rounded-lg border-[1.5px] border-ink bg-[var(--player-red-soft)] px-4 py-2 text-sm font-bold text-[var(--player-red-text)] transition-all hover:opacity-80 active:translate-x-px active:translate-y-px"
                 >
                   Effacer l'historique
                 </button>

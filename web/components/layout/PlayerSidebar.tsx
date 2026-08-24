@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 import { PLAYER_COLORS } from "@/lib/types/game";
 import type { GameState } from "@/lib/types/game";
-import { LogOut, Share2, SkipForward, RefreshCw, Send } from "lucide-react";
+import { LogOut, Share2, SkipForward, RefreshCw, Send, MessageCircle, X } from "lucide-react";
 import { playChatNotification } from "@/lib/audio";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 
@@ -23,7 +23,9 @@ interface PlayerSidebarProps {
 export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, onQuit, onRematch, onChat, className = "" }: PlayerSidebarProps) {
   const [showQuitConfirm, setShowQuitConfirm] = useState(false);
   const [chatText, setChatText] = useState("");
-  const [hasNewMessage, setHasNewMessage] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [bubblePulse, setBubblePulse] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const prevMessagesLength = useRef(state.messages?.length || 0);
   const { sfxEnabled } = useSettingsStore();
@@ -31,20 +33,38 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
   useEffect(() => {
     const msgs = state.messages || [];
     if (msgs.length > prevMessagesLength.current) {
-      // Autoscroll
       chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-      
+
       const lastMsg = msgs[msgs.length - 1];
       // Si c'est le message de quelqu'un d'autre
       if (lastMsg && lastMsg.senderId !== currentUserId) {
-        setHasNewMessage(true);
+        if (!isChatOpen) {
+          setUnreadCount((n) => n + 1);
+          // La bulle "rebondit" pour attirer l'œil, sans s'ouvrir toute seule
+          // et recouvrir le plateau en pleine réflexion d'un coup.
+          setBubblePulse(true);
+        }
         if (sfxEnabled) {
           playChatNotification(true);
         }
       }
     }
     prevMessagesLength.current = msgs.length;
-  }, [state.messages, currentUserId, sfxEnabled]);
+  }, [state.messages, currentUserId, sfxEnabled, isChatOpen]);
+
+  useEffect(() => {
+    if (!bubblePulse) return;
+    const t = setTimeout(() => setBubblePulse(false), 450);
+    return () => clearTimeout(t);
+  }, [bubblePulse]);
+
+  // À l'ouverture de la bulle : on efface le compteur et on saute en bas de la conversation.
+  useEffect(() => {
+    if (isChatOpen) {
+      setUnreadCount(0);
+      requestAnimationFrame(() => chatEndRef.current?.scrollIntoView({ behavior: "auto" }));
+    }
+  }, [isChatOpen]);
 
   const handleChatSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +75,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
   };
   return (
     <aside className={`flex flex-col gap-4 ${className}`}>
-      <div className="rounded-xl border-2 border-line bg-surface p-4 transition-colors">
+      <div className="rounded-xl border-[1.5px] border-line bg-surface p-4 transition-colors">
         <h2 className="mb-3 font-display text-sm uppercase tracking-wide text-ink">Joueurs</h2>
         <ul className="flex flex-col gap-2">
           {state.players.map((player, i) => {
@@ -64,13 +84,13 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
             return (
               <li
                 key={player.id}
-                className={`flex items-center gap-3 rounded-lg border-2 px-2.5 py-2 transition-all ${
+                className={`flex items-center gap-3 rounded-lg border-[1.5px] px-2.5 py-2 transition-all ${
                   isTurn ? "border-ink shadow-stack-sm" : "border-transparent"
                 }`}
                 style={{ background: isTurn && colors ? colors.soft : "transparent" }}
               >
                 <div
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 font-display text-sm"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-[1.5px] font-display text-sm"
                   style={
                     colors
                       ? { background: colors.fill, color: colors.text, borderColor: colors.ring }
@@ -94,7 +114,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
       </div>
 
       {state.status === "finished" && (
-        <div className="rounded-xl border-2 border-ink bg-surface p-4 shadow-stack-sm">
+        <div className="rounded-xl border-[1.5px] border-ink bg-surface p-4 shadow-stack-sm">
           <p className="font-display text-lg text-ink">
             {state.winnerId
               ? `Vainqueur : ${state.players.find((p) => p.id === state.winnerId)?.displayName}`
@@ -106,51 +126,87 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
       {state.status === "finished" && onRematch && (
         <button
           onClick={onRematch}
-          className="flex items-center justify-center gap-2 rounded-xl border-2 border-ink bg-[var(--player-blue-fill)] px-4 py-3 font-display text-lg text-surface shadow-stack active:translate-x-px active:translate-y-px active:shadow-stack-pressed transition-all"
+          className="flex items-center justify-center gap-2 rounded-xl border-[1.5px] border-ink bg-[var(--player-blue-fill)] px-4 py-3 font-display text-lg text-surface shadow-stack active:translate-x-px active:translate-y-px active:shadow-stack-pressed transition-all"
         >
           <RefreshCw size={20} />
           Rejouer la partie
         </button>
       )}
 
-      {/* CHAT BOX */}
+      {/* CHAT — bulle flottante repliable, indépendante du flux de la sidebar */}
       {!isSolo && state.status !== "waiting" && (
-        <div className="flex flex-col gap-2 rounded-xl border-2 border-line bg-surface p-3 h-48">
-          <div className="flex items-center gap-2 mb-1">
-            <h2 className="font-display text-sm uppercase tracking-wide text-ink">Chat</h2>
-            {hasNewMessage && (
-              <span className="flex h-2.5 w-2.5 rounded-full bg-[var(--player-red-fill)] animate-pulse" title="Nouveau message" />
+        <>
+          <button
+            type="button"
+            onClick={() => setIsChatOpen((o) => !o)}
+            className={`fixed bottom-4 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full border-2 border-ink bg-[var(--player-blue-fill)] text-[var(--player-blue-text)] shadow-stack transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px active:shadow-stack-pressed ${bubblePulse ? "animate-bubble-pop" : ""}`}
+            aria-label={isChatOpen ? "Fermer le chat" : "Ouvrir le chat"}
+          >
+            {isChatOpen ? <X size={22} /> : <MessageCircle size={22} />}
+            {!isChatOpen && unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full border-2 border-ink bg-[var(--player-red-fill)] px-1 text-[11px] font-bold text-[var(--player-red-text)]">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
             )}
-          </div>
-          <div className="flex-1 overflow-y-auto flex flex-col gap-2 text-sm pr-2 scrollbar-thin scrollbar-thumb-ink/20 scrollbar-track-transparent">
-            {state.messages?.map((msg, idx) => {
-              const isMe = msg.senderId === currentUserId;
-              return (
-                <div key={idx} className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
-                  <span className="text-[10px] font-bold opacity-50 mb-0.5">{msg.senderName}</span>
-                  <div className={`px-2 py-1.5 rounded-lg max-w-[90%] break-words ${isMe ? "bg-ink text-surface rounded-br-none" : "bg-ground border border-line rounded-bl-none text-ink"}`}>
-                    {msg.text}
-                  </div>
-                </div>
-              );
-            })}
-            <div ref={chatEndRef} />
-          </div>
-          <form onSubmit={handleChatSubmit} className="flex gap-2 mt-auto pt-2 border-t border-line">
-            <input
-              type="text"
-              value={chatText}
-              onChange={(e) => setChatText(e.target.value)}
-              onFocus={() => setHasNewMessage(false)}
-              onClick={() => setHasNewMessage(false)}
-              placeholder="Message..."
-              className="flex-1 rounded-md border border-line bg-ground px-2 py-1.5 text-sm outline-none focus:border-ink"
-            />
-            <button type="submit" disabled={!chatText.trim()} className="rounded-md bg-ink p-1.5 text-surface disabled:opacity-50">
-              <Send size={16} />
-            </button>
-          </form>
-        </div>
+          </button>
+
+          {isChatOpen && (
+            <div className="animate-menu-in fixed bottom-20 right-4 z-40 flex h-[28rem] max-h-[70vh] w-80 max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-xl border-2 border-ink bg-surface shadow-stack">
+              <div className="flex items-center justify-between border-b-[1.5px] border-line px-4 py-3">
+                <h2 className="font-display text-sm uppercase tracking-wide text-ink">Chat</h2>
+                <button
+                  type="button"
+                  onClick={() => setIsChatOpen(false)}
+                  className="rounded-md p-1 text-ink/50 transition-colors hover:bg-ground hover:text-ink"
+                  aria-label="Fermer le chat"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-3 text-sm scrollbar-thin scrollbar-thumb-ink/20 scrollbar-track-transparent">
+                {!state.messages || state.messages.length === 0 ? (
+                  <p className="m-auto max-w-[80%] text-center text-xs font-medium text-ink/40">
+                    Aucun message pour l'instant.
+                    <br />
+                    Dites bonjour !
+                  </p>
+                ) : (
+                  state.messages.map((msg, idx) => {
+                    const isMe = msg.senderId === currentUserId;
+                    return (
+                      <div key={idx} className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
+                        <span className="text-[10px] font-bold opacity-50 mb-0.5">{msg.senderName}</span>
+                        <div className={`px-2 py-1.5 rounded-lg max-w-[90%] break-words ${isMe ? "bg-ink text-surface rounded-br-none" : "bg-ground border border-line rounded-bl-none text-ink"}`}>
+                          {msg.text}
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+                <div ref={chatEndRef} />
+              </div>
+
+              <form onSubmit={handleChatSubmit} className="flex gap-2 border-t-[1.5px] border-line p-3">
+                <input
+                  type="text"
+                  value={chatText}
+                  onChange={(e) => setChatText(e.target.value)}
+                  placeholder="Message..."
+                  autoFocus
+                  className="flex-1 rounded-lg border-[1.5px] border-line bg-ground px-3 py-2.5 text-sm outline-none focus:border-ink sm:py-3 sm:text-base"
+                />
+                <button
+                  type="submit"
+                  disabled={!chatText.trim()}
+                  className="flex items-center justify-center rounded-lg bg-ink px-3 text-surface disabled:opacity-50"
+                >
+                  <Send size={18} />
+                </button>
+              </form>
+            </div>
+          )}
+        </>
       )}
 
       <div className="mt-auto flex gap-2">
@@ -173,7 +229,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
       {/* Alerte de confirmation pour quitter */}
       {showQuitConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-xl border-[3px] border-ink bg-surface p-6 shadow-stack text-center">
+          <div className="w-full max-w-sm rounded-xl border-2 border-ink bg-surface p-6 shadow-stack text-center">
             <h3 className="font-display text-xl text-[var(--player-red-fill)] mb-2">Attention !</h3>
             <p className="text-sm font-bold text-ink/80 mb-6">
               Êtes-vous sûr de vouloir quitter la partie ? Si vous quittez maintenant, vous serez déclaré perdant par forfait.
@@ -181,7 +237,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
             <div className="flex gap-3">
               <button
                 onClick={() => setShowQuitConfirm(false)}
-                className="flex-1 rounded-lg border-2 border-ink bg-ground px-4 py-2 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
+                className="flex-1 rounded-lg border-[1.5px] border-ink bg-ground px-4 py-2 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
               >
                 Annuler
               </button>
@@ -190,7 +246,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
                   setShowQuitConfirm(false);
                   onQuit?.();
                 }}
-                className="flex-1 rounded-lg border-2 border-ink bg-[var(--player-red-fill)] px-4 py-2 font-bold text-surface shadow-stack-sm active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+                className="flex-1 rounded-lg border-[1.5px] border-ink bg-[var(--player-red-fill)] px-4 py-2 font-bold text-surface shadow-stack-sm active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
               >
                 Abandonner
               </button>
@@ -220,7 +276,7 @@ function ActionButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`flex flex-1 flex-col items-center gap-1 rounded-lg border-2 px-3 py-2 text-xs font-bold shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none ${
+      className={`flex flex-1 flex-col items-center gap-1 rounded-lg border-[1.5px] px-3 py-2 text-xs font-bold shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none ${
         variant === "danger" ? "border-ink bg-surface text-[var(--player-red-fill)]" : "border-ink bg-surface text-ink"
       }`}
     >

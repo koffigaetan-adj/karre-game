@@ -48,20 +48,20 @@ export default function LobbyPage() {
       <div className="absolute right-6 top-6 z-10 flex items-center gap-4">
         <button
           onClick={() => setShowInfo(true)}
-          className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-ink bg-[var(--player-yellow-fill)] text-ink shadow-stack-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+          className="flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-ink bg-[var(--player-yellow-fill)] text-ink shadow-stack-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
           title="Règles du jeu"
         >
           <Info size={20} />
         </button>
 
         {status === "loading" ? (
-          <div className="h-11 w-32 animate-pulse rounded-full border-2 border-line bg-surface" />
+          <div className="h-11 w-32 animate-pulse rounded-full border-[1.5px] border-line bg-surface" />
         ) : session ? (
           <ProfileMenu />
         ) : (
           <button
             onClick={() => signIn("google")}
-            className="rounded-full border-2 border-ink bg-[var(--player-blue-fill)] px-5 py-2 text-sm font-bold text-[var(--player-blue-text)] shadow-stack-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+            className="rounded-full border-[1.5px] border-ink bg-[var(--player-blue-fill)] px-5 py-2 text-sm font-bold text-[var(--player-blue-text)] shadow-stack-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
           >
             Se connecter
           </button>
@@ -83,7 +83,7 @@ export default function LobbyPage() {
       </div>
 
       {/* Main Card */}
-      <div className="relative z-10 w-full min-w-0 max-w-md rounded-2xl border-[3px] border-ink bg-surface/90 backdrop-blur-md p-8 shadow-stack hover:shadow-stack-hover transition-all duration-300">
+      <div className="relative z-10 w-full min-w-0 max-w-md rounded-2xl border-2 border-ink bg-surface/90 backdrop-blur-md p-8 shadow-stack hover:shadow-stack-hover transition-all duration-300">
         <div className="mb-8 text-center">
           <h2 className="font-display text-2xl uppercase tracking-wide text-ink">Nouvelle partie</h2>
         </div>
@@ -91,7 +91,7 @@ export default function LobbyPage() {
         <div className="grid gap-6">
           {/* Size Selector */}
           <div className="flex justify-center">
-            <div className="inline-flex rounded-full border-2 border-ink bg-ground p-1">
+            <div className="inline-flex rounded-full border-[1.5px] border-ink bg-ground p-1">
               {(["small", "medium", "large"] as const).map((s) => (
                 <button
                   key={s}
@@ -114,7 +114,7 @@ export default function LobbyPage() {
           <div className="grid gap-4 mt-2">
             <button
               onClick={startSolo}
-              className="group relative overflow-hidden rounded-xl border-2 border-ink bg-surface px-4 py-4 text-sm font-bold text-ink shadow-stack transition-all hover:-translate-y-1 hover:bg-[var(--player-yellow-soft)] active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex items-center justify-between"
+              className="group relative overflow-hidden rounded-xl border-[1.5px] border-ink bg-surface px-4 py-4 text-sm font-bold text-ink shadow-stack transition-all hover:-translate-y-1 hover:bg-[var(--player-yellow-soft)] active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--player-yellow-fill)] text-ink">
@@ -128,13 +128,13 @@ export default function LobbyPage() {
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => createRoom(2)}
-                className="group relative overflow-hidden rounded-xl border-2 border-ink bg-surface px-4 py-4 text-sm font-bold text-ink shadow-stack transition-all hover:-translate-y-1 hover:bg-[var(--player-blue-soft)] active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex flex-col items-center gap-3"
+                className="group relative overflow-hidden rounded-xl border-[1.5px] border-ink bg-surface px-4 py-4 text-sm font-bold text-ink shadow-stack transition-all hover:-translate-y-1 hover:bg-[var(--player-blue-soft)] active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex flex-col items-center gap-3"
               >
                 <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[var(--player-blue-fill)] text-[var(--player-blue-text)]">
                   <Users size={24} className="group-hover:scale-110 transition-transform" />
                   <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--player-blue-text)] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[var(--player-blue-text)] border-2 border-[var(--player-blue-fill)]"></span>
+                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[var(--player-blue-text)] border-[1.5px] border-[var(--player-blue-fill)]"></span>
                   </span>
                 </div>
                 <span>Partie à 2 joueurs</span>
@@ -142,13 +142,13 @@ export default function LobbyPage() {
               
               <button
                 onClick={() => createRoom(4)}
-                className="group relative overflow-hidden rounded-xl border-2 border-ink bg-surface px-4 py-4 text-sm font-bold text-ink shadow-stack transition-all hover:-translate-y-1 hover:bg-[var(--player-green-soft)] active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex flex-col items-center gap-3"
+                className="group relative overflow-hidden rounded-xl border-[1.5px] border-ink bg-surface px-4 py-4 text-sm font-bold text-ink shadow-stack transition-all hover:-translate-y-1 hover:bg-[var(--player-green-soft)] active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex flex-col items-center gap-3"
               >
                 <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[var(--player-green-fill)] text-[var(--player-green-text)]">
                   <Users size={24} className="group-hover:scale-110 transition-transform" />
                   <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--player-green-text)] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[var(--player-green-text)] border-2 border-[var(--player-green-fill)]"></span>
+                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[var(--player-green-text)] border-[1.5px] border-[var(--player-green-fill)]"></span>
                   </span>
                 </div>
                 <span>Partie à 4 joueurs</span>
@@ -156,18 +156,18 @@ export default function LobbyPage() {
             </div>
           </div>
 
-          <div className="relative mt-2 border-t-2 border-dashed border-line pt-6">
+          <div className="relative mt-2 border-t-[1.5px] border-dashed border-line pt-6">
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-surface px-3 text-xs font-bold uppercase tracking-wider text-ink/50">Ou</span>
             <div className="flex gap-3">
               <input
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
                 placeholder="Code de partie…"
-                className="flex-1 rounded-lg border-2 border-ink bg-ground px-4 py-3 text-sm font-bold text-ink outline-none placeholder:font-medium placeholder:opacity-50 focus:bg-surface focus:ring-2 focus:ring-ink/20 transition-all"
+                className="flex-1 rounded-lg border-[1.5px] border-ink bg-ground px-4 py-3 text-sm font-bold text-ink outline-none placeholder:font-medium placeholder:opacity-50 focus:bg-surface focus:ring-2 focus:ring-ink/20 transition-all"
               />
               <button
                 onClick={joinRoom}
-                className="rounded-lg border-2 border-ink bg-[var(--ink)] text-surface px-6 py-3 text-sm font-bold shadow-stack-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+                className="rounded-lg border-[1.5px] border-ink bg-[var(--ink)] text-surface px-6 py-3 text-sm font-bold shadow-stack-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
               >
                 Rejoindre
               </button>
@@ -178,7 +178,7 @@ export default function LobbyPage() {
 
       {showInfo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="w-full max-w-md rounded-xl border-[3px] border-ink bg-surface p-6 shadow-stack animate-in zoom-in-95 duration-300">
+          <div className="w-full max-w-md rounded-xl border-2 border-ink bg-surface p-6 shadow-stack animate-in zoom-in-95 duration-300">
             <h2 className="mb-4 font-display text-2xl text-ink">Comment jouer ?</h2>
             <div className="space-y-4 text-sm font-medium text-ink/80">
               <p className="flex gap-3"><span className="text-xl">📍</span> <span><strong>Le But :</strong> Conquérir le plus grand nombre de cases avant que la grille ne soit remplie.</span></p>
@@ -189,7 +189,7 @@ export default function LobbyPage() {
             </div>
             <button
               onClick={() => setShowInfo(false)}
-              className="mt-8 w-full rounded-lg border-2 border-ink bg-ground px-4 py-3 font-bold text-ink shadow-stack-sm active:translate-x-px active:translate-y-px hover:bg-ink/5 transition-colors"
+              className="mt-8 w-full rounded-lg border-[1.5px] border-ink bg-ground px-4 py-3 font-bold text-ink shadow-stack-sm active:translate-x-px active:translate-y-px hover:bg-ink/5 transition-colors"
             >
               C'est compris !
             </button>

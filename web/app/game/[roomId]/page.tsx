@@ -10,6 +10,7 @@ import { PlayerSidebar } from "@/components/layout/PlayerSidebar";
 import { applyMove, createEmptyGameState } from "@/lib/game/engine";
 import { pickBotMove } from "@/lib/game/ai";
 import { useRoomSocket } from "@/lib/game/useRoomSocket";
+import type { RemoteHover } from "@/lib/game/useRoomSocket";
 import { initialsFromName, PLAYER_COLOR_ORDER, PLAYER_COLORS } from "@/lib/types/game";
 import type { EdgeType, GameState, PlayerColor } from "@/lib/types/game";
 import { ProfileMenu } from "@/components/ProfileMenu";
@@ -192,7 +193,21 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
   
   const [wantsToStart, setWantsToStart] = useState(false);
 
-  const { state, connected, error, playEdge, selectColor, updateInitials, startGame, sendForfeit, sendRematch, sendChat } = useRoomSocket({
+  const {
+    state,
+    connected,
+    error,
+    remoteHover,
+    playEdge,
+    selectColor,
+    updateInitials,
+    startGame,
+    sendForfeit,
+    sendRematch,
+    sendChat,
+    sendHover,
+    clearHover,
+  } = useRoomSocket({
     roomId,
     playerId: humanId,
     displayName: humanName,
@@ -219,18 +234,18 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
         <div className="absolute left-6 top-6">
           <button
             onClick={() => router.push("/")}
-            className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-ink bg-surface text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+            className="flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-ink bg-surface text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
             title="Retour à l'accueil"
           >
             <ArrowLeft size={18} />
           </button>
         </div>
-        <div className="flex flex-col items-center gap-6 rounded-xl border-[3px] border-ink bg-surface p-8 shadow-stack max-w-sm w-full">
+        <div className="flex flex-col items-center gap-6 rounded-xl border-2 border-ink bg-surface p-8 shadow-stack max-w-sm w-full">
           <h2 className="font-display text-2xl uppercase tracking-wide text-ink">Invitation</h2>
           <p className="font-bold opacity-80">Connecte-toi pour rejoindre le salon {roomId}</p>
           <button
             onClick={() => signIn("google", { callbackUrl: window.location.href })}
-            className="flex w-full items-center justify-center gap-3 rounded-full border-2 border-ink bg-white px-6 py-3 font-bold text-ink shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed hover:bg-gray-50"
+            className="flex w-full items-center justify-center gap-3 rounded-full border-[1.5px] border-ink bg-white px-6 py-3 font-bold text-ink shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed hover:bg-gray-50"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -283,6 +298,8 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
       connected={connected}
       isWaitingForOthers={state.status === "waiting"}
       onCancelWait={() => setWantsToStart(false)}
+      remoteHover={remoteHover}
+      onHoverEdge={(edge) => (edge ? sendHover(edge.type, edge.row, edge.col) : clearHover())}
     />
   );
 }
@@ -300,6 +317,8 @@ function GameView({
   connected = true,
   isWaitingForOthers = false,
   onCancelWait,
+  remoteHover = null,
+  onHoverEdge,
 }: {
   roomId: string;
   state: GameState;
@@ -313,6 +332,8 @@ function GameView({
   connected?: boolean;
   isWaitingForOthers?: boolean;
   onCancelWait?: () => void;
+  remoteHover?: RemoteHover | null;
+  onHoverEdge?: (edge: { type: EdgeType; row: number; col: number } | null) => void;
 }) {
   const router = useRouter();
   const statusLabel = useMemo(() => {
@@ -401,14 +422,14 @@ function GameView({
         </div>
         {error && <p className="text-xs font-bold text-[var(--player-red-fill)]">{error}</p>}
         {!connected && state.status === "playing" && (
-          <div className="flex items-center gap-2 rounded-lg border-2 border-ink bg-[var(--player-red-soft)] px-3 py-2 text-sm font-bold text-[var(--player-red-fill)]">
+          <div className="flex items-center gap-2 rounded-lg border-[1.5px] border-ink bg-[var(--player-red-soft)] px-3 py-2 text-sm font-bold text-[var(--player-red-fill)]">
             <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-[var(--player-red-fill)]" />
             Connexion perdue avec le serveur — tentative de reconnexion…
           </div>
         )}
         {state.status === "finished" && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm">
-            <div className="w-full max-w-sm rounded-xl border-[3px] border-ink bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
+            <div className="w-full max-w-sm rounded-xl border-2 border-ink bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
               <h2 className="mb-4 font-display text-3xl uppercase tracking-wide text-ink">Partie terminée</h2>
               <p className="mb-6 font-bold text-lg text-ink/80">
                 {state.winnerId 
@@ -420,14 +441,14 @@ function GameView({
               <div className="flex gap-3">
                 <button
                   onClick={onQuit || (() => router.push("/"))}
-                  className="flex-1 rounded-lg border-2 border-ink bg-ground px-4 py-3 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
+                  className="flex-1 rounded-lg border-[1.5px] border-ink bg-ground px-4 py-3 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
                 >
                   Quitter
                 </button>
                 {onRematch && (
                   <button
                     onClick={onRematch}
-                    className="flex-1 rounded-lg border-2 border-ink bg-[var(--player-green-fill)] px-4 py-3 font-bold text-ink shadow-stack-sm active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+                    className="flex-1 rounded-lg border-[1.5px] border-ink bg-[var(--player-green-fill)] px-4 py-3 font-bold text-ink shadow-stack-sm active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
                   >
                     Rejouer
                   </button>
@@ -439,14 +460,14 @@ function GameView({
 
         {isWaitingForOthers && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-ground/80 p-6 backdrop-blur-sm">
-            <div className="w-full max-w-sm rounded-xl border-[3px] border-ink bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
+            <div className="w-full max-w-sm rounded-xl border-2 border-ink bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
               <h2 className="mb-4 font-display text-2xl uppercase tracking-wide text-ink">En attente</h2>
               <p className="mb-6 font-bold text-ink/80">
                 Vos adversaires n'ont pas encore intégré la partie ou n'ont pas choisi leur couleur.
               </p>
               <button
                  onClick={onCancelWait}
-                 className="w-full rounded-lg border-2 border-ink bg-ground px-4 py-3 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
+                 className="w-full rounded-lg border-[1.5px] border-ink bg-ground px-4 py-3 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
               >
                  Retour au salon
               </button>
@@ -469,7 +490,13 @@ function GameView({
         )}
 
         <div className="relative mx-auto w-full max-w-2xl">
-          <KarreBoard state={state} currentUserId={currentUserId} onPlayEdge={onPlayEdge} />
+          <KarreBoard
+            state={state}
+            currentUserId={currentUserId}
+            onPlayEdge={onPlayEdge}
+            remoteHover={remoteHover}
+            onHoverEdge={onHoverEdge}
+          />
           <MiniMap state={state} className="absolute left-3 top-3" />
         </div>
       </div>
@@ -511,7 +538,7 @@ function GameTimer({ startedAt, running }: { startedAt: string | null; running: 
   const seconds = totalSeconds % 60;
 
   return (
-    <span className="inline-flex items-center rounded-md border-2 border-ink bg-surface px-2 py-0.5 font-display text-sm text-ink">
+    <span className="inline-flex items-center rounded-md border-[1.5px] border-ink bg-surface px-2 py-0.5 font-display text-sm text-ink">
       {minutes}:{seconds.toString().padStart(2, "0")}
     </span>
   );
@@ -523,7 +550,7 @@ function CenteredMessage({ text }: { text: string }) {
       <div className="absolute right-6 top-6">
         <ProfileMenu />
       </div>
-      <div className="rounded-xl border-2 border-ink bg-surface p-8 shadow-stack">
+      <div className="rounded-xl border-[1.5px] border-ink bg-surface p-8 shadow-stack">
         <p className="font-bold">{text}</p>
       </div>
     </main>
@@ -565,7 +592,7 @@ function WaitingRoom({
     <main className="relative flex min-h-dvh flex-col items-center justify-center gap-10 bg-ground px-6 text-ink transition-colors">
       <button
         onClick={() => router.push("/")}
-        className="absolute left-6 top-6 flex h-10 w-10 items-center justify-center rounded-full border-2 border-ink bg-surface text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+        className="absolute left-6 top-6 flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-ink bg-surface text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
         title="Retour à l'accueil"
       >
         <ArrowLeft size={18} />
@@ -589,7 +616,7 @@ function WaitingRoom({
                 navigator.clipboard.writeText(url);
                 showToast("Lien d'invitation copié !");
               }}
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
+              className="flex items-center justify-center gap-2 rounded-lg border-[1.5px] border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
             >
               <Link2 size={16} />
               Copier le lien
@@ -601,7 +628,7 @@ function WaitingRoom({
                 navigator.clipboard.writeText(text);
                 showToast("Message d'invitation copié !");
               }}
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
+              className="flex items-center justify-center gap-2 rounded-lg border-[1.5px] border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
             >
               <Copy size={16} />
               Message complet
@@ -612,7 +639,7 @@ function WaitingRoom({
                 const text = `Salut !!\n\nJe vous invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
               }}
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-[#25D366] px-4 py-2 text-sm font-bold text-white shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
+              className="flex items-center justify-center gap-2 rounded-lg border-[1.5px] border-ink bg-[#25D366] px-4 py-2 text-sm font-bold text-white shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
             >
               <MessageCircle size={16} />
               WhatsApp
@@ -623,7 +650,7 @@ function WaitingRoom({
                 const text = `Salut !!\n\nJe vous invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
                 window.location.href = `mailto:?subject=Invitation à jouer à Karre Game's&body=${encodeURIComponent(text)}`;
               }}
-              className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
+              className="flex items-center justify-center gap-2 rounded-lg border-[1.5px] border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
             >
               <Mail size={16} />
               Email
@@ -639,7 +666,7 @@ function WaitingRoom({
           return (
             <div key={p.id} className="flex flex-col items-center gap-2">
               <div
-                className="flex h-14 w-14 items-center justify-center rounded-full border-2 font-display text-lg"
+                className="flex h-14 w-14 items-center justify-center rounded-full border-[1.5px] font-display text-lg"
                 style={
                   colors
                     ? { backgroundColor: colors.fill, color: colors.text, borderColor: colors.ring }
@@ -662,14 +689,14 @@ function WaitingRoom({
                         setEditingInitials(false);
                       }
                     }}
-                    className="w-14 rounded-md border-2 border-ink bg-surface px-1 py-0.5 text-center font-display text-sm uppercase text-ink outline-none"
+                    className="w-14 rounded-md border-[1.5px] border-ink bg-surface px-1 py-0.5 text-center font-display text-sm uppercase text-ink outline-none"
                   />
                   <button
                     onClick={() => {
                       if (initialsInput.trim()) updateInitials(initialsInput);
                       setEditingInitials(false);
                     }}
-                    className="rounded-md border-2 border-ink bg-[var(--player-blue-fill)] px-2 py-0.5 font-display text-xs text-[var(--player-blue-text)]"
+                    className="rounded-md border-[1.5px] border-ink bg-[var(--player-blue-fill)] px-2 py-0.5 font-display text-xs text-[var(--player-blue-text)]"
                   >
                     OK
                   </button>
@@ -693,7 +720,7 @@ function WaitingRoom({
         })}
       </div>
 
-      <div className="flex w-full max-w-sm flex-col items-center gap-5 rounded-xl border-[3px] border-ink bg-surface p-6 shadow-stack">
+      <div className="flex w-full max-w-sm flex-col items-center gap-5 rounded-xl border-2 border-ink bg-surface p-6 shadow-stack">
         <h2 className="font-display text-sm uppercase tracking-wide text-ink">Choisis ta couleur</h2>
         <div className="grid grid-cols-4 gap-4">
           {PLAYER_COLOR_ORDER.map((c) => {
@@ -704,7 +731,7 @@ function WaitingRoom({
                 key={c}
                 disabled={takenByOther}
                 onClick={() => selectColor(c)}
-                className={`h-12 w-12 rounded-full border-[3px] transition-transform ${
+                className={`h-12 w-12 rounded-full border-2 transition-transform ${
                   takenByOther ? "cursor-not-allowed opacity-25 grayscale" : "hover:scale-110 active:scale-95"
                 }`}
                 style={{
@@ -732,7 +759,7 @@ function WaitingRoom({
               primeAudio();
               startGame();
             }}
-            className="rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-8 py-4 font-bold text-xl text-[var(--player-blue-text)] shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+            className="rounded-lg border-[1.5px] border-ink bg-[var(--player-blue-fill)] px-8 py-4 font-bold text-xl text-[var(--player-blue-text)] shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
           >
             Lancer la partie
           </button>
@@ -750,7 +777,7 @@ function WaitingRoom({
 
       {toast && (
         <div className="pointer-events-none fixed inset-x-0 bottom-6 z-50 flex justify-center px-6">
-          <div className="animate-toast-in rounded-lg border-2 border-ink bg-surface px-4 py-3 text-sm font-bold text-ink shadow-stack">
+          <div className="animate-toast-in rounded-lg border-[1.5px] border-ink bg-surface px-4 py-3 text-sm font-bold text-ink shadow-stack">
             {toast}
           </div>
         </div>

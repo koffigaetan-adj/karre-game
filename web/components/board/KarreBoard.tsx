@@ -12,6 +12,13 @@ import { useSettingsStore } from "@/lib/store/useSettingsStore";
 const CELL = 72; // taille d'une case en unités SVG
 const PADDING = 36; // marge autour du losange
 
+interface HoveredEdgeInfo {
+  playerId: string;
+  type: EdgeType;
+  row: number;
+  col: number;
+}
+
 interface KarreBoardProps {
   state: GameState;
   /** id de l'utilisateur local ; omis en mode hotseat (tout le monde peut cliquer) */
@@ -19,6 +26,10 @@ interface KarreBoardProps {
   onPlayEdge: (type: EdgeType, row: number, col: number) => void;
   interactive?: boolean;
   className?: string;
+  /** Survol local à relayer aux autres joueurs (multijoueur uniquement). */
+  onHoverEdge?: (edge: { type: EdgeType; row: number; col: number } | null) => void;
+  /** Survol d'un adversaire, reçu du serveur : aperçu en couleur atténuée. */
+  remoteHover?: HoveredEdgeInfo | null;
 }
 
 /**
@@ -33,6 +44,8 @@ export function KarreBoard({
   onPlayEdge,
   interactive = true,
   className = "",
+  onHoverEdge,
+  remoteHover = null,
 }: KarreBoardProps) {
   const { rows, cols } = state;
 
@@ -44,6 +57,9 @@ export function KarreBoard({
   const currentPlayer = state.players[state.currentPlayerIndex];
   const isMyTurn = interactive && (!currentUserId || currentPlayer?.id === currentUserId);
   const previewColor = currentPlayer?.color ? PLAYER_COLORS[currentPlayer.color].light.fill : "var(--ink)";
+
+  const remoteHoverPlayer = remoteHover ? state.players.find((p) => p.id === remoteHover.playerId) : null;
+  const remoteHoverColor = remoteHoverPlayer?.color ? PLAYER_COLORS[remoteHoverPlayer.color].light.fill : null;
 
   const [hoveredEdge, setHoveredEdge] = useState<string | null>(null);
   const [justCaptured, setJustCaptured] = useState<Set<string>>(new Set());
@@ -122,7 +138,7 @@ export function KarreBoard({
   return (
     <div className={`relative w-full min-w-0 select-none ${className} ${isShaking ? "animate-shake" : ""}`}>
       <div
-        className="w-full min-w-0 overflow-hidden rounded-xl border-[3px] border-ink bg-surface shadow-stack touch-none transition-colors"
+        className="w-full min-w-0 overflow-hidden rounded-xl border-2 border-ink bg-surface shadow-stack touch-none transition-colors"
         style={{ aspectRatio: "1 / 1" }}
         {...bind}
       >
@@ -162,8 +178,8 @@ export function KarreBoard({
                       rx={4}
                       fill={colors ? colors.light.fill : "var(--ground)"}
                       stroke={colors ? "var(--ink)" : "var(--line)"}
-                      strokeWidth={colors ? 2 : 1.25}
-                      strokeOpacity={colors ? 1 : 0.6}
+                      strokeWidth={colors ? 1.25 : 1}
+                      strokeOpacity={colors ? 0.85 : 0.5}
                       className={justCaptured.has(key) ? "karre-box-pop" : ""}
                       style={{ transformOrigin: `${bx}px ${by}px` }}
                     />
@@ -206,6 +222,8 @@ export function KarreBoard({
                   const color = edgeOwnerColor(owner);
                   const canPlay = interactive && isMyTurn && owner === null;
                   const hovered = hoveredEdge === key;
+                  const isRemoteHovered =
+                    !!remoteHoverColor && remoteHover?.type === "h" && remoteHover.row === row && remoteHover.col === col;
                   return (
                     <g key={key}>
                       <line
@@ -220,11 +238,13 @@ export function KarreBoard({
                               ? color.light.fill
                               : hovered && canPlay
                                 ? previewColor
-                                : "var(--line)"
+                                : isRemoteHovered
+                                  ? remoteHoverColor!
+                                  : "var(--line)"
                         }
-                        strokeOpacity={owner === null && !(hovered && canPlay) ? 0.7 : 1}
-                        strokeWidth={owner !== null ? 6 : hovered && canPlay ? 5 : 2.5}
-                        strokeDasharray={owner !== null ? undefined : "3 6"}
+                        strokeOpacity={owner === null && !(hovered && canPlay) ? (isRemoteHovered ? 0.45 : 0.7) : 1}
+                        strokeWidth={owner !== null ? 6 : hovered && canPlay ? 5 : isRemoteHovered ? 4 : 2.5}
+                        strokeDasharray={owner !== null || isRemoteHovered ? undefined : "3 6"}
                         strokeLinecap="round"
                         className="transition-all duration-150"
                       />
@@ -236,8 +256,15 @@ export function KarreBoard({
                         stroke="transparent"
                         strokeWidth={18}
                         style={{ cursor: canPlay ? "pointer" : "default" }}
-                        onPointerEnter={() => canPlay && setHoveredEdge(key)}
-                        onPointerLeave={() => setHoveredEdge((k) => (k === key ? null : k))}
+                        onPointerEnter={() => {
+                          if (!canPlay) return;
+                          setHoveredEdge(key);
+                          onHoverEdge?.({ type: "h", row, col });
+                        }}
+                        onPointerLeave={() => {
+                          setHoveredEdge((k) => (k === key ? null : k));
+                          if (canPlay) onHoverEdge?.(null);
+                        }}
                         onClick={() => handleEdgeClick("h", row, col)}
                       />
                     </g>
@@ -259,6 +286,8 @@ export function KarreBoard({
                   const color = edgeOwnerColor(owner);
                   const canPlay = interactive && isMyTurn && owner === null;
                   const hovered = hoveredEdge === key;
+                  const isRemoteHovered =
+                    !!remoteHoverColor && remoteHover?.type === "v" && remoteHover.row === row && remoteHover.col === col;
                   return (
                     <g key={key}>
                       <line
@@ -273,11 +302,13 @@ export function KarreBoard({
                               ? color.light.fill
                               : hovered && canPlay
                                 ? previewColor
-                                : "var(--line)"
+                                : isRemoteHovered
+                                  ? remoteHoverColor!
+                                  : "var(--line)"
                         }
-                        strokeOpacity={owner === null && !(hovered && canPlay) ? 0.7 : 1}
-                        strokeWidth={owner !== null ? 6 : hovered && canPlay ? 5 : 2.5}
-                        strokeDasharray={owner !== null ? undefined : "3 6"}
+                        strokeOpacity={owner === null && !(hovered && canPlay) ? (isRemoteHovered ? 0.45 : 0.7) : 1}
+                        strokeWidth={owner !== null ? 6 : hovered && canPlay ? 5 : isRemoteHovered ? 4 : 2.5}
+                        strokeDasharray={owner !== null || isRemoteHovered ? undefined : "3 6"}
                         strokeLinecap="round"
                         className="transition-all duration-150"
                       />
@@ -289,8 +320,15 @@ export function KarreBoard({
                         stroke="transparent"
                         strokeWidth={18}
                         style={{ cursor: canPlay ? "pointer" : "default" }}
-                        onPointerEnter={() => canPlay && setHoveredEdge(key)}
-                        onPointerLeave={() => setHoveredEdge((k) => (k === key ? null : k))}
+                        onPointerEnter={() => {
+                          if (!canPlay) return;
+                          setHoveredEdge(key);
+                          onHoverEdge?.({ type: "v", row, col });
+                        }}
+                        onPointerLeave={() => {
+                          setHoveredEdge((k) => (k === key ? null : k));
+                          if (canPlay) onHoverEdge?.(null);
+                        }}
                         onClick={() => handleEdgeClick("v", row, col)}
                       />
                     </g>
@@ -338,7 +376,7 @@ function ZoomButton({ label, onClick }: { label: string; onClick: () => void }) 
     <button
       type="button"
       onClick={onClick}
-      className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-ink bg-surface font-display text-lg text-ink shadow-stack-sm transition-transform active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+      className="flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-ink bg-surface font-display text-lg text-ink shadow-stack-sm transition-transform active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
     >
       {label}
     </button>

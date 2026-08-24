@@ -87,26 +87,46 @@ export function playClick(enabled: boolean) {
   });
 }
 
+/** Petit carillon deux notes (quinte montante) pour un message reçu — chaleureux, pas un bip UI. */
 export function playChatNotification(enabled: boolean) {
   if (!enabled) return;
   const ctx = ensureContext();
   if (!ctx) return;
   resumeIfNeeded(ctx, () => {
     const now = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(800, now);
-    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+    const notes = [880, 1318.51]; // La5, Mi6
+    notes.forEach((freq, i) => {
+      const start = now + i * 0.09;
 
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.1, now + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+      const osc = ctx.createOscillator();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, start);
 
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.12);
+      // Un léger partiel à l'octave donne le "corps" d'une clochette plutôt qu'un ton pur.
+      const overtone = ctx.createOscillator();
+      overtone.type = "sine";
+      overtone.frequency.setValueAtTime(freq * 2, start);
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.13, start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.38);
+
+      const overtoneGain = ctx.createGain();
+      overtoneGain.gain.setValueAtTime(0.0001, start);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.035, start + 0.015);
+      overtoneGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.2);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      overtone.connect(overtoneGain);
+      overtoneGain.connect(ctx.destination);
+
+      osc.start(start);
+      osc.stop(start + 0.4);
+      overtone.start(start);
+      overtone.stop(start + 0.22);
+    });
   });
 }
 
@@ -121,9 +141,8 @@ interface MusicGraph {
 
 let musicGraph: MusicGraph | null = null;
 
-// Accord calme (fondamentale + quinte + octave) — évoque une nappe de fond,
-// pas une mélodie qui se répète de façon reconnaissable.
-const CHORD_HZ = [110, 164.81, 220]; // A2, E3, A3
+// Accord plus aigu pour éviter les basses fréquences qui font "vibrer" les haut-parleurs de smartphone
+const CHORD_HZ = [220, 329.63, 440]; // A3, E4, A4
 
 function buildMusicGraph(ctx: AudioContext): MusicGraph {
   const master = ctx.createGain();
@@ -132,7 +151,7 @@ function buildMusicGraph(ctx: AudioContext): MusicGraph {
 
   const filter = ctx.createBiquadFilter();
   filter.type = "lowpass";
-  filter.frequency.value = 650;
+  filter.frequency.value = 1000;
   filter.connect(master);
 
   const voices = CHORD_HZ.map((freq) => {
@@ -140,7 +159,7 @@ function buildMusicGraph(ctx: AudioContext): MusicGraph {
     osc.type = "sine";
     osc.frequency.value = freq;
     const voiceGain = ctx.createGain();
-    voiceGain.gain.value = 0.05;
+    voiceGain.gain.value = 0.04;
     osc.connect(voiceGain);
     voiceGain.connect(filter);
     osc.start();
@@ -150,9 +169,9 @@ function buildMusicGraph(ctx: AudioContext): MusicGraph {
   // LFO lent qui fait "respirer" le filtre pour éviter une nappe figée.
   const lfo = ctx.createOscillator();
   lfo.type = "sine";
-  lfo.frequency.value = 0.08;
+  lfo.frequency.value = 0.05;
   const lfoGain = ctx.createGain();
-  lfoGain.gain.value = 220;
+  lfoGain.gain.value = 300;
   lfo.connect(lfoGain);
   lfoGain.connect(filter.frequency);
   lfo.start();
@@ -160,9 +179,8 @@ function buildMusicGraph(ctx: AudioContext): MusicGraph {
   return { master, filter, lfo, voices };
 }
 
-// Volume bas : une nappe de fond doit rester discrète, jamais couvrir les
-// sons de jeu (clic, capture) ni gêner une conversation à côté.
-const MUSIC_VOLUME = 0.16;
+// Volume très bas
+const MUSIC_VOLUME = 0.10;
 
 export function playMusic(enabled: boolean) {
   if (!enabled) return;

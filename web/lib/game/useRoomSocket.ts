@@ -13,10 +13,18 @@ interface UseRoomSocketParams {
   enabled: boolean;
 }
 
+export interface RemoteHover {
+  playerId: string;
+  type: EdgeType;
+  row: number;
+  col: number;
+}
+
 interface UseRoomSocketResult {
   state: GameState | null;
   connected: boolean;
   error: string | null;
+  remoteHover: RemoteHover | null;
   playEdge: (type: EdgeType, row: number, col: number) => void;
   selectColor: (color: string) => void;
   updateInitials: (initials: string) => void;
@@ -24,6 +32,8 @@ interface UseRoomSocketResult {
   sendForfeit: () => void;
   sendRematch: () => void;
   sendChat: (text: string) => void;
+  sendHover: (type: EdgeType, row: number, col: number) => void;
+  clearHover: () => void;
 }
 
 /**
@@ -43,6 +53,7 @@ export function useRoomSocket({
   const [state, setState] = useState<GameState | null>(null);
   const [connected, setConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [remoteHover, setRemoteHover] = useState<RemoteHover | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
@@ -95,9 +106,22 @@ export function useRoomSocket({
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data) as
           | { type: "state"; state: GameState }
-          | { type: "error"; message: string };
-        if (data.type === "state") setState(data.state);
-        else setError(data.message);
+          | { type: "error"; message: string }
+          | { type: "opponent_hover"; playerId: string; edgeType: EdgeType | null; row: number | null; col: number | null };
+        if (data.type === "state") {
+          setState(data.state);
+          // Un nouvel état signifie qu'un coup vient d'être joué (ou le tour a
+          // changé) : l'aperçu de survol précédent n'a plus de sens.
+          setRemoteHover(null);
+        } else if (data.type === "opponent_hover") {
+          if (data.edgeType === null || data.row === null || data.col === null) {
+            setRemoteHover(null);
+          } else {
+            setRemoteHover({ playerId: data.playerId, type: data.edgeType, row: data.row, col: data.col });
+          }
+        } else {
+          setError(data.message);
+        }
       };
     }
 
@@ -139,5 +163,27 @@ export function useRoomSocket({
     wsRef.current?.send(JSON.stringify({ type: "chat", text }));
   };
 
-  return { state, connected, error, playEdge, selectColor, updateInitials, startGame, sendForfeit, sendRematch, sendChat };
+  const sendHover = (type: EdgeType, row: number, col: number) => {
+    wsRef.current?.send(JSON.stringify({ type: "hover", edgeType: type, row, col }));
+  };
+
+  const clearHover = () => {
+    wsRef.current?.send(JSON.stringify({ type: "hover", edgeType: null, row: null, col: null }));
+  };
+
+  return {
+    state,
+    connected,
+    error,
+    remoteHover,
+    playEdge,
+    selectColor,
+    updateInitials,
+    startGame,
+    sendForfeit,
+    sendRematch,
+    sendChat,
+    sendHover,
+    clearHover,
+  };
 }

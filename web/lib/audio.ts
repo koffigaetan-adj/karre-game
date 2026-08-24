@@ -38,7 +38,7 @@ export function primeAudio() {
   if (ctx && ctx.state === "suspended") void ctx.resume();
 }
 
-/** Petit arpège montant, joué quand un joueur capture une case. */
+/** Petit arpège rebondissant, joué quand un joueur capture une case. */
 export function playCapture(enabled: boolean) {
   if (!enabled) return;
   const ctx = ensureContext();
@@ -47,24 +47,28 @@ export function playCapture(enabled: boolean) {
     const now = ctx.currentTime;
     const notes = [523.25, 659.25, 783.99]; // Do5, Mi5, Sol5
     notes.forEach((freq, i) => {
-      const start = now + i * 0.06;
+      const start = now + i * 0.08;
       const osc = ctx.createOscillator();
-      osc.type = "triangle";
-      osc.frequency.setValueAtTime(freq, start);
+      osc.type = "sine";
+      
+      // Léger effet de rebond avec le pitch
+      osc.frequency.setValueAtTime(freq * 0.8, start);
+      osc.frequency.exponentialRampToValueAtTime(freq, start + 0.02);
 
       const gain = ctx.createGain();
       gain.gain.setValueAtTime(0.0001, start);
-      gain.gain.exponentialRampToValueAtTime(0.16, start + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.22);
+      gain.gain.exponentialRampToValueAtTime(0.2, start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.2);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start(start);
-      osc.stop(start + 0.24);
+      osc.stop(start + 0.22);
     });
   });
 }
 
+/** Son de clic façon "bloop" (rebond) au lieu du bip robotique */
 export function playClick(enabled: boolean) {
   if (!enabled) return;
   const ctx = ensureContext();
@@ -72,18 +76,21 @@ export function playClick(enabled: boolean) {
   resumeIfNeeded(ctx, () => {
     const now = ctx.currentTime;
     const osc = ctx.createOscillator();
-    osc.type = "square";
-    osc.frequency.setValueAtTime(720, now);
+    osc.type = "sine";
+    
+    // Pitch envelope: commence haut et descend vite (effet "bloop")
+    osc.frequency.setValueAtTime(800, now);
+    osc.frequency.exponentialRampToValueAtTime(200, now + 0.08);
 
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.12, now + 0.005);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.3, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
 
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.start(now);
-    osc.stop(now + 0.06);
+    osc.stop(now + 0.12);
   });
 }
 

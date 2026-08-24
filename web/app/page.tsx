@@ -33,35 +33,32 @@ export default function LobbyPage() {
 
   return (
     <main className="relative flex min-h-dvh flex-col items-center justify-center gap-10 overflow-x-hidden bg-ground px-6 py-12 text-ink transition-colors">
-      {/* Animated Background */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div 
-          className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" 
-          style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, var(--ink) 2px, transparent 0)', backgroundSize: '40px 40px' }}
-        />
-        <div className="absolute -top-[20%] -left-[10%] h-[50vh] w-[50vw] rounded-full bg-[var(--player-blue-soft)]/40 blur-[100px] mix-blend-multiply dark:mix-blend-screen animate-pulse duration-10000"></div>
-        <div className="absolute top-[40%] -right-[10%] h-[50vh] w-[50vw] rounded-full bg-[var(--player-yellow-soft)]/40 blur-[100px] mix-blend-multiply dark:mix-blend-screen animate-pulse duration-7000 delay-1000"></div>
-        <div className="absolute -bottom-[20%] left-[20%] h-[50vh] w-[50vw] rounded-full bg-[var(--player-red-soft)]/40 blur-[100px] mix-blend-multiply dark:mix-blend-screen animate-pulse duration-10000 delay-2000"></div>
+      {/* Animated Background - Non plat avec Mesh Gradient + Bruit */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-gradient-to-br from-[var(--ground)] via-ground to-[var(--player-purple-soft)]">
+        <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-gradient-to-tr from-[var(--player-cyan-fill)] to-[var(--player-blue-fill)] opacity-[0.15] dark:opacity-10 blur-[80px] animate-pulse duration-10000" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-gradient-to-bl from-[var(--player-pink-fill)] to-[var(--player-red-fill)] opacity-[0.15] dark:opacity-10 blur-[100px] animate-pulse duration-7000 delay-2000" />
+        <div className="absolute top-[30%] left-[60%] w-[30vw] h-[30vw] rounded-full bg-gradient-to-br from-[var(--player-yellow-fill)] to-[var(--player-orange-fill)] opacity-[0.1] dark:opacity-[0.05] blur-[60px] animate-pulse duration-5000 delay-1000" />
+        <div className="absolute inset-0 opacity-[0.05] dark:opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")' }} />
       </div>
 
       {/* Header Profile / Rules */}
       <div className="absolute right-6 top-6 z-10 flex items-center gap-4">
         <button
           onClick={() => setShowInfo(true)}
-          className="flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-ink bg-[var(--player-yellow-fill)] text-ink shadow-stack-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-ink bg-[var(--player-yellow-fill)] text-[var(--player-yellow-text)] shadow-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px"
           title="Règles du jeu"
         >
           <Info size={20} />
         </button>
 
         {status === "loading" ? (
-          <div className="h-11 w-32 animate-pulse rounded-full border-[1.5px] border-line bg-surface" />
+          <div className="h-11 w-32 animate-pulse rounded-full border border-line bg-surface" />
         ) : session ? (
           <ProfileMenu />
         ) : (
           <button
             onClick={() => signIn("google")}
-            className="rounded-full border-[1.5px] border-ink bg-[var(--player-blue-fill)] px-5 py-2 text-sm font-bold text-[var(--player-blue-text)] shadow-stack-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+            className="rounded-full border border-ink bg-[var(--player-blue-fill)] px-5 py-2 text-sm font-bold text-[var(--player-blue-text)] shadow-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px"
           >
             Se connecter
           </button>
@@ -74,16 +71,16 @@ export default function LobbyPage() {
           <Image src="/logo-light.png" alt="Karré Logo" width={112} height={112} className="dark:hidden drop-shadow-md hover:scale-105 transition-transform duration-300" />
           <Image src="/logo-dark.png" alt="Karré Logo" width={112} height={112} className="hidden dark:block drop-shadow-md hover:scale-105 transition-transform duration-300" />
         </div>
-        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-ink mb-4">
+        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-ink mb-4 drop-shadow-sm">
           Karre Game's
         </h1>
-        <p className="text-base sm:text-lg font-bold text-ink/70 max-w-md mx-auto">
+        <p className="text-base sm:text-lg font-bold text-ink/80 max-w-md mx-auto">
           Redécouvrez le classique du jeu de points et carrés.
         </p>
       </div>
 
       {/* Main Card */}
-      <div className="relative z-10 w-full min-w-0 max-w-md rounded-2xl border-2 border-ink bg-surface/90 backdrop-blur-md p-8 shadow-stack hover:shadow-stack-hover transition-all duration-300">
+      <div className="relative z-10 w-full min-w-0 max-w-md rounded-2xl border-[1.5px] border-ink bg-surface/70 backdrop-blur-xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300">
         <div className="mb-8 text-center">
           <h2 className="font-display text-2xl uppercase tracking-wide text-ink">Nouvelle partie</h2>
         </div>
@@ -91,7 +88,7 @@ export default function LobbyPage() {
         <div className="grid gap-6">
           {/* Size Selector */}
           <div className="flex justify-center">
-            <div className="inline-flex rounded-full border-[1.5px] border-ink bg-ground p-1">
+            <div className="inline-flex rounded-full border border-ink/20 bg-ground/50 p-1 backdrop-blur-sm">
               {(["small", "medium", "large"] as const).map((s) => (
                 <button
                   key={s}
@@ -114,10 +111,10 @@ export default function LobbyPage() {
           <div className="grid gap-4 mt-2">
             <button
               onClick={startSolo}
-              className="group relative overflow-hidden rounded-xl border-[1.5px] border-ink bg-surface px-4 py-4 text-sm font-bold text-ink shadow-stack transition-all hover:-translate-y-1 hover:bg-[var(--player-yellow-soft)] active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex items-center justify-between"
+              className="group relative overflow-hidden rounded-xl border border-ink/30 bg-surface/80 px-4 py-4 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:border-ink hover:shadow-md active:translate-x-px active:translate-y-px flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--player-yellow-fill)] text-ink">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-yellow-fill)] to-[var(--player-orange-fill)] text-[var(--player-yellow-text)] shadow-inner">
                   <Bot size={20} className="group-hover:scale-110 transition-transform" />
                 </div>
                 <span>Jouer solo (contre le robot)</span>
@@ -128,9 +125,9 @@ export default function LobbyPage() {
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => createRoom(2)}
-                className="group relative overflow-hidden rounded-xl border-[1.5px] border-ink bg-surface px-4 py-4 text-sm font-bold text-ink shadow-stack transition-all hover:-translate-y-1 hover:bg-[var(--player-blue-soft)] active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex flex-col items-center gap-3"
+                className="group relative overflow-hidden rounded-xl border border-ink/30 bg-surface/80 px-4 py-4 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:border-ink hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-3"
               >
-                <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[var(--player-blue-fill)] text-[var(--player-blue-text)]">
+                <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-blue-fill)] to-[var(--player-cyan-fill)] text-[var(--player-blue-text)] shadow-inner">
                   <Users size={24} className="group-hover:scale-110 transition-transform" />
                   <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--player-blue-text)] opacity-75"></span>
@@ -142,9 +139,9 @@ export default function LobbyPage() {
               
               <button
                 onClick={() => createRoom(4)}
-                className="group relative overflow-hidden rounded-xl border-[1.5px] border-ink bg-surface px-4 py-4 text-sm font-bold text-ink shadow-stack transition-all hover:-translate-y-1 hover:bg-[var(--player-green-soft)] active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex flex-col items-center gap-3"
+                className="group relative overflow-hidden rounded-xl border border-ink/30 bg-surface/80 px-4 py-4 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:border-ink hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-3"
               >
-                <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[var(--player-green-fill)] text-[var(--player-green-text)]">
+                <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-green-fill)] to-[#10b981] text-[var(--player-green-text)] shadow-inner">
                   <Users size={24} className="group-hover:scale-110 transition-transform" />
                   <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--player-green-text)] opacity-75"></span>
@@ -156,7 +153,7 @@ export default function LobbyPage() {
             </div>
           </div>
 
-          <div className="relative mt-2 border-t-[1.5px] border-dashed border-line pt-6">
+          <div className="relative mt-2 border-t border-dashed border-line pt-6">
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-surface px-3 text-xs font-bold uppercase tracking-wider text-ink/50">Ou</span>
             <div className="flex gap-3">
               <input

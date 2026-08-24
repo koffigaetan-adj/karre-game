@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 import { PLAYER_COLORS } from "@/lib/types/game";
 import type { GameState } from "@/lib/types/game";
-import { LogOut, Share2, SkipForward, RefreshCw, Send, MessageCircle, X } from "lucide-react";
+import { LogOut, Share2, SkipForward, RefreshCw, Send, MessageCircle, ChevronDown } from "lucide-react";
 import { playChatNotification } from "@/lib/audio";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 
@@ -58,13 +58,20 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
     return () => clearTimeout(t);
   }, [bubblePulse]);
 
-  // À l'ouverture de la bulle : on efface le compteur et on saute en bas de la conversation.
+  // À l'ouverture : on efface le compteur et on saute en bas de la conversation.
   useEffect(() => {
     if (isChatOpen) {
       setUnreadCount(0);
       requestAnimationFrame(() => chatEndRef.current?.scrollIntoView({ behavior: "auto" }));
     }
   }, [isChatOpen]);
+
+  // Sur grand écran, le chat n'a pas besoin de se cacher : il est ouvert d'office.
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches) {
+      setIsChatOpen(true);
+    }
+  }, []);
 
   const handleChatSubmit = (e: React.FormEvent) => {
     e.preventDefault();

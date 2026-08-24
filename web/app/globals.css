@@ -20,99 +20,101 @@ body {
  */
 @layer base {
   :root {
-    --ground: #f2f3f5;
+    --ground: #f4f5f7;
     --surface: #ffffff;
     --ink: #1a1c1f;
-    --line: #c7cbd1;
-    --shadow-ink: rgba(20, 22, 26, 0.14);
+    --line: #d1d5db;
+    --shadow-ink: rgba(20, 22, 26, 0.1);
 
-    --player-blue-fill: #1e5aa8;
-    --player-blue-ring: #163f78;
+    /* Couleurs plus douces et pastel pour le mode clair */
+    --player-blue-fill: #4da6ff;
+    --player-blue-ring: #3388dd;
     --player-blue-text: #ffffff;
-    --player-blue-soft: #1e5aa82a;
+    --player-blue-soft: #4da6ff2a;
 
-    --player-red-fill: #c23b2e;
-    --player-red-ring: #932c22;
+    --player-red-fill: #ff6b6b;
+    --player-red-ring: #dd4444;
     --player-red-text: #ffffff;
-    --player-red-soft: #c23b2e2a;
+    --player-red-soft: #ff6b6b2a;
 
-    --player-green-fill: #2f7d4f;
-    --player-green-ring: #21603b;
+    --player-green-fill: #4ade80;
+    --player-green-ring: #2bb05d;
     --player-green-text: #ffffff;
-    --player-green-soft: #2f7d4f2a;
+    --player-green-soft: #4ade802a;
 
-    --player-yellow-fill: #c68a1e;
-    --player-yellow-ring: #966816;
-    --player-yellow-text: #2b2320;
-    --player-yellow-soft: #c68a1e33;
+    --player-yellow-fill: #fbbf24;
+    --player-yellow-ring: #d99900;
+    --player-yellow-text: #453000;
+    --player-yellow-soft: #fbbf2433;
 
-    --player-purple-fill: #7b4b94;
-    --player-purple-ring: #5c3870;
+    --player-purple-fill: #a78bfa;
+    --player-purple-ring: #8b5cf6;
     --player-purple-text: #ffffff;
-    --player-purple-soft: #7b4b942a;
+    --player-purple-soft: #a78bfa2a;
 
-    --player-orange-fill: #c1601f;
-    --player-orange-ring: #954917;
+    --player-orange-fill: #fb923c;
+    --player-orange-ring: #f97316;
     --player-orange-text: #ffffff;
-    --player-orange-soft: #c1601f2a;
+    --player-orange-soft: #fb923c2a;
 
-    --player-cyan-fill: #1f7a85;
-    --player-cyan-ring: #175d66;
-    --player-cyan-text: #ffffff;
-    --player-cyan-soft: #1f7a852a;
+    --player-cyan-fill: #22d3ee;
+    --player-cyan-ring: #06b6d4;
+    --player-cyan-text: #164e63;
+    --player-cyan-soft: #22d3ee2a;
 
-    --player-pink-fill: #b84368;
-    --player-pink-ring: #8c334f;
+    --player-pink-fill: #f472b6;
+    --player-pink-ring: #ec4899;
     --player-pink-text: #ffffff;
-    --player-pink-soft: #b843682a;
+    --player-pink-soft: #f472b62a;
   }
 
   .dark {
-    --ground: #16181b;
-    --surface: #202226;
-    --ink: #f1f2f4;
-    --line: #3a3d43;
-    --shadow-ink: rgba(0, 0, 0, 0.4);
+    --ground: #121417;
+    --surface: #1e2024;
+    --ink: #f8fafc;
+    --line: #33373d;
+    --shadow-ink: rgba(0, 0, 0, 0.5);
 
-    --player-blue-fill: #3d74c4;
-    --player-blue-ring: #6fa0e2;
+    /* Couleurs vives mais adaptées au mode sombre */
+    --player-blue-fill: #3b82f6;
+    --player-blue-ring: #60a5fa;
     --player-blue-text: #ffffff;
-    --player-blue-soft: #3d74c440;
+    --player-blue-soft: #3b82f640;
 
-    --player-red-fill: #c9483a;
-    --player-red-ring: #e28376;
+    --player-red-fill: #ef4444;
+    --player-red-ring: #f87171;
     --player-red-text: #ffffff;
-    --player-red-soft: #c9483a40;
+    --player-red-soft: #ef444440;
 
-    --player-green-fill: #3d9463;
-    --player-green-ring: #6ec28e;
+    --player-green-fill: #22c55e;
+    --player-green-ring: #4ade80;
     --player-green-text: #ffffff;
-    --player-green-soft: #3d946340;
+    --player-green-soft: #22c55e40;
 
-    --player-yellow-fill: #d6a233;
-    --player-yellow-ring: #e8c878;
-    --player-yellow-text: #2b2320;
-    --player-yellow-soft: #d6a23340;
+    --player-yellow-fill: #eab308;
+    --player-yellow-ring: #facc15;
+    --player-yellow-text: #453000;
+    --player-yellow-soft: #eab30840;
 
-    --player-purple-fill: #8f5caa;
-    --player-purple-ring: #b98cd1;
+    --player-purple-fill: #8b5cf6;
+    --player-purple-ring: #a78bfa;
     --player-purple-text: #ffffff;
-    --player-purple-soft: #8f5caa40;
+    --player-purple-soft: #8b5cf640;
 
-    --player-orange-fill: #cc7530;
-    --player-orange-ring: #e8a268;
+    --player-orange-fill: #f97316;
+    --player-orange-ring: #fb923c;
     --player-orange-text: #ffffff;
-    --player-orange-soft: #cc753040;
+    --player-orange-soft: #f9731640;
 
-    --player-cyan-fill: #2c93a0;
-    --player-cyan-ring: #5ec4d1;
+    --player-cyan-fill: #06b6d4;
+    --player-cyan-ring: #22d3ee;
     --player-cyan-text: #ffffff;
-    --player-cyan-soft: #2c93a040;
+    --player-cyan-soft: #06b6d440;
 
-    --player-pink-fill: #c6577f;
-    --player-pink-ring: #e693af;
+    --player-pink-fill: #ec4899;
+    --player-pink-ring: #f472b6;
     --player-pink-text: #ffffff;
-    --player-pink-soft: #c6577f40;
+    --player-pink-soft: #ec489940;
   }
 
   body {

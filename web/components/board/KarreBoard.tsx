@@ -138,7 +138,7 @@ export function KarreBoard({
   return (
     <div className={`relative w-full min-w-0 select-none ${className} ${isShaking ? "animate-shake" : ""}`}>
       <div
-        className="w-full min-w-0 overflow-hidden rounded-xl border-2 border-ink bg-surface shadow-stack touch-none transition-colors"
+        className="w-full min-w-0 overflow-hidden rounded-xl border-[1.5px] border-ink bg-surface shadow-stack touch-none transition-colors"
         style={{ aspectRatio: "1 / 1" }}
         {...bind}
       >
@@ -243,7 +243,7 @@ export function KarreBoard({
                                   : "var(--line)"
                         }
                         strokeOpacity={owner === null && !(hovered && canPlay) ? (isRemoteHovered ? 0.45 : 0.7) : 1}
-                        strokeWidth={owner !== null ? 6 : hovered && canPlay ? 5 : isRemoteHovered ? 4 : 2.5}
+                        strokeWidth={owner !== null ? 4.5 : hovered && canPlay ? 4 : isRemoteHovered ? 3 : 2}
                         strokeDasharray={owner !== null || isRemoteHovered ? undefined : "3 6"}
                         strokeLinecap="round"
                         className="transition-all duration-150"
@@ -307,7 +307,7 @@ export function KarreBoard({
                                   : "var(--line)"
                         }
                         strokeOpacity={owner === null && !(hovered && canPlay) ? (isRemoteHovered ? 0.45 : 0.7) : 1}
-                        strokeWidth={owner !== null ? 6 : hovered && canPlay ? 5 : isRemoteHovered ? 4 : 2.5}
+                        strokeWidth={owner !== null ? 4.5 : hovered && canPlay ? 4 : isRemoteHovered ? 3 : 2}
                         strokeDasharray={owner !== null || isRemoteHovered ? undefined : "3 6"}
                         strokeLinecap="round"
                         className="transition-all duration-150"
@@ -350,7 +350,7 @@ export function KarreBoard({
                       key={`dot-${row}-${col}`}
                       cx={col * CELL}
                       cy={row * CELL}
-                      r={3}
+                      r={2.5}
                       fill="var(--ink)"
                     />
                   );

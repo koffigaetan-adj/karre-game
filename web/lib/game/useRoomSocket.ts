@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { EdgeType, GameState } from "../types/game";
+import { applyMove } from "./engine";
 
 interface UseRoomSocketParams {
   roomId: string;
@@ -137,6 +138,20 @@ export function useRoomSocket({
 
   const playEdge = (type: EdgeType, row: number, col: number) => {
     wsRef.current?.send(JSON.stringify({ type, row, col }));
+    // Retour instantané en attendant la confirmation du serveur : sans ça,
+    // même l'auteur du coup devait attendre l'aller-retour réseau avant de
+    // voir son propre trait apparaître, ce qui donnait une sensation de jeu
+    // en retard. Le serveur reste la seule source de vérité — son état
+    // écrase toujours celui-ci dès qu'il arrive (y compris si le coup est
+    // finalement rejeté, ex: capture concurrente de l'adversaire).
+    setState((prev) => {
+      if (!prev) return prev;
+      try {
+        return applyMove(prev, type, row, col, playerId).state;
+      } catch {
+        return prev;
+      }
+    });
   };
   
   const selectColor = (color: string) => {

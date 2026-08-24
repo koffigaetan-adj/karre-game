@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 import { PLAYER_COLORS } from "@/lib/types/game";
 import type { GameState } from "@/lib/types/game";
 import { LogOut, Share2, SkipForward, RefreshCw, Send } from "lucide-react";
+import { playChatNotification } from "@/lib/audio";
+import { useSettingsStore } from "@/lib/store/useSettingsStore";
 
 interface PlayerSidebarProps {
   state: GameState;
@@ -21,6 +23,28 @@ interface PlayerSidebarProps {
 export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, onQuit, onRematch, onChat, className = "" }: PlayerSidebarProps) {
   const [showQuitConfirm, setShowQuitConfirm] = useState(false);
   const [chatText, setChatText] = useState("");
+  const [hasNewMessage, setHasNewMessage] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  const prevMessagesLength = useRef(state.messages?.length || 0);
+  const { sfxEnabled } = useSettingsStore();
+
+  useEffect(() => {
+    const msgs = state.messages || [];
+    if (msgs.length > prevMessagesLength.current) {
+      // Autoscroll
+      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      
+      const lastMsg = msgs[msgs.length - 1];
+      // Si c'est le message de quelqu'un d'autre
+      if (lastMsg && lastMsg.senderId !== currentUserId) {
+        setHasNewMessage(true);
+        if (sfxEnabled) {
+          playChatNotification(true);
+        }
+      }
+    }
+    prevMessagesLength.current = msgs.length;
+  }, [state.messages, currentUserId, sfxEnabled]);
 
   const handleChatSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,8 +116,13 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
       {/* CHAT BOX */}
       {!isSolo && state.status !== "waiting" && (
         <div className="flex flex-col gap-2 rounded-xl border-2 border-line bg-surface p-3 h-48">
-          <h2 className="font-display text-sm uppercase tracking-wide text-ink mb-1">Chat</h2>
-          <div className="flex-1 overflow-y-auto flex flex-col gap-2 text-sm pr-2">
+          <div className="flex items-center gap-2 mb-1">
+            <h2 className="font-display text-sm uppercase tracking-wide text-ink">Chat</h2>
+            {hasNewMessage && (
+              <span className="flex h-2.5 w-2.5 rounded-full bg-[var(--player-red-fill)] animate-pulse" title="Nouveau message" />
+            )}
+          </div>
+          <div className="flex-1 overflow-y-auto flex flex-col gap-2 text-sm pr-2 scrollbar-thin scrollbar-thumb-ink/20 scrollbar-track-transparent">
             {state.messages?.map((msg, idx) => {
               const isMe = msg.senderId === currentUserId;
               return (
@@ -105,12 +134,15 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
                 </div>
               );
             })}
+            <div ref={chatEndRef} />
           </div>
           <form onSubmit={handleChatSubmit} className="flex gap-2 mt-auto pt-2 border-t border-line">
             <input
               type="text"
               value={chatText}
               onChange={(e) => setChatText(e.target.value)}
+              onFocus={() => setHasNewMessage(false)}
+              onClick={() => setHasNewMessage(false)}
               placeholder="Message..."
               className="flex-1 rounded-md border border-line bg-ground px-2 py-1.5 text-sm outline-none focus:border-ink"
             />

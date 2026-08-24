@@ -32,6 +32,39 @@ function resumeIfNeeded(ctx: AudioContext, thenFn: () => void) {
   }
 }
 
+/** Débloque le contexte audio partagé (musique + clic + capture) depuis un vrai geste utilisateur. */
+export function primeAudio() {
+  const ctx = ensureContext();
+  if (ctx && ctx.state === "suspended") void ctx.resume();
+}
+
+/** Petit arpège montant, joué quand un joueur capture une case. */
+export function playCapture(enabled: boolean) {
+  if (!enabled) return;
+  const ctx = ensureContext();
+  if (!ctx) return;
+  resumeIfNeeded(ctx, () => {
+    const now = ctx.currentTime;
+    const notes = [523.25, 659.25, 783.99]; // Do5, Mi5, Sol5
+    notes.forEach((freq, i) => {
+      const start = now + i * 0.06;
+      const osc = ctx.createOscillator();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, start);
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.16, start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.22);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.24);
+    });
+  });
+}
+
 export function playClick(enabled: boolean) {
   if (!enabled) return;
   const ctx = ensureContext();
@@ -51,6 +84,29 @@ export function playClick(enabled: boolean) {
     gain.connect(ctx.destination);
     osc.start(now);
     osc.stop(now + 0.06);
+  });
+}
+
+export function playChatNotification(enabled: boolean) {
+  if (!enabled) return;
+  const ctx = ensureContext();
+  if (!ctx) return;
+  resumeIfNeeded(ctx, () => {
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(800, now);
+    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.1, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.12);
   });
 }
 
@@ -76,12 +132,12 @@ function buildMusicGraph(ctx: AudioContext): MusicGraph {
 
   const filter = ctx.createBiquadFilter();
   filter.type = "lowpass";
-  filter.frequency.value = 900;
+  filter.frequency.value = 650;
   filter.connect(master);
 
   const voices = CHORD_HZ.map((freq) => {
     const osc = ctx.createOscillator();
-    osc.type = "triangle";
+    osc.type = "sine";
     osc.frequency.value = freq;
     const voiceGain = ctx.createGain();
     voiceGain.gain.value = 0.05;
@@ -104,6 +160,10 @@ function buildMusicGraph(ctx: AudioContext): MusicGraph {
   return { master, filter, lfo, voices };
 }
 
+// Volume bas : une nappe de fond doit rester discrète, jamais couvrir les
+// sons de jeu (clic, capture) ni gêner une conversation à côté.
+const MUSIC_VOLUME = 0.16;
+
 export function playMusic(enabled: boolean) {
   if (!enabled) return;
   const ctx = ensureContext();
@@ -111,7 +171,7 @@ export function playMusic(enabled: boolean) {
   resumeIfNeeded(ctx, () => {
     if (!musicGraph) musicGraph = buildMusicGraph(ctx);
     musicGraph.master.gain.cancelScheduledValues(ctx.currentTime);
-    musicGraph.master.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 1.2);
+    musicGraph.master.gain.linearRampToValueAtTime(MUSIC_VOLUME, ctx.currentTime + 1.8);
   });
 }
 

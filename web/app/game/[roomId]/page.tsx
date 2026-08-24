@@ -13,10 +13,9 @@ import { useRoomSocket } from "@/lib/game/useRoomSocket";
 import { initialsFromName, PLAYER_COLOR_ORDER, PLAYER_COLORS } from "@/lib/types/game";
 import type { EdgeType, GameState, PlayerColor } from "@/lib/types/game";
 import { ProfileMenu } from "@/components/ProfileMenu";
-import { playMusic, stopMusic, setMusicSpeed } from "@/lib/audio";
+import { playMusic, stopMusic, setMusicSpeed, primeAudio } from "@/lib/audio";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 import { useHistoryStore } from "@/lib/store/useHistoryStore";
-import { primeAudio } from "@/lib/sound";
 import { Pencil, ArrowLeft, Share2, Copy, Link2, MessageCircle, Mail } from "lucide-react";
 
 const BOT_ID = "bot";

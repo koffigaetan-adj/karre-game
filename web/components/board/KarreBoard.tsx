@@ -6,7 +6,7 @@ import type { EdgeType, GameState } from "@/lib/types/game";
 import { PLAYER_COLORS, WALL_EDGE } from "@/lib/types/game";
 import { Bot } from "lucide-react";
 import confetti from "canvas-confetti";
-import { playClick } from "@/lib/audio";
+import { playClick, playCapture } from "@/lib/audio";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 
 const CELL = 72; // taille d'une case en unités SVG
@@ -49,6 +49,7 @@ export function KarreBoard({
   const [justCaptured, setJustCaptured] = useState<Set<string>>(new Set());
   const [isShaking, setIsShaking] = useState(false);
   const prevBoxesRef = useRef(state.boxes);
+  const { sfxEnabled } = useSettingsStore();
 
   // Détecte les cases nouvellement capturées pour déclencher l'animation de remplissage.
   useEffect(() => {
@@ -65,7 +66,8 @@ export function KarreBoard({
       setJustCaptured(changed);
       setIsShaking(true);
       setTimeout(() => setIsShaking(false), 300);
-      
+      playCapture(sfxEnabled);
+
       // Confetti sur chaque case capturée
       changed.forEach((key) => {
         const [r, c] = key.split("-").map(Number);
@@ -93,8 +95,6 @@ export function KarreBoard({
   }, [state.boxes, rows, cols]);
 
   const { pan, zoomIn, zoomOut, reset, bind } = usePanZoom();
-
-  const { sfxEnabled } = useSettingsStore();
 
   const handleEdgeClick = (type: EdgeType, row: number, col: number) => {
     if (!interactive || !isMyTurn) return;

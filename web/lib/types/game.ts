@@ -17,7 +17,7 @@ export type GameStatus = "waiting" | "playing" | "finished";
 
 export type GameMode = "solo" | "multiplayer";
 
-export type BoardSize = "small" | "medium" | "large";
+export type BoardSize = "small" | "medium" | "large" | "giant";
 
 export interface Player {
   id: string;

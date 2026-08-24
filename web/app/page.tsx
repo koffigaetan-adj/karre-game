@@ -13,7 +13,7 @@ export default function LobbyPage() {
   const { data: session, status } = useSession();
   const [joinCode, setJoinCode] = useState("");
   const [showInfo, setShowInfo] = useState(false);
-  const [selectedSize, setSelectedSize] = useState<"small" | "medium" | "large">("medium");
+  const [selectedSize, setSelectedSize] = useState<"small" | "medium" | "large" | "giant">("medium");
 
   const requireAuth = (go: () => void) => {
     if (!session) {
@@ -80,19 +80,20 @@ export default function LobbyPage() {
         <div className="grid gap-4 md:gap-6">
           {/* Size Selector */}
           <div className="flex justify-center">
-            <div className="inline-flex rounded-full border border-ink-border/20 bg-ground/50 p-1 backdrop-blur-sm">
-              {(["small", "medium", "large"] as const).map((s) => (
+            <div className="flex flex-wrap gap-2 md:gap-3">
+              {(["small", "medium", "large", "giant"] as const).map((s) => (
                 <button
                   key={s}
                   onClick={() => setSelectedSize(s)}
-                  className={`rounded-full px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-xs font-bold transition-all ${selectedSize === s
-                      ? "bg-ink text-surface shadow-md"
+                  className={`flex-1 rounded-lg border-[1.5px] px-2 py-2 md:px-4 md:py-2 text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all ${selectedSize === s
+                      ? "border-ink bg-ink text-surface shadow-stack-sm"
                       : "text-ink/60 hover:text-ink hover:bg-ink/5"
                     }`}
                 >
                   {s === "small" && "Petite (9x9)"}
                   {s === "medium" && "Moyenne (13x13)"}
                   {s === "large" && "Classique (17x17)"}
+                  {s === "giant" && "Géante (21x21)"}
                 </button>
               ))}
             </div>

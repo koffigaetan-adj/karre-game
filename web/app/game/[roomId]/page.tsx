@@ -477,7 +477,7 @@ function GameView({
   // La musique de fond a été retirée à la demande de l'utilisateur pour éviter les bugs sonores/vibrations sur mobile.
 
   return (
-    <main className="flex min-h-dvh flex-col gap-4 bg-transparent p-4 transition-colors lg:flex-row lg:p-8 scrollbar-none">
+    <main className="flex h-[100dvh] overflow-hidden flex-col gap-4 bg-transparent p-4 transition-colors lg:flex-row lg:p-8">
       <div className="flex min-w-0 flex-1 flex-col gap-3">
         <div className="flex items-center justify-between">
           <div>
@@ -657,7 +657,7 @@ function GameView({
           </div>
         )}
 
-        <div className="relative mx-auto w-full max-w-2xl">
+        <div className="relative mx-auto flex w-full flex-1 items-center justify-center min-h-0 lg:max-w-4xl xl:max-w-5xl">
           <KwadraBoard
             state={state}
             currentUserId={currentUserId}

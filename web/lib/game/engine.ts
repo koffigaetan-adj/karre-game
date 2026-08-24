@@ -34,6 +34,10 @@ export function createEmptyGameState(params: {
     rows = 13;
     cols = 13;
     radius = 6;
+  } else if (size === "giant") {
+    rows = 21;
+    cols = 21;
+    radius = 10;
   }
 
   const horizontalEdges: (string | null)[][] = Array.from({ length: rows + 1 }, () => Array(cols).fill(WALL_EDGE));

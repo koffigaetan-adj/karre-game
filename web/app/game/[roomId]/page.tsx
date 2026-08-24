@@ -445,47 +445,7 @@ function GameView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countdown]);
 
-  // Gestion de la musique avec déblocage au premier clic
-  useEffect(() => {
-    const unlockAudio = () => {
-      primeAudio(); // Débloque le contexte Audio
-      if (musicEnabled) {
-        playMusic(true);
-      }
-      document.removeEventListener("click", unlockAudio);
-    };
-
-    if (musicEnabled) {
-      playMusic(true);
-      document.addEventListener("click", unlockAudio);
-    } else {
-      stopMusic();
-    }
-
-    return () => {
-      stopMusic();
-      document.removeEventListener("click", unlockAudio);
-    };
-  }, [musicEnabled]);
-
-  useEffect(() => {
-    if (!musicEnabled) return;
-    let filled = 0;
-    let total = 0;
-    for (let r = 0; r < state.rows; r++) {
-      for (let c = 0; c < state.cols; c++) {
-        if (state.boxes[r][c] !== "OUTSIDE") {
-          total++;
-          if (state.boxes[r][c] !== null) filled++;
-        }
-      }
-    }
-    if (total > 0 && filled / total > 0.8) {
-      setMusicSpeed(1.25);
-    } else {
-      setMusicSpeed(1.0);
-    }
-  }, [state.boxes, state.rows, state.cols, musicEnabled]);
+  // La musique de fond a été retirée à la demande de l'utilisateur pour éviter les bugs sonores/vibrations sur mobile.
 
   return (
     <main className="flex min-h-dvh flex-col gap-4 bg-transparent p-4 transition-colors lg:flex-row lg:p-8 scrollbar-none">

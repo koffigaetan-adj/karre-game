@@ -1,19 +1,13 @@
 import type { Metadata } from "next";
-import { Anton, Karla } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
-const anton = Anton({
+const poppins = Poppins({
   subsets: ["latin"],
-  weight: "400",
-  variable: "--font-display",
-});
-
-const karla = Karla({
-  subsets: ["latin"],
-  weight: ["500", "700", "800"],
-  variable: "--font-body",
+  weight: ["400", "500", "700", "800", "900"],
+  variable: "--font-poppins",
 });
 
 export const viewport = {
@@ -62,7 +56,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" suppressHydrationWarning className={`${anton.variable} ${karla.variable}`}>
+    <html lang="fr" suppressHydrationWarning className={`${poppins.variable}`}>
       <body className="bg-ground text-ink antialiased transition-colors">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <AuthProvider>{children}</AuthProvider>

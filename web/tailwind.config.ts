@@ -12,8 +12,8 @@ const config: Config = {
         line: "var(--line)",
       },
       fontFamily: {
-        display: ["var(--font-display)", "Impact", "sans-serif"],
-        body: ["var(--font-body)", "system-ui", "sans-serif"],
+        display: ["var(--font-poppins)", "Impact", "sans-serif"],
+        body: ["var(--font-poppins)", "system-ui", "sans-serif"],
       },
       boxShadow: {
         stack: "3px 3px 0 0 var(--shadow-ink)",

@@ -507,7 +507,14 @@ function GameView({
         {isWaitingForOthers && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-ground/80 p-6 backdrop-blur-sm">
             <div className="w-full max-w-sm rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
-              <h2 className="mb-4 font-display text-2xl uppercase tracking-wide text-ink">En attente</h2>
+              <h2 className="mb-2 font-display text-2xl uppercase tracking-wide text-ink">En attente</h2>
+              
+              <div className="mb-6 mt-4 flex justify-center gap-2">
+                <div className="h-3 w-3 animate-bounce rounded-full bg-[var(--player-blue-fill)]" style={{ animationDelay: "0ms" }} />
+                <div className="h-3 w-3 animate-bounce rounded-full bg-[var(--player-red-fill)]" style={{ animationDelay: "150ms" }} />
+                <div className="h-3 w-3 animate-bounce rounded-full bg-[var(--player-green-fill)]" style={{ animationDelay: "300ms" }} />
+              </div>
+
               <p className="mb-6 font-bold text-ink/80">
                 Vos adversaires n'ont pas encore intégré la partie ou n'ont pas choisi leur couleur.
               </p>
@@ -557,8 +564,8 @@ function GameView({
             {state.players[state.currentPlayerIndex].id === currentUserId ? (
               <div className="flex items-center gap-3 rounded-full border-2 border-ink bg-surface px-6 py-3 shadow-md">
                 <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--player-yellow-fill)] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-[var(--player-yellow-fill)]"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: `var(--player-${state.players[state.currentPlayerIndex].color || "blue"}-fill)` }}></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3" style={{ backgroundColor: `var(--player-${state.players[state.currentPlayerIndex].color || "blue"}-fill)` }}></span>
                 </span>
                 <h2 className="font-display text-lg sm:text-xl font-bold uppercase tracking-wider text-ink">
                   C'est à votre tour de jouer !

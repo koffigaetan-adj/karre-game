@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
-from .models_db import User, Game, GamePlayer
+from .models_db import User, Game, GamePlayer, PushSubscription
 from .models import GameState
 
 async def get_or_create_user(db: AsyncSession, player_id: str, display_name: str, initials: str):
@@ -97,5 +97,26 @@ from sqlalchemy import delete
 
 async def clear_user_history(db: AsyncSession, user_id: str):
     stmt = delete(GamePlayer).where(GamePlayer.user_id == user_id)
+    await db.execute(stmt)
+    await db.commit()
+
+async def save_push_subscription(db: AsyncSession, user_id: str, endpoint: str, p256dh: str, auth: str):
+    result = await db.execute(select(PushSubscription).where(PushSubscription.endpoint == endpoint))
+    sub = result.scalar_one_or_none()
+    if not sub:
+        sub = PushSubscription(endpoint=endpoint, user_id=user_id, p256dh=p256dh, auth=auth)
+        db.add(sub)
+    else:
+        sub.user_id = user_id
+        sub.p256dh = p256dh
+        sub.auth = auth
+    await db.commit()
+
+async def get_push_subscriptions(db: AsyncSession, user_id: str):
+    result = await db.execute(select(PushSubscription).where(PushSubscription.user_id == user_id))
+    return result.scalars().all()
+
+async def delete_push_subscription(db: AsyncSession, endpoint: str):
+    stmt = delete(PushSubscription).where(PushSubscription.endpoint == endpoint)
     await db.execute(stmt)
     await db.commit()

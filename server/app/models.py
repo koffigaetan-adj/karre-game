@@ -63,3 +63,14 @@ class IncomingMove(BaseModel):
     type: EdgeType
     row: int
     col: int
+
+
+class PushKeys(CamelModel):
+    p256dh: str
+    auth: str
+
+
+class PushSubscriptionIn(CamelModel):
+    user_id: str
+    endpoint: str
+    keys: PushKeys

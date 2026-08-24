@@ -26,3 +26,15 @@ class GamePlayer(Base):
     user_id = Column(String, ForeignKey("users.id"), primary_key=True)
     score = Column(Integer, default=0)
     is_winner = Column(Boolean, default=False)
+
+class PushSubscription(Base):
+    """Un abonnement Web Push par appareil (un même joueur peut avoir plusieurs
+    appareils/navigateurs, donc plusieurs lignes) — sert à le notifier quand
+    c'est son tour alors qu'il n'a pas l'onglet ouvert."""
+    __tablename__ = "push_subscriptions"
+
+    endpoint = Column(String, primary_key=True)
+    user_id = Column(String, ForeignKey("users.id"), index=True)
+    p256dh = Column(String)
+    auth = Column(String)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

@@ -2,11 +2,12 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { useState, useRef, useEffect } from "react";
-import { LogOut, Moon, Sun, Music, Volume2, Pencil, History, X } from "lucide-react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { LogOut, Moon, Sun, Music, Volume2, Bell, Pencil, History, X, Trophy, Flame } from "lucide-react";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 import { useHistoryStore } from "@/lib/store/useHistoryStore";
 import { AVATAR_EMOJIS } from "@/lib/emojis";
+import { enablePushNotifications, getNotificationPermission } from "@/lib/push";
 
 export function ProfileMenu() {
   const { data: session } = useSession();
@@ -20,10 +21,13 @@ export function ProfileMenu() {
   const [isEditingInitials, setIsEditingInitials] = useState(false);
   const [initialsInput, setInitialsInput] = useState("");
   const [mounted, setMounted] = useState(false);
+  const [notifPermission, setNotifPermission] = useState<NotificationPermission | "unsupported">("default");
+  const [isSubscribing, setIsSubscribing] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
+    setNotifPermission(getNotificationPermission());
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -32,6 +36,34 @@ export function ProfileMenu() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleToggleNotifications = async () => {
+    if (notifPermission === "granted" || notifPermission === "denied" || isSubscribing) return;
+    setIsSubscribing(true);
+    await enablePushNotifications(session?.user?.email || "");
+    setNotifPermission(getNotificationPermission());
+    setIsSubscribing(false);
+  };
+
+  // Victoires totales + série de victoires en cours (la plus récente en tête),
+  // pour donner un petit truc à se chambrer entre amis dans l'historique.
+  const stats = useMemo(() => {
+    const myId = session?.user?.email;
+    if (!myId) return { wins: 0, streak: 0 };
+    let wins = 0;
+    let streak = 0;
+    let streakBroken = false;
+    for (const m of matches) {
+      const me = m.players?.find((p: any) => p.id === myId);
+      if (me?.isWinner) {
+        wins++;
+        if (!streakBroken) streak++;
+      } else if (!streakBroken) {
+        streakBroken = true;
+      }
+    }
+    return { wins, streak };
+  }, [matches, session?.user?.email]);
 
   if (!session || !mounted) return null;
 
@@ -100,6 +132,35 @@ export function ProfileMenu() {
               <div className={`absolute top-0.5 h-2 w-2 rounded-full border border-ink dark:border-transparent bg-white transition-transform ${sfxEnabled ? "left-3 translate-x-1" : "left-0.5"}`} />
             </div>
           </button>
+
+          {notifPermission !== "unsupported" && (
+            <button
+              onClick={handleToggleNotifications}
+              disabled={notifPermission === "denied" || isSubscribing}
+              className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-bold text-ink transition-colors hover:bg-[var(--ground)] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <div className="flex items-center gap-3">
+                <Bell size={18} />
+                Notifications
+              </div>
+              <div
+                className={`h-4 w-8 rounded-full border-[1.5px] border-ink dark:border-transparent transition-colors ${
+                  notifPermission === "granted" ? "bg-[var(--player-blue-fill)]" : "bg-[var(--line)]"
+                } relative`}
+              >
+                <div
+                  className={`absolute top-0.5 h-2 w-2 rounded-full border border-ink dark:border-transparent bg-white transition-transform ${
+                    notifPermission === "granted" ? "left-3 translate-x-1" : "left-0.5"
+                  }`}
+                />
+              </div>
+            </button>
+          )}
+          {notifPermission === "denied" && (
+            <p className="px-3 pb-1 text-[10px] font-medium leading-snug text-ink/50">
+              Bloquées par le navigateur — à réactiver dans ses réglages de site.
+            </p>
+          )}
 
           <div className="my-1 border-t-[1.5px] border-line" />
 
@@ -207,6 +268,20 @@ export function ProfileMenu() {
             </div>
             
             <div className="flex-1 overflow-y-auto p-4">
+              {!isLoadingHistory && matches.length > 0 && (
+                <div className="mb-4 grid grid-cols-2 gap-3">
+                  <div className="flex flex-col items-center gap-1 rounded-lg border-[1.5px] border-line bg-ground/50 py-3">
+                    <Trophy size={18} className="text-[var(--player-yellow-fill)]" />
+                    <span className="font-display text-xl text-ink">{stats.wins}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wide text-ink/50">Victoires</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-1 rounded-lg border-[1.5px] border-line bg-ground/50 py-3">
+                    <Flame size={18} className="text-[var(--player-red-fill)]" />
+                    <span className="font-display text-xl text-ink">{stats.streak}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wide text-ink/50">Série en cours</span>
+                  </div>
+                </div>
+              )}
               {isLoadingHistory ? (
                 <div className="flex h-32 items-center justify-center">
                   <div className="h-8 w-8 animate-spin rounded-full border-4 border-line border-t-ink"></div>

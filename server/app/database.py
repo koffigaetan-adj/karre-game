@@ -26,12 +26,17 @@ connect_args = {}
 # l'URL dès qu'un autre paramètre suit (ex: &channel_binding=require reste
 # collé au nom de la base, sans "?" pour le délimiter) — on parse donc
 # proprement la query string au lieu de bricoler le texte brut.
-parts = urlsplit(DATABASE_URL)
-query_params = dict(parse_qsl(parts.query))
-if query_params.pop("sslmode", None) == "require":
-    connect_args["ssl"] = "require"
-query_params.pop("channel_binding", None)
-DATABASE_URL = urlunsplit(parts._replace(query=urlencode(query_params)))
+# On ne touche à l'URL que si elle a effectivement une query string à
+# nettoyer : urlsplit/urlunsplit ne restitue pas fidèlement les URL du
+# style "sqlite+aiosqlite:///./fichier.db" (le "///" devient "/"), ce qui
+# cassait le fallback SQLite local dès que DATABASE_URL n'était pas défini.
+if "?" in DATABASE_URL:
+    parts = urlsplit(DATABASE_URL)
+    query_params = dict(parse_qsl(parts.query))
+    if query_params.pop("sslmode", None) == "require":
+        connect_args["ssl"] = "require"
+    query_params.pop("channel_binding", None)
+    DATABASE_URL = urlunsplit(parts._replace(query=urlencode(query_params)))
 
 engine = create_async_engine(DATABASE_URL, echo=False, connect_args=connect_args)
 AsyncSessionLocal = async_sessionmaker(

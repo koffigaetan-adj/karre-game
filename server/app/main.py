@@ -11,17 +11,19 @@ Lancer en local : uvicorn app.main:app --reload
 
 from __future__ import annotations
 
+import asyncio
 from datetime import datetime, timezone
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
 from .game_engine import InvalidMoveError, apply_move, create_empty_game_state
-from .models import GameState, IncomingMove, Player, ChatMessage
+from .models import GameState, IncomingMove, Player, ChatMessage, PushSubscriptionIn
 
 from contextlib import asynccontextmanager
 from .database import engine, Base, AsyncSessionLocal
-from .crud import save_game_state
+from .crud import save_game_state, save_push_subscription
+from .push import send_turn_notification, VAPID_PUBLIC_KEY
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -80,6 +82,19 @@ async def delete_history(user_id: str):
         from .crud import clear_user_history
         await clear_user_history(db, user_id)
         return {"status": "ok"}
+
+
+@app.get("/push/vapid-public-key")
+def get_vapid_public_key():
+    """Clé publique VAPID à passer à PushManager.subscribe() côté client."""
+    return {"publicKey": VAPID_PUBLIC_KEY}
+
+
+@app.post("/push/subscribe")
+async def subscribe_to_push(payload: PushSubscriptionIn):
+    async with AsyncSessionLocal() as db:
+        await save_push_subscription(db, payload.user_id, payload.endpoint, payload.keys.p256dh, payload.keys.auth)
+    return {"status": "ok"}
 
 
 @app.websocket("/ws/rooms/{room_id}")
@@ -192,6 +207,18 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
                     result = apply_move(room.state, move.type, move.row, move.col, player_id)
                     room.state = result.state
                     await room.broadcast()
+
+                    # Le tour a changé de joueur : si celui à qui c'est le tour n'a
+                    # pas l'onglet ouvert, on le notifie plutôt que de le laisser
+                    # découvrir la relance en revenant sur l'appli de lui-même.
+                    if room.state.status == "playing":
+                        next_player = room.state.players[room.state.current_player_index]
+                        if (
+                            next_player.id != player_id
+                            and not next_player.is_ai
+                            and next_player.id not in room.connections
+                        ):
+                            asyncio.create_task(send_turn_notification(next_player.id, room_id, display_name))
                 except InvalidMoveError as exc:
                     await websocket.send_json({"type": "error", "message": str(exc)})
     except WebSocketDisconnect:

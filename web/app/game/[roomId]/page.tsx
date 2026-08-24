@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, Suspense } from "react";
+import { useEffect, useMemo, useRef, useState, Suspense } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 
@@ -257,16 +257,17 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
   }
 
   return (
-    <GameView 
-      roomId={roomId} 
-      state={state} 
-      currentUserId={humanId} 
-      onPlayEdge={playEdge} 
-      error={error} 
-      isSolo={false} 
-      onQuit={handleForfeit} 
+    <GameView
+      roomId={roomId}
+      state={state}
+      currentUserId={humanId}
+      onPlayEdge={playEdge}
+      error={error}
+      isSolo={false}
+      onQuit={handleForfeit}
       onRematch={sendRematch}
       onChat={sendChat}
+      connected={connected}
     />
   );
 }
@@ -281,6 +282,7 @@ function GameView({
   onQuit,
   onRematch,
   onChat,
+  connected = true,
 }: {
   roomId: string;
   state: GameState;
@@ -291,6 +293,8 @@ function GameView({
   onQuit?: () => void;
   onRematch?: () => void;
   onChat?: (text: string) => void;
+  /** false = la connexion WebSocket est tombée pendant la partie (solo : toujours true, pas de réseau). */
+  connected?: boolean;
 }) {
   const router = useRouter();
   const statusLabel = useMemo(() => {
@@ -378,6 +382,12 @@ function GameView({
           <ProfileMenu />
         </div>
         {error && <p className="text-xs font-bold text-[var(--player-red-fill)]">{error}</p>}
+        {!connected && state.status === "playing" && (
+          <div className="flex items-center gap-2 rounded-lg border-2 border-ink bg-[var(--player-red-soft)] px-3 py-2 text-sm font-bold text-[var(--player-red-fill)]">
+            <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-[var(--player-red-fill)]" />
+            Connexion perdue avec le serveur — tentative de reconnexion…
+          </div>
+        )}
         {state.status === "finished" && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm">
             <div className="w-full max-w-sm rounded-xl border-[3px] border-ink bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
@@ -491,6 +501,13 @@ function WaitingRoom({
   const [editingInitials, setEditingInitials] = useState(false);
   const [initialsInput, setInitialsInput] = useState("");
   const isMultiplayer = state.mode === "multiplayer";
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const showToast = (message: string) => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast(message);
+    toastTimer.current = setTimeout(() => setToast(null), 2500);
+  };
 
   // En solo, on a juste 2 joueurs (human + IA). En multi, ça peut être 2 ou 4 (on autorise le lancement si >= 2).
   const canStart = allPicked && state.players.length >= 2;
@@ -521,7 +538,7 @@ function WaitingRoom({
               onClick={() => {
                 const url = window.location.origin + window.location.pathname;
                 navigator.clipboard.writeText(url);
-                alert("Lien d'invitation copié !");
+                showToast("Lien d'invitation copié !");
               }}
               className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
             >
@@ -533,7 +550,7 @@ function WaitingRoom({
                 const url = window.location.origin + window.location.pathname;
                 const text = `Salut !!\n\nJe vous invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
                 navigator.clipboard.writeText(text);
-                alert("Message d'invitation copié !");
+                showToast("Message d'invitation copié !");
               }}
               className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
             >
@@ -657,9 +674,9 @@ function WaitingRoom({
             onClick={() => {
               if (!canStart) {
                 if (state.players.length < 2) {
-                  alert("Vos adversaires n'ont pas encore rejoint la partie !");
+                  showToast("Vos adversaires n'ont pas encore rejoint la partie !");
                 } else {
-                  alert("Tout le monde n'a pas encore choisi sa couleur !");
+                  showToast("Tout le monde n'a pas encore choisi sa couleur !");
                 }
                 return;
               }
@@ -681,6 +698,14 @@ function WaitingRoom({
           </p>
         )}
       </div>
+
+      {toast && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-6 z-50 flex justify-center px-6">
+          <div className="animate-toast-in rounded-lg border-2 border-ink bg-surface px-4 py-3 text-sm font-bold text-ink shadow-stack">
+            {toast}
+          </div>
+        </div>
+      )}
     </main>
   );
 }

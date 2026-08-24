@@ -83,7 +83,7 @@ export function ProfileMenu() {
               <Music size={18} />
               Musique
             </div>
-            <div className={`h-4 w-8 rounded-full border-2 border-ink transition-colors ${musicEnabled ? "bg-[var(--player-blue-fill)]" : "bg-neutral-300 dark:bg-neutral-700"} relative`}>
+            <div className={`h-4 w-8 rounded-full border-2 border-ink transition-colors ${musicEnabled ? "bg-[var(--player-blue-fill)]" : "bg-[var(--line)]"} relative`}>
               <div className={`absolute top-0.5 h-2 w-2 rounded-full border border-ink bg-white transition-transform ${musicEnabled ? "left-3 translate-x-1" : "left-0.5"}`} />
             </div>
           </button>
@@ -96,7 +96,7 @@ export function ProfileMenu() {
               <Volume2 size={18} />
               Bruitages
             </div>
-            <div className={`h-4 w-8 rounded-full border-2 border-ink transition-colors ${sfxEnabled ? "bg-[var(--player-blue-fill)]" : "bg-neutral-300 dark:bg-neutral-700"} relative`}>
+            <div className={`h-4 w-8 rounded-full border-2 border-ink transition-colors ${sfxEnabled ? "bg-[var(--player-blue-fill)]" : "bg-[var(--line)]"} relative`}>
               <div className={`absolute top-0.5 h-2 w-2 rounded-full border border-ink bg-white transition-transform ${sfxEnabled ? "left-3 translate-x-1" : "left-0.5"}`} />
             </div>
           </button>

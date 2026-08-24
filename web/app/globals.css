@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Filet de sécurité global : un enfant qui déborde (bouton non-wrappé, texte
+   trop long, etc.) ne doit jamais créer de scroll horizontal sur la page
+   entière — voir DESIGN.md / critique frontend du 2026-08-24. */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 /**
  * Système "Kraft & Counters" — voir DESIGN.md à la racine du projet.
  * Clair = jeu de société déballé en plein jour (kraft chaud).
@@ -144,4 +153,18 @@
 }
 .animate-shake {
   animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes toast-in {
+  0% {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-toast-in {
+  animation: toast-in 200ms ease-out;
 }

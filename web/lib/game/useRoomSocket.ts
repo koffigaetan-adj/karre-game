@@ -53,34 +53,60 @@ export function useRoomSocket({
     if (base.startsWith("https://")) base = base.replace("https://", "wss://");
     if (base.endsWith("/")) base = base.slice(0, -1);
     const params = new URLSearchParams({ player_id: playerId, display_name: displayName, initials, size });
+    const wsUrl = `${base}/ws/rooms/${roomId}?${params.toString()}`;
 
-    // `new WebSocket()` lève une exception SYNCHRONE (pas un event onerror) si
-    // le schéma de l'URL est invalide (ex: une faute de frappe "wws://" au
-    // lieu de "wss://" dans NEXT_PUBLIC_WS_URL) — sans ce try/catch, une seule
-    // variable d'environnement mal configurée plante toute l'application au
-    // lieu d'afficher un message d'erreur normal.
-    let ws: WebSocket;
-    try {
-      ws = new WebSocket(`${base}/ws/rooms/${roomId}?${params.toString()}`);
-    } catch {
-      setError("URL du serveur de partie invalide (NEXT_PUBLIC_WS_URL mal configurée).");
-      return;
+    // Une coupure réseau (WiFi qui saute pendant la partie) ne doit pas
+    // laisser le joueur planté devant un plateau figé sans explication —
+    // on retente une reconnexion automatique tant que le composant reste
+    // monté, plutôt que d'abandonner après le premier onclose.
+    let cancelled = false;
+    let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function connect() {
+      if (cancelled) return;
+
+      // `new WebSocket()` lève une exception SYNCHRONE (pas un event onerror)
+      // si le schéma de l'URL est invalide (ex: une faute de frappe "wws://"
+      // au lieu de "wss://" dans NEXT_PUBLIC_WS_URL) — sans ce try/catch, une
+      // seule variable d'environnement mal configurée plante toute
+      // l'application au lieu d'afficher un message d'erreur normal.
+      let ws: WebSocket;
+      try {
+        ws = new WebSocket(wsUrl);
+      } catch {
+        setError("URL du serveur de partie invalide (NEXT_PUBLIC_WS_URL mal configurée).");
+        return;
+      }
+      wsRef.current = ws;
+
+      ws.onopen = () => {
+        if (cancelled) return;
+        setConnected(true);
+        setError(null);
+      };
+      ws.onclose = () => {
+        if (cancelled) return;
+        setConnected(false);
+        reconnectTimer = setTimeout(connect, 2000);
+      };
+      ws.onerror = () => {
+        if (!cancelled) setError("Connexion perdue avec le serveur de partie.");
+      };
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data) as
+          | { type: "state"; state: GameState }
+          | { type: "error"; message: string };
+        if (data.type === "state") setState(data.state);
+        else setError(data.message);
+      };
     }
-    wsRef.current = ws;
 
-    ws.onopen = () => setConnected(true);
-    ws.onclose = () => setConnected(false);
-    ws.onerror = () => setError("Connexion perdue avec le serveur de partie.");
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data) as
-        | { type: "state"; state: GameState }
-        | { type: "error"; message: string };
-      if (data.type === "state") setState(data.state);
-      else setError(data.message);
-    };
+    connect();
 
     return () => {
-      ws.close();
+      cancelled = true;
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      wsRef.current?.close();
       wsRef.current = null;
     };
   }, [roomId, playerId, displayName, initials, enabled]);

@@ -190,6 +190,8 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
   const humanInitials = customInitials || session?.user?.initials || (humanName ? initialsFromName(humanName) : "");
   
   const size = (searchParams.get("size") as "small" | "medium" | "large") || "large";
+  
+  const [wantsToStart, setWantsToStart] = useState(false);
 
   const { state, connected, error, playEdge, selectColor, updateInitials, startGame, sendForfeit, sendRematch, sendChat } = useRoomSocket({
     roomId,
@@ -199,6 +201,18 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
     size,
     enabled: status === "authenticated" && !!humanId,
   });
+
+  // Si on est en attente du plateau et que la condition de lancement est remplie,
+  // on envoie automatiquement le signal de démarrage au serveur.
+  useEffect(() => {
+    if (wantsToStart && state?.status === "waiting") {
+      const allPicked = state.players.every(p => p.color);
+      const isFullEnough = state.players.length >= 2;
+      if (allPicked && isFullEnough) {
+        startGame();
+      }
+    }
+  }, [wantsToStart, state, startGame]);
 
   if (!humanId) {
     return (
@@ -244,14 +258,14 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
     );
   }
 
-  if (state.status === "waiting") {
+  if (state.status === "waiting" && !wantsToStart) {
     return (
       <WaitingRoom
         state={state}
         currentUserId={humanId}
         selectColor={selectColor}
         updateInitials={updateInitials}
-        startGame={startGame}
+        startGame={() => setWantsToStart(true)}
       />
     );
   }
@@ -268,6 +282,8 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
       onRematch={sendRematch}
       onChat={sendChat}
       connected={connected}
+      isWaitingForOthers={state.status === "waiting"}
+      onCancelWait={() => setWantsToStart(false)}
     />
   );
 }
@@ -283,6 +299,8 @@ function GameView({
   onRematch,
   onChat,
   connected = true,
+  isWaitingForOthers = false,
+  onCancelWait,
 }: {
   roomId: string;
   state: GameState;
@@ -293,8 +311,9 @@ function GameView({
   onQuit?: () => void;
   onRematch?: () => void;
   onChat?: (text: string) => void;
-  /** false = la connexion WebSocket est tombée pendant la partie (solo : toujours true, pas de réseau). */
   connected?: boolean;
+  isWaitingForOthers?: boolean;
+  onCancelWait?: () => void;
 }) {
   const router = useRouter();
   const statusLabel = useMemo(() => {
@@ -416,6 +435,37 @@ function GameView({
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {isWaitingForOthers && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-ground/80 p-6 backdrop-blur-sm">
+            <div className="w-full max-w-sm rounded-xl border-[3px] border-ink bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
+              <h2 className="mb-4 font-display text-2xl uppercase tracking-wide text-ink">En attente</h2>
+              <p className="mb-6 font-bold text-ink/80">
+                Vos adversaires n'ont pas encore intégré la partie ou n'ont pas choisi leur couleur.
+              </p>
+              <button
+                 onClick={onCancelWait}
+                 className="w-full rounded-lg border-2 border-ink bg-ground px-4 py-3 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
+              >
+                 Retour au salon
+              </button>
+            </div>
+          </div>
+        )}
+
+        {state.status === "playing" && (
+          <div className="mb-2 mt-2 text-center animate-in fade-in duration-500">
+            {state.players[state.currentPlayerIndex].id === currentUserId ? (
+              <h2 className="font-display text-2xl font-bold uppercase tracking-widest text-[var(--player-green-fill)] animate-pulse">
+                C'est à votre tour de jouer !
+              </h2>
+            ) : (
+              <h2 className="font-display text-lg font-bold uppercase tracking-widest text-ink/70">
+                C'est à {state.players[state.currentPlayerIndex].displayName} de jouer
+              </h2>
+            )}
           </div>
         )}
 

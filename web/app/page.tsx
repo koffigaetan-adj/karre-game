@@ -103,7 +103,7 @@ export default function LobbyPage() {
           <div className="grid gap-4 mt-2">
             <button
               onClick={startSolo}
-              className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-4 py-4 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-ink/10 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex items-center justify-between"
+              className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-4 py-4 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-yellow-fill)] to-[var(--player-orange-fill)] text-[var(--player-yellow-text)] shadow-inner">
@@ -117,7 +117,7 @@ export default function LobbyPage() {
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => createRoom(2)}
-                className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-4 py-4 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-ink/10 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-3"
+                className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-4 py-4 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-3"
               >
                 <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-blue-fill)] to-[var(--player-cyan-fill)] text-[var(--player-blue-text)] shadow-inner">
                   <Users size={24} className="group-hover:scale-110 transition-transform" />
@@ -131,7 +131,7 @@ export default function LobbyPage() {
               
               <button
                 onClick={() => createRoom(4)}
-                className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-4 py-4 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-ink/10 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-3"
+                className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-4 py-4 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-3"
               >
                 <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-green-fill)] to-[#10b981] text-[var(--player-green-text)] shadow-inner">
                   <Users size={24} className="group-hover:scale-110 transition-transform" />
@@ -152,7 +152,7 @@ export default function LobbyPage() {
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
                 placeholder="Code de partie…"
-                className="flex-1 rounded-lg border-[1.5px] border-ink-border bg-ground/40 backdrop-blur-sm px-4 py-3 text-sm font-bold text-ink outline-none placeholder:font-medium placeholder:opacity-50 focus:bg-surface/70 focus:ring-2 focus:ring-ink/20 transition-all"
+                className="flex-1 rounded-lg border-[1.5px] border-ink-border bg-transparent backdrop-blur-sm px-4 py-3 text-sm font-bold text-ink outline-none placeholder:font-medium placeholder:opacity-50 focus:bg-transparent focus:ring-2 focus:ring-ink/20 transition-all"
               />
               <button
                 onClick={joinRoom}

@@ -355,7 +355,9 @@ function usePanZoom() {
   const clampScale = (s: number) => Math.min(3, Math.max(0.6, s));
 
   const onPointerDown = (e: React.PointerEvent) => {
-    (e.target as Element).setPointerCapture?.(e.pointerId);
+    try {
+      (e.target as Element).setPointerCapture?.(e.pointerId);
+    } catch (err) {}
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.current.size === 1) {
       dragStart.current = { x: e.clientX, y: e.clientY, panX: pan.x, panY: pan.y };
@@ -384,13 +386,17 @@ function usePanZoom() {
   };
 
   const endPointer = (e: React.PointerEvent) => {
+    try {
+      (e.target as Element).releasePointerCapture?.(e.pointerId);
+    } catch (err) {}
     pointers.current.delete(e.pointerId);
     if (pointers.current.size < 2) lastDist.current = null;
     if (pointers.current.size === 0) dragStart.current = null;
   };
 
   const onWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
+    // Ne pas appeler e.preventDefault() car l'événement peut être passif,
+    // ce qui lève une exception non gérée dans React.
     setPan((p) => ({ ...p, scale: clampScale(p.scale - e.deltaY * 0.001) }));
   };
 

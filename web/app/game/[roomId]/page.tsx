@@ -257,6 +257,16 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
     }
   }, [state]);
 
+  // Doit rester AVANT les `return` anticipés ci-dessous : un Hook appelé
+  // après un retour conditionnel casse les règles de React (ordre des Hooks
+  // non constant d'un rendu à l'autre) — plantage en production confirmé sur
+  // un lien de partie déjà terminée.
+  useEffect(() => {
+    if (leavingAfterForfeit && state?.status === "finished") {
+      router.push("/");
+    }
+  }, [leavingAfterForfeit, state?.status, router]);
+
   if (isExpiredLink) {
     return (
       <main className="flex min-h-dvh flex-col items-center justify-center bg-transparent px-6 text-center text-ink transition-colors">
@@ -312,12 +322,6 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
       router.push("/");
     }
   };
-
-  useEffect(() => {
-    if (leavingAfterForfeit && state?.status === "finished") {
-      router.push("/");
-    }
-  }, [leavingAfterForfeit, state?.status, router]);
 
   if (!state) {
     return (

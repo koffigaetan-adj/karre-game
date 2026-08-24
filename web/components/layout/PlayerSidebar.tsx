@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { PLAYER_COLORS } from "@/lib/types/game";
 import type { GameState } from "@/lib/types/game";
 import { LogOut, Share2, SkipForward, RefreshCw, Send, MessageCircle, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { playChatNotification } from "@/lib/audio";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 
@@ -156,7 +157,23 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
       <div className="rounded-xl border-[1.5px] border-line bg-surface p-4 transition-colors">
         <h2 className="mb-3 font-display text-sm uppercase tracking-wide text-ink">Joueurs</h2>
         <ul className="flex flex-col gap-2">
-          {state.players.map((player, i) => {
+          {Array.from({ length: state.maxPlayers || 2 }).map((_, i) => {
+            const player = state.players[i];
+            
+            if (!player) {
+              return (
+                <li
+                  key={`empty-${i}`}
+                  className="flex items-center gap-3 rounded-lg border-[1.5px] border-dashed border-line px-2.5 py-2 opacity-50"
+                >
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-[1.5px] border-line bg-ground" />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-ink/60">En attente de joueur...</p>
+                  </div>
+                </li>
+              );
+            }
+
             const colors = player.color ? PLAYER_COLORS[player.color].light : null;
             const isTurn = state.status === "playing" && i === state.currentPlayerIndex;
             return (
@@ -179,12 +196,28 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-bold text-ink">
-                    {player.displayName}
+                    {player.id === currentUserId ? "Vous" : player.displayName}
                     {!player.connected && <span className="ml-1 text-xs font-medium opacity-60">(déconnecté)</span>}
                   </p>
+                  {state.status === "waiting" && !colors && (
+                    <p className="text-xs font-medium opacity-70 text-amber-600 dark:text-amber-400">Choix de la couleur...</p>
+                  )}
                   {isTurn && <p className="text-xs font-medium opacity-70">à son tour…</p>}
                 </div>
-                <span className="font-display text-xl tabular-nums text-ink">{player.score}</span>
+                <div className="relative font-display text-xl tabular-nums text-ink">
+                  <AnimatePresence mode="popLayout">
+                    <motion.span
+                      key={player.score}
+                      initial={{ opacity: 0, scale: 0.5, y: -20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 1.5, y: 20 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                      className="inline-block"
+                    >
+                      {player.score}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
               </li>
             );
           })}
@@ -213,7 +246,6 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
 
       <div className="mt-auto flex gap-2">
         {!isSolo && state.status === "waiting" && <ActionButton icon={<Share2 size={18} />} label="Inviter" onClick={onInvite} />}
-        {state.status !== "finished" && <ActionButton icon={<SkipForward size={18} />} label="Passer" disabled />}
         <ActionButton
           icon={<LogOut size={18} />}
           label="Quitter"

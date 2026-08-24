@@ -72,9 +72,9 @@ ROOMS: dict[str, Room] = {}
 
 
 @app.post("/rooms/{room_id}")
-def create_room(room_id: str, size: str = "large"):
+def create_room(room_id: str, size: str = "large", players: int = 2):
     """Crée un salon vide ; les joueurs le rejoignent ensuite via le WebSocket."""
-    ROOMS[room_id] = Room(create_empty_game_state(room_id, size, players=[]))
+    ROOMS[room_id] = Room(create_empty_game_state(room_id, size, players=[], max_players=players))
     return {"roomId": room_id}
 
 from .crud import get_user_history
@@ -107,7 +107,7 @@ async def subscribe_to_push(payload: PushSubscriptionIn):
 
 
 @app.websocket("/ws/rooms/{room_id}")
-async def room_socket(websocket: WebSocket, room_id: str, player_id: str, display_name: str, initials: str, size: str = "large"):
+async def room_socket(websocket: WebSocket, room_id: str, player_id: str, display_name: str, initials: str, size: str = "large", players: int = 2):
     await websocket.accept()
     
     # Vérifier si la partie est déjà terminée en base de données
@@ -119,7 +119,7 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
             await websocket.close()
             return
 
-    room = ROOMS.setdefault(room_id, Room(create_empty_game_state(room_id, size, players=[])))
+    room = ROOMS.setdefault(room_id, Room(create_empty_game_state(room_id, size, players=[], max_players=players)))
 
     if not any(p.id == player_id for p in room.state.players):
         room.state.players.append(
@@ -159,7 +159,7 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
                 if len(room.state.players) >= 2 and all(p.color for p in room.state.players):
                     old_players = room.state.players
                     old_messages = room.state.messages
-                    new_state = create_empty_game_state(room_id, room.state.size, old_players)
+                    new_state = create_empty_game_state(room_id, room.state.size, old_players, max_players=room.state.max_players)
                     new_state.messages = old_messages
                     new_state.status = "playing"
                     new_state.started_at = datetime.now(timezone.utc).isoformat()
@@ -215,7 +215,7 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
                     old_messages = room.state.messages
                     for p in old_players:
                         p.score = 0
-                    new_state = create_empty_game_state(room_id, room.state.size, old_players)
+                    new_state = create_empty_game_state(room_id, room.state.size, old_players, max_players=room.state.max_players)
                     new_state.messages = old_messages
                     new_state.status = "playing"
                     new_state.started_at = datetime.now(timezone.utc).isoformat()

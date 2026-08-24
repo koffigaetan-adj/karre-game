@@ -19,8 +19,9 @@ export function createEmptyGameState(params: {
   size?: BoardSize;
   players: Player[];
   mode?: GameState["mode"];
+  maxPlayers?: number;
 }): GameState {
-  const { roomId, mode = "multiplayer", size = "large" } = params;
+  const { roomId, mode = "multiplayer", size = "large", maxPlayers = params.players.length || 2 } = params;
   
   let rows = 17;
   let cols = 17;
@@ -98,6 +99,7 @@ export function createEmptyGameState(params: {
     size,
     rows,
     cols,
+    maxPlayers,
     players: params.players,
     currentPlayerIndex: 0,
     horizontalEdges,

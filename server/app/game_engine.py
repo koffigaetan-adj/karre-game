@@ -22,7 +22,7 @@ class InvalidMoveError(Exception):
     pass
 
 
-def create_empty_game_state(room_id: str, size: BoardSize, players: list[Player]) -> GameState:
+def create_empty_game_state(room_id: str, size: BoardSize, players: list[Player], max_players: int = 2) -> GameState:
     rows = 17
     cols = 17
     radius = 8
@@ -82,6 +82,7 @@ def create_empty_game_state(room_id: str, size: BoardSize, players: list[Player]
         size=size,
         rows=rows,
         cols=cols,
+        max_players=max_players,
         players=players,
         current_player_index=0,
         horizontal_edges=horizontal_edges,

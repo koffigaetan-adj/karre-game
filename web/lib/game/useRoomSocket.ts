@@ -10,6 +10,7 @@ interface UseRoomSocketParams {
   displayName: string;
   initials: string;
   size: "small" | "medium" | "large";
+  players?: number;
   /** Ne connecte que lorsque true (ex: attend la session Google). */
   enabled: boolean;
 }
@@ -49,6 +50,7 @@ export function useRoomSocket({
   displayName,
   initials,
   size,
+  players = 2,
   enabled,
 }: UseRoomSocketParams): UseRoomSocketResult {
   const [state, setState] = useState<GameState | null>(null);
@@ -64,7 +66,7 @@ export function useRoomSocket({
     if (base.startsWith("http://")) base = base.replace("http://", "ws://");
     if (base.startsWith("https://")) base = base.replace("https://", "wss://");
     if (base.endsWith("/")) base = base.slice(0, -1);
-    const params = new URLSearchParams({ player_id: playerId, display_name: displayName, initials, size });
+    const params = new URLSearchParams({ player_id: playerId, display_name: displayName, initials, size, players: players.toString() });
     const wsUrl = `${base}/ws/rooms/${roomId}?${params.toString()}`;
 
     // Une coupure réseau (WiFi qui saute pendant la partie) ne doit pas

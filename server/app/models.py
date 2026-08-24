@@ -47,6 +47,7 @@ class GameState(CamelModel):
     size: BoardSize = "large"
     rows: int
     cols: int
+    max_players: int = 2
     players: list[Player]
     current_player_index: int = 0
     horizontal_edges: list[list[Optional[str]]]

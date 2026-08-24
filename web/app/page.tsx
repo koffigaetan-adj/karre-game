@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { ProfileMenu } from "@/components/ProfileMenu";
-import { Info, Bot, Users, Play } from "lucide-react";
+import { HelpCircle, Bot, Users, Play } from "lucide-react";
+import { motion } from "framer-motion";
 
 /** Lobby : connexion Google (Auth.js), puis Solo / Créer une partie / Rejoindre via code. */
 export default function LobbyPage() {
@@ -40,7 +41,7 @@ export default function LobbyPage() {
           className="flex h-9 w-9 md:h-10 md:w-10 items-center justify-center rounded-full border border-ink-border bg-[var(--player-yellow-fill)] text-[var(--player-yellow-text)] shadow-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px"
           title="Règles du jeu"
         >
-          <Info size={18} className="md:w-5 md:h-5" />
+          <HelpCircle size={18} className="md:w-5 md:h-5" />
         </button>
 
         {status === "loading" ? (
@@ -58,15 +59,15 @@ export default function LobbyPage() {
       </div>
 
       {/* Hero Content */}
-      <div className="relative z-10 w-full min-w-0 max-w-lg mt-8 text-center sm:mt-0">
+      <div className="relative z-10 w-full min-w-0 max-w-md mt-8 text-center sm:mt-0">
         <div className="flex justify-center mb-4 md:mb-6">
-          <Image src="/logo-light.png" alt="Karré Logo" width={96} height={96} className="w-20 h-20 md:w-28 md:h-28 dark:hidden drop-shadow-md hover:scale-105 transition-transform duration-300" />
-          <Image src="/logo-dark.png" alt="Karré Logo" width={96} height={96} className="w-20 h-20 md:w-28 md:h-28 hidden dark:block drop-shadow-md hover:scale-105 transition-transform duration-300" />
+          <Image src="/logo-light.png" alt="Kwadra Logo" width={96} height={96} className="w-20 h-20 md:w-28 md:h-28 dark:hidden drop-shadow-md hover:scale-105 transition-transform duration-300" />
+          <Image src="/logo-dark.png" alt="Kwadra Logo" width={96} height={96} className="w-20 h-20 md:w-28 md:h-28 hidden dark:block drop-shadow-md hover:scale-105 transition-transform duration-300" />
         </div>
-        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-ink mb-2 md:mb-4 drop-shadow-sm">
+        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-ink mb-2 md:mb-3 drop-shadow-sm">
           Kwadra
         </h1>
-        <p className="text-sm sm:text-lg font-bold text-ink/80 max-w-md mx-auto">
+        <p className="text-sm sm:text-base font-bold text-ink/80 max-w-sm mx-auto">
           Redécouvrez le classique du jeu de points et carrés.
         </p>
       </div>
@@ -74,28 +75,39 @@ export default function LobbyPage() {
       {/* Main Card */}
       <div className="relative z-10 w-full min-w-0 max-w-md rounded-2xl border border-ink-border bg-surface/70 backdrop-blur-xl p-5 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300">
         <div className="mb-4 md:mb-8 text-center">
-          <h2 className="font-display text-xl md:text-2xl uppercase tracking-wide text-ink">Nouvelle partie</h2>
+          <h2 className="font-display text-lg md:text-xl uppercase tracking-wide text-ink">Nouvelle partie</h2>
         </div>
 
         <div className="grid gap-4 md:gap-6">
           {/* Size Selector */}
           <div className="flex justify-center">
-            <div className="flex flex-wrap gap-2 md:gap-3">
-              {(["small", "medium", "large", "giant"] as const).map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setSelectedSize(s)}
-                  className={`flex-1 rounded-lg border-[1.5px] px-2 py-2 md:px-4 md:py-2 text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all ${selectedSize === s
-                      ? "border-ink bg-ink text-surface shadow-stack-sm"
-                      : "text-ink/60 hover:text-ink hover:bg-ink/5"
+            <div className="inline-flex rounded-full border border-ink-border/20 bg-ground/50 p-1 backdrop-blur-sm relative">
+              {(["small", "medium", "large", "giant"] as const).map((s) => {
+                const isSelected = selectedSize === s;
+                return (
+                  <button
+                    key={s}
+                    onClick={() => setSelectedSize(s)}
+                    className={`relative rounded-full px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-[11px] font-bold uppercase tracking-widest transition-colors z-10 ${
+                      isSelected ? "text-surface" : "text-ink/60 hover:text-ink hover:bg-ink/5"
                     }`}
-                >
-                  {s === "small" && "Petite (9x9)"}
-                  {s === "medium" && "Moyenne (13x13)"}
-                  {s === "large" && "Classique (17x17)"}
-                  {s === "giant" && "Géante (21x21)"}
-                </button>
-              ))}
+                  >
+                    {isSelected && (
+                      <motion.div
+                        layoutId="active-size"
+                        className="absolute inset-0 rounded-full bg-ink shadow-md"
+                        initial={false}
+                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                        style={{ zIndex: -1 }}
+                      />
+                    )}
+                    {s === "small" && "Petite"}
+                    {s === "medium" && "Moyenne"}
+                    {s === "large" && "Classique"}
+                    {s === "giant" && "Géante (21x21)"}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -103,7 +115,7 @@ export default function LobbyPage() {
           <div className="grid gap-3 md:gap-4 mt-1 md:mt-2">
             <button
               onClick={startSolo}
-              className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex items-center justify-between"
+              className="group relative overflow-hidden rounded-xl border border-transparent bg-white/30 dark:bg-black/30 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/50 dark:hover:bg-black/50 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
                 <div className="flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-yellow-fill)] to-[var(--player-orange-fill)] text-[var(--player-yellow-text)] shadow-inner">
@@ -117,7 +129,7 @@ export default function LobbyPage() {
             <div className="grid grid-cols-2 gap-3 md:gap-4">
               <button
                 onClick={() => createRoom(2)}
-                className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-2 md:gap-3"
+                className="group relative overflow-hidden rounded-xl border border-transparent bg-white/30 dark:bg-black/30 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/50 dark:hover:bg-black/50 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-2 md:gap-3"
               >
                 <div className="relative flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-blue-fill)] to-[var(--player-cyan-fill)] text-[var(--player-blue-text)] shadow-inner">
                   <Users size={20} className="md:w-6 md:h-6 group-hover:scale-110 transition-transform" />
@@ -131,7 +143,7 @@ export default function LobbyPage() {
 
               <button
                 onClick={() => createRoom(4)}
-                className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-2 md:gap-3"
+                className="group relative overflow-hidden rounded-xl border border-transparent bg-white/30 dark:bg-black/30 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/50 dark:hover:bg-black/50 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-2 md:gap-3"
               >
                 <div className="relative flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-green-fill)] to-[#10b981] text-[var(--player-green-text)] shadow-inner">
                   <Users size={20} className="md:w-6 md:h-6 group-hover:scale-110 transition-transform" />
@@ -152,11 +164,11 @@ export default function LobbyPage() {
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
                 placeholder="Code de partie…"
-                className="flex-1 rounded-lg border-[1.5px] border-ink-border bg-transparent backdrop-blur-sm px-4 py-3 text-sm font-bold text-ink outline-none placeholder:font-medium placeholder:opacity-50 focus:bg-transparent focus:ring-2 focus:ring-ink/20 transition-all"
+                className="flex-1 rounded-xl border-[1.5px] border-ink-border/30 bg-white/30 dark:bg-black/30 px-4 py-3 text-sm font-bold text-ink outline-none placeholder:font-medium placeholder:opacity-30 placeholder:text-ink focus:border-ink/70 focus:bg-white/50 dark:focus:bg-black/50 focus:ring-4 focus:ring-ink/10 transition-all shadow-inner hover:bg-white/50 dark:hover:bg-black/50"
               />
               <button
                 onClick={joinRoom}
-                className="rounded-lg border-[1.5px] border-ink-border bg-[var(--ink)] text-surface px-6 py-3 text-sm font-bold shadow-stack-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+                className="rounded-xl border-[1.5px] border-ink-border bg-ink text-surface px-6 py-3 text-sm font-bold shadow-md transition-all hover:-translate-y-1 hover:shadow-lg active:translate-x-px active:translate-y-px"
               >
                 Rejoindre
               </button>
@@ -170,11 +182,11 @@ export default function LobbyPage() {
           <div className="w-full max-w-md rounded-xl border-2 border-ink-border bg-surface p-6 shadow-stack animate-in zoom-in-95 duration-300">
             <h2 className="mb-4 font-display text-2xl text-ink">Comment jouer ?</h2>
             <div className="space-y-4 text-sm font-medium text-ink/80">
-              <p className="flex gap-3"><span className="text-xl">📍</span> <span><strong>Le But :</strong> Conquérir le plus grand nombre de cases avant que la grille ne soit remplie.</span></p>
-              <p className="flex gap-3"><span className="text-xl">✏️</span> <span><strong>Tour de jeu :</strong> Tracez un trait (horizontal ou vertical) entre deux points.</span></p>
-              <p className="flex gap-3"><span className="text-xl">📦</span> <span><strong>Capture :</strong> Si votre trait ferme une case, elle devient vôtre (feu d'artifice à la clé !) et <strong>vous rejouez immédiatement</strong>.</span></p>
-              <p className="flex gap-3"><span className="text-xl">🤖</span> <span><strong>Solo :</strong> Affrontez notre algorithme pour vous entraîner.</span></p>
-              <p className="flex gap-3"><span className="text-xl">👥</span> <span><strong>Multijoueur :</strong> Créez un salon privé et partagez le code à vos amis pour jouer en temps réel !</span></p>
+              <p className="flex gap-3"><span className="text-xl">🎯</span> <span><strong>Le But du jeu :</strong> Conquérir le plateau en capturant plus de cases que vos adversaires.</span></p>
+              <p className="flex gap-3"><span className="text-xl">✏️</span> <span><strong>Comment jouer :</strong> À votre tour, reliez deux points voisins pour tracer un trait (horizontal ou vertical).</span></p>
+              <p className="flex gap-3"><span className="text-xl">📦</span> <span><strong>Capture :</strong> Fermez le 4ème côté d'une case pour la capturer. La main passe ensuite au joueur suivant, même si vous venez de capturer !</span></p>
+              <p className="flex gap-3"><span className="text-xl">✨</span> <span><strong>Le coup DOUBLE ! :</strong> Tracez un trait stratégique qui ferme deux cases d'un seul coup pour marquer double et déclencher l'animation spéciale !</span></p>
+              <p className="flex gap-3"><span className="text-xl">🔥</span> <span><strong>Attention aux bords :</strong> Le plateau est en forme d'arène. L'espace se réduit vite, anticipez vos coups !</span></p>
             </div>
             <button
               onClick={() => setShowInfo(false)}

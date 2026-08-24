@@ -50,6 +50,7 @@ export interface GameState {
   roomId: string;
   mode: GameMode;
   size: BoardSize;
+  maxPlayers: number;
   /** Nombre de cases en hauteur / largeur (grille logique, avant rotation visuelle) */
   rows: number;
   cols: number;

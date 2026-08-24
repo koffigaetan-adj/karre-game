@@ -51,19 +51,36 @@ export function KwadraBoard({
 
   const W = cols * CELL;
   const H = rows * CELL;
-  const padding = 36;
-  const viewBox = `${-padding} ${-padding} ${W + padding * 2} ${H + padding * 2}`;
+  // 48 ne laissait pas assez de place pour le badge "C'est à vous !" placé
+  // au-dessus/en dessous/à côté de la ligne de base (foreignObject décalé de
+  // CELL*1.5 verticalement, ou de 240 + CELL*0.8 horizontalement pour les
+  // bases gauche/droite en partie à 4) — son texte se faisait rogner pile au
+  // bord du plateau une fois celui-ci agrandi pour remplir l'écran. Les
+  // badges latéraux (gauche/droite, visibles en partie à 4 joueurs) sont
+  // bien plus larges que hauts, d'où une marge horizontale nettement plus
+  // généreuse que la verticale — la grille elle-même ne rétrécit pas, seul
+  // le canevas autour s'agrandit.
+  const paddingY = 84;
+  const paddingX = 280;
+  const viewBox = `${-paddingX} ${-paddingY} ${W + paddingX * 2} ${H + paddingY * 2}`;
+  // Le canevas n'est plus carré (marge horizontale > verticale pour les
+  // badges de tour gauche/droite) : le conteneur doit suivre le même ratio,
+  // sinon le SVG (qui préserve son propre ratio par défaut) serait mis à
+  // l'échelle par sa dimension la plus contraignante et le losange
+  // rétrécirait pour compenser — l'inverse de ce qu'on veut.
+  const boardAspectRatio = (W + paddingX * 2) / (H + paddingY * 2);
 
   const currentPlayer = state.players[state.currentPlayerIndex];
   const isMyTurn = interactive && (!currentUserId || currentPlayer?.id === currentUserId);
   const previewColor = currentPlayer?.color ? PLAYER_COLORS[currentPlayer.color].light.fill : "var(--ink)";
+  
+  const remoteHoverColor = "rgba(150, 150, 150, 0.8)"; // Toujours gris pour les adversaires
 
-  const remoteHoverPlayer = remoteHover ? state.players.find((p) => p.id === remoteHover.playerId) : null;
-  const remoteHoverColor = remoteHoverPlayer?.color ? PLAYER_COLORS[remoteHoverPlayer.color].light.fill : null;
 
   const [hoveredEdge, setHoveredEdge] = useState<string | null>(null);
   const [justCaptured, setJustCaptured] = useState<Set<string>>(new Set());
   const [isShaking, setIsShaking] = useState(false);
+  const [showDouble, setShowDouble] = useState(false);
   const prevBoxesRef = useRef(state.boxes);
   const { sfxEnabled } = useSettingsStore();
 
@@ -102,6 +119,11 @@ export function KwadraBoard({
           zIndex: 100,
         });
       });
+
+      if (changed.size >= 2) {
+        setShowDouble(true);
+        setTimeout(() => setShowDouble(false), 2000);
+      }
 
       const t = setTimeout(() => setJustCaptured(new Set()), 420);
       prevBoxesRef.current = state.boxes;
@@ -153,10 +175,10 @@ export function KwadraBoard({
   }, [isPlaying, state.currentPlayerIndex, state.players.length, rows, cols, radius]);
 
   return (
-    <div className={`relative w-full min-w-0 select-none ${className} ${isShaking ? "animate-shake" : ""}`}>
+    <div className={`relative h-full w-full min-w-0 select-none ${className} ${isShaking ? "animate-shake" : ""}`}>
       <div
-        className="w-full min-w-0 overflow-hidden rounded-xl border border-ink-border bg-surface shadow-stack touch-none transition-colors"
-        style={{ aspectRatio: "1 / 1" }}
+        className="mx-auto h-full max-h-full w-full max-w-full min-w-0 overflow-hidden rounded-xl border border-ink-border bg-surface shadow-stack touch-none transition-colors"
+        style={{ aspectRatio: boardAspectRatio, width: "auto" }}
         {...bind}
       >
         <div
@@ -165,10 +187,10 @@ export function KwadraBoard({
         >
           <svg viewBox={viewBox} className="h-full w-full">
             <rect
-              x={-padding}
-              y={-padding}
-              width={W + padding * 2}
-              height={H + padding * 2}
+              x={-paddingX}
+              y={-paddingY}
+              width={W + paddingX * 2}
+              height={H + paddingY * 2}
               fill="var(--surface)"
             />
 
@@ -194,16 +216,36 @@ export function KwadraBoard({
                 return (
                   <g key={key}>
                     {isCurrentBase && (
-                      <rect
-                        x={x + 3}
-                        y={y + 3}
-                        width={CELL - 6}
-                        height={CELL - 6}
-                        rx={4}
-                        fill={currentColorHex}
-                        className="animate-ping opacity-60"
-                        style={{ transformOrigin: `${bx}px ${by}px`, animationDuration: "2s" }}
-                      />
+                      <>
+                        <rect
+                          x={x + 3}
+                          y={y + 3}
+                          width={CELL - 6}
+                          height={CELL - 6}
+                          rx={4}
+                          fill={currentColorHex}
+                          className="animate-ping opacity-60"
+                          style={{ transformOrigin: `${bx}px ${by}px`, animationDuration: "2s" }}
+                        />
+                        <foreignObject
+                          x={col === 0 ? bx - 240 - CELL * 0.8 : col === cols - 1 ? bx + CELL * 0.8 : bx - 120}
+                          y={row === 0 ? by - CELL * 1.5 : row === rows - 1 ? by + CELL * 0.5 : by - 24}
+                          width={240}
+                          height={48}
+                          className="overflow-visible"
+                        >
+                          <div
+                            className={`flex h-full w-full items-center ${col === 0 ? "justify-end" : col === cols - 1 ? "justify-start" : "justify-center"}`}
+                          >
+                            <div
+                              className="animate-in fade-in zoom-in duration-300 rounded-full border-[3px] bg-surface px-4 py-1.5 font-display text-xs sm:text-sm font-bold uppercase tracking-widest text-ink shadow-md"
+                              style={{ borderColor: currentColorHex }}
+                            >
+                              {state.players[state.currentPlayerIndex]?.id === currentUserId ? "C'est à vous !" : `Au tour de ${state.players[state.currentPlayerIndex]?.displayName}`}
+                            </div>
+                          </div>
+                        </foreignObject>
+                      </>
                     )}
                     <rect
                       x={x + 3}
@@ -274,7 +316,15 @@ export function KwadraBoard({
                                   ? remoteHoverColor!
                                   : "var(--line)"
                         }
-                        strokeOpacity={owner === null && !(hovered && canPlay) ? (isRemoteHovered ? 0.45 : 0.7) : 1}
+                        strokeOpacity={
+                          owner !== null
+                            ? 1
+                            : hovered && canPlay
+                              ? 0.4
+                              : isRemoteHovered
+                                ? 0.6
+                                : 0.7
+                        }
                         strokeWidth={owner !== null ? 4.5 : hovered && canPlay ? 4 : isRemoteHovered ? 3 : 2}
                         strokeDasharray={owner !== null || isRemoteHovered ? undefined : "3 6"}
                         strokeLinecap="round"
@@ -338,7 +388,15 @@ export function KwadraBoard({
                                   ? remoteHoverColor!
                                   : "var(--line)"
                         }
-                        strokeOpacity={owner === null && !(hovered && canPlay) ? (isRemoteHovered ? 0.45 : 0.7) : 1}
+                        strokeOpacity={
+                          owner !== null
+                            ? 1
+                            : hovered && canPlay
+                              ? 0.4
+                              : isRemoteHovered
+                                ? 0.6
+                                : 0.7
+                        }
                         strokeWidth={owner !== null ? 4.5 : hovered && canPlay ? 4 : isRemoteHovered ? 3 : 2}
                         strokeDasharray={owner !== null || isRemoteHovered ? undefined : "3 6"}
                         strokeLinecap="round"
@@ -399,6 +457,14 @@ export function KwadraBoard({
         <ZoomButton label="−" onClick={zoomOut} />
         <ZoomButton label="⤾" onClick={reset} />
       </div>
+
+      {showDouble && (
+        <div className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center">
+          <div className="animate-in zoom-in spin-in-12 duration-500 font-display text-5xl md:text-6xl font-black italic tracking-widest text-transparent bg-clip-text bg-gradient-to-br from-yellow-400 to-red-500 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]">
+            DOUBLE !
+          </div>
+        </div>
+      )}
     </div>
   );
 }

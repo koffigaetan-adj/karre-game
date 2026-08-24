@@ -182,7 +182,7 @@ export function KarreBoard({
                           dominantBaseline="central"
                           fontSize={CELL * 0.34}
                           fill={colors.light.text}
-                          style={{ fontFamily: "var(--font-display)", letterSpacing: "0.02em" }}
+                          style={{ fontFamily: "var(--font-body)", fontWeight: "bold" }}
                         >
                           {player?.initials}
                         </text>

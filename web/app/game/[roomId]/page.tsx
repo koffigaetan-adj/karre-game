@@ -17,22 +17,11 @@ import { playMusic, stopMusic, setMusicSpeed } from "@/lib/audio";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 import { useHistoryStore } from "@/lib/store/useHistoryStore";
 import { primeAudio } from "@/lib/sound";
-import { Pencil, ArrowLeft, Share2 } from "lucide-react";
+import { Pencil, ArrowLeft, Share2, Copy, Link2, MessageCircle, Mail } from "lucide-react";
 
 const BOT_ID = "bot";
 const BOT_MOVE_DELAY_MS = 600;
 
-/** Partage le lien d'invitation du salon (feuille de partage native si dispo, sinon presse-papier). */
-function shareInvite(roomId: string) {
-  const url = window.location.href;
-  const text = `Je vous invite à me rejoindre pour une partie de Karre Game's avec le code ${roomId} ou depuis ce lien : ${url}\nSalut !!\n\nÀ très bientôt`;
-  if (navigator.share) {
-    navigator.share({ title: "Karre Game's", text }).catch(() => {});
-  } else {
-    navigator.clipboard.writeText(text);
-    alert("Lien d'invitation copié dans le presse-papier !");
-  }
-}
 
 export default function GamePage({ params }: { params: { roomId: string } }) {
   return (
@@ -373,7 +362,6 @@ function GameView({
         onQuit={onQuit || (() => router.push("/"))} 
         onRematch={onRematch}
         onChat={onChat}
-        onInvite={() => shareInvite(roomId)}
         isSolo={isSolo} 
         currentUserId={currentUserId}
         className="w-full lg:w-72" 
@@ -468,13 +456,52 @@ function WaitingRoom({
       </div>
 
       {isMultiplayer && (
-        <button
-          onClick={() => shareInvite(state.roomId)}
-          className="flex items-center gap-2 rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-6 py-3 font-display text-sm text-[var(--player-blue-text)] shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
-        >
-          <Share2 size={18} />
-          Inviter des amis
-        </button>
+        <div className="flex flex-col items-center gap-4">
+          <p className="font-bold text-sm opacity-60">Inviter des amis :</p>
+          <div className="flex flex-wrap justify-center gap-3 max-w-sm">
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                alert("Lien d'invitation copié !");
+              }}
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
+            >
+              <Link2 size={16} />
+              Copier le lien
+            </button>
+            <button
+              onClick={() => {
+                const text = `Je t'invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${window.location.href}\n\nÀ très bientôt !`;
+                navigator.clipboard.writeText(text);
+                alert("Message d'invitation copié !");
+              }}
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
+            >
+              <Copy size={16} />
+              Message complet
+            </button>
+            <button
+              onClick={() => {
+                const text = `Je t'invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${window.location.href}\n\nÀ très bientôt !`;
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
+              }}
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-[#25D366] px-4 py-2 text-sm font-bold text-white shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
+            >
+              <MessageCircle size={16} />
+              WhatsApp
+            </button>
+            <button
+              onClick={() => {
+                const text = `Je t'invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${window.location.href}\n\nÀ très bientôt !`;
+                window.location.href = `mailto:?subject=Invitation à jouer à Karre Game's&body=${encodeURIComponent(text)}`;
+              }}
+              className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
+            >
+              <Mail size={16} />
+              Email
+            </button>
+          </div>
+        </div>
       )}
 
       <div className="flex flex-wrap justify-center gap-6">
@@ -570,7 +597,7 @@ function WaitingRoom({
               primeAudio();
               startGame();
             }}
-            className="rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-8 py-4 font-display text-lg text-[var(--player-blue-text)] shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
+            className="rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-8 py-4 font-bold text-xl text-[var(--player-blue-text)] shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
           >
             Lancer la partie
           </button>

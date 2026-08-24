@@ -14,7 +14,7 @@ import type { RemoteHover } from "@/lib/game/useRoomSocket";
 import { initialsFromName, PLAYER_COLOR_ORDER, PLAYER_COLORS } from "@/lib/types/game";
 import type { EdgeType, GameState, PlayerColor } from "@/lib/types/game";
 import { ProfileMenu } from "@/components/ProfileMenu";
-import { playMusic, stopMusic, setMusicSpeed, primeAudio } from "@/lib/audio";
+import { playMusic, stopMusic, setMusicSpeed, primeAudio, playCountdownTick, playCountdownGo, playGameOver } from "@/lib/audio";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 import { useHistoryStore } from "@/lib/store/useHistoryStore";
 import { Pencil, ArrowLeft, Share2, Copy, Link2, MessageCircle, Mail } from "lucide-react";
@@ -365,10 +365,10 @@ function GameView({
     return `Tour de ${state.players[state.currentPlayerIndex].displayName}`;
   }, [state]);
 
-  const { musicEnabled } = useSettingsStore();
+  const { musicEnabled, sfxEnabled } = useSettingsStore();
   const { addMatch } = useHistoryStore();
 
-  // Enregistrement de l'historique quand la partie se termine
+  // Enregistrement de l'historique + son quand la partie se termine
   useEffect(() => {
     if (state.status === "finished") {
       addMatch({
@@ -384,8 +384,32 @@ function GameView({
           isWinner: p.id === state.winnerId,
         })),
       });
+      playGameOver(sfxEnabled);
     }
-  }, [state.status, state.winnerId, state.players, roomId, addMatch]);
+  }, [state.status, state.winnerId, state.players, roomId, addMatch, sfxEnabled]);
+
+  // Décompte "3, 2, 1, GO !" à chaque (re)démarrage de partie (début ou revanche).
+  const [countdown, setCountdown] = useState<number | "GO" | null>(null);
+  const prevStatusRef = useRef(state.status);
+  useEffect(() => {
+    if (prevStatusRef.current !== "playing" && state.status === "playing") {
+      setCountdown(3);
+    }
+    prevStatusRef.current = state.status;
+  }, [state.status]);
+
+  useEffect(() => {
+    if (countdown === null) return;
+    if (countdown === "GO") {
+      playCountdownGo(sfxEnabled);
+      const t = setTimeout(() => setCountdown(null), 650);
+      return () => clearTimeout(t);
+    }
+    playCountdownTick(sfxEnabled);
+    const t = setTimeout(() => setCountdown(countdown > 1 ? countdown - 1 : "GO"), 700);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [countdown]);
 
   // Gestion de la musique avec déblocage au premier clic
   useEffect(() => {
@@ -499,8 +523,19 @@ function GameView({
           </div>
         )}
 
-        {state.status === "playing" && (
-          <div className="mb-2 mt-2 text-center animate-in fade-in duration-500">
+        {countdown !== null && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 backdrop-blur-sm">
+            <span
+              key={countdown}
+              className="animate-countdown-pop font-display text-8xl font-black text-white drop-shadow-lg sm:text-9xl"
+            >
+              {countdown}
+            </span>
+          </div>
+        )}
+
+        {state.status === "playing" && countdown === null && (
+          <div key={state.currentPlayerIndex} className="animate-turn-pop mb-2 mt-2 text-center">
             {state.players[state.currentPlayerIndex].id === currentUserId ? (
               <h2 className="font-display text-2xl font-bold uppercase tracking-widest text-[var(--player-green-fill)] animate-pulse">
                 C'est à votre tour de jouer !

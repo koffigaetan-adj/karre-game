@@ -69,6 +69,79 @@ export function playCapture(enabled: boolean) {
 }
 
 /** Son de clic façon "bloop" (rebond) au lieu du bip robotique */
+/** Petit "tic" neutre pour chaque chiffre du décompte 3-2-1. */
+export function playCountdownTick(enabled: boolean) {
+  if (!enabled) return;
+  const ctx = ensureContext();
+  if (!ctx) return;
+  resumeIfNeeded(ctx, () => {
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(520, now);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.14, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.12);
+  });
+}
+
+/** Note plus haute et plus franche pour le "GO !" qui conclut le décompte. */
+export function playCountdownGo(enabled: boolean) {
+  if (!enabled) return;
+  const ctx = ensureContext();
+  if (!ctx) return;
+  resumeIfNeeded(ctx, () => {
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(880, now);
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.22, now + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.32);
+  });
+}
+
+/** Petit arpège conclusif (4 notes montantes) joué une fois la partie terminée. */
+export function playGameOver(enabled: boolean) {
+  if (!enabled) return;
+  const ctx = ensureContext();
+  if (!ctx) return;
+  resumeIfNeeded(ctx, () => {
+    const now = ctx.currentTime;
+    const notes = [523.25, 659.25, 783.99, 1046.5]; // Do5, Mi5, Sol5, Do6
+    notes.forEach((freq, i) => {
+      const start = now + i * 0.11;
+      const osc = ctx.createOscillator();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, start);
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.18, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.5);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.55);
+    });
+  });
+}
+
 export function playClick(enabled: boolean) {
   if (!enabled) return;
   const ctx = ensureContext();

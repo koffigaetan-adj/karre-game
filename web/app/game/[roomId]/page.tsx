@@ -192,6 +192,8 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
   const size = (searchParams.get("size") as "small" | "medium" | "large") || "large";
   
   const [wantsToStart, setWantsToStart] = useState(false);
+  const isInitialLoad = useRef(true);
+  const [isExpiredLink, setIsExpiredLink] = useState(false);
 
   const {
     state,
@@ -227,6 +229,28 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
       }
     }
   }, [wantsToStart, state, startGame]);
+
+  // Vérifie si le lien a expiré (si la partie est DÉJÀ terminée au moment où on la charge)
+  useEffect(() => {
+    if (state && isInitialLoad.current) {
+      isInitialLoad.current = false;
+      if (state.status === "finished") {
+        setIsExpiredLink(true);
+      }
+    }
+  }, [state]);
+
+  if (isExpiredLink) {
+    return (
+      <main className="flex min-h-dvh flex-col items-center justify-center bg-ground px-6 text-center text-ink transition-colors">
+        <h2 className="mb-4 font-display text-4xl uppercase text-[var(--player-red-fill)]">Lien expiré</h2>
+        <p className="mb-8 font-bold text-ink/70">Cette partie est déjà terminée ou a été abandonnée.</p>
+        <button onClick={() => router.push("/")} className="rounded-full border-[1.5px] border-ink bg-surface px-6 py-3 font-bold text-ink shadow-stack transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px">
+          Retour à l'accueil
+        </button>
+      </main>
+    );
+  }
 
   if (!humanId) {
     return (
@@ -406,7 +430,7 @@ function GameView({
   }, [state.boxes, state.rows, state.cols, musicEnabled]);
 
   return (
-    <main className="flex min-h-dvh flex-col gap-4 bg-ground p-4 transition-colors lg:flex-row lg:p-8">
+    <main className="flex min-h-dvh flex-col gap-4 bg-ground p-4 transition-colors lg:flex-row lg:p-8 scrollbar-none">
       <div className="flex min-w-0 flex-1 flex-col gap-3">
         <div className="flex items-center justify-between">
           <div>

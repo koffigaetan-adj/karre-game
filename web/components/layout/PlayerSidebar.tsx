@@ -109,7 +109,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
 
           {isChatOpen && (
             <div className="flex flex-col border-t-[1.5px] border-line">
-              <div className="flex h-64 flex-col gap-2 overflow-y-auto p-3 text-sm scrollbar-thin scrollbar-thumb-ink/20 scrollbar-track-transparent sm:h-72">
+              <div className="flex h-64 flex-col gap-2 overflow-y-auto p-3 text-sm scrollbar-none sm:h-72">
                 {!state.messages || state.messages.length === 0 ? (
                   <p className="m-auto max-w-[80%] text-center text-xs font-medium text-ink/40">
                     Aucun message pour l'instant.

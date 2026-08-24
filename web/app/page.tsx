@@ -42,7 +42,7 @@ export default function LobbyPage() {
       </div>
 
       {/* Header Profile / Rules */}
-      <div className="absolute right-6 top-6 z-10 flex items-center gap-4">
+      <div className="absolute right-6 top-6 z-50 flex items-center gap-4">
         <button
           onClick={() => setShowInfo(true)}
           className="flex h-10 w-10 items-center justify-center rounded-full border border-ink bg-[var(--player-yellow-fill)] text-[var(--player-yellow-text)] shadow-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px"

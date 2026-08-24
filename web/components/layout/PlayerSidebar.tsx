@@ -82,6 +82,77 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
   };
   return (
     <aside className={`flex flex-col gap-4 ${className}`}>
+      {/* CHAT — carte repliable en haut de la sidebar, jamais par-dessus le plateau */}
+      {!isSolo && state.status !== "waiting" && (
+        <div className="flex flex-col overflow-hidden rounded-xl border-[1.5px] border-line bg-surface transition-colors">
+          <button
+            type="button"
+            onClick={() => setIsChatOpen((o) => !o)}
+            className="flex items-center justify-between gap-2 px-4 py-3 text-left"
+            aria-expanded={isChatOpen}
+          >
+            <span className="flex items-center gap-2">
+              <MessageCircle size={16} className="text-ink/50" />
+              <span className="font-display text-sm uppercase tracking-wide text-ink">Chat</span>
+              {!isChatOpen && unreadCount > 0 && (
+                <span
+                  className={`flex h-5 min-w-[20px] items-center justify-center rounded-full border-[1.5px] border-ink bg-[var(--player-red-fill)] px-1 text-[11px] font-bold text-[var(--player-red-text)] ${
+                    bubblePulse ? "animate-bubble-pop" : ""
+                  }`}
+                >
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </span>
+            <ChevronDown size={16} className={`text-ink/40 transition-transform ${isChatOpen ? "rotate-180" : ""}`} />
+          </button>
+
+          {isChatOpen && (
+            <div className="flex flex-col border-t-[1.5px] border-line">
+              <div className="flex h-64 flex-col gap-2 overflow-y-auto p-3 text-sm scrollbar-thin scrollbar-thumb-ink/20 scrollbar-track-transparent sm:h-72">
+                {!state.messages || state.messages.length === 0 ? (
+                  <p className="m-auto max-w-[80%] text-center text-xs font-medium text-ink/40">
+                    Aucun message pour l'instant.
+                    <br />
+                    Dites bonjour !
+                  </p>
+                ) : (
+                  state.messages.map((msg, idx) => {
+                    const isMe = msg.senderId === currentUserId;
+                    return (
+                      <div key={idx} className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
+                        <span className="text-[10px] font-bold opacity-50 mb-0.5">{msg.senderName}</span>
+                        <div className={`px-2 py-1.5 rounded-lg max-w-[90%] break-words ${isMe ? "bg-ink text-surface rounded-br-none" : "bg-ground border border-line rounded-bl-none text-ink"}`}>
+                          {msg.text}
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+                <div ref={chatEndRef} />
+              </div>
+
+              <form onSubmit={handleChatSubmit} className="flex gap-2 border-t-[1.5px] border-line p-3">
+                <input
+                  type="text"
+                  value={chatText}
+                  onChange={(e) => setChatText(e.target.value)}
+                  placeholder="Message..."
+                  className="flex-1 rounded-lg border-[1.5px] border-line bg-ground px-3 py-2.5 text-sm outline-none focus:border-ink sm:py-3 sm:text-base"
+                />
+                <button
+                  type="submit"
+                  disabled={!chatText.trim()}
+                  className="flex items-center justify-center rounded-lg bg-ink px-3 text-surface disabled:opacity-50"
+                >
+                  <Send size={18} />
+                </button>
+              </form>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="rounded-xl border-[1.5px] border-line bg-surface p-4 transition-colors">
         <h2 className="mb-3 font-display text-sm uppercase tracking-wide text-ink">Joueurs</h2>
         <ul className="flex flex-col gap-2">
@@ -138,82 +209,6 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
           <RefreshCw size={20} />
           Rejouer la partie
         </button>
-      )}
-
-      {/* CHAT — bulle flottante repliable, indépendante du flux de la sidebar */}
-      {!isSolo && state.status !== "waiting" && (
-        <>
-          <button
-            type="button"
-            onClick={() => setIsChatOpen((o) => !o)}
-            className={`fixed bottom-4 right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full border-2 border-ink bg-[var(--player-blue-fill)] text-[var(--player-blue-text)] shadow-stack transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px active:shadow-stack-pressed ${bubblePulse ? "animate-bubble-pop" : ""}`}
-            aria-label={isChatOpen ? "Fermer le chat" : "Ouvrir le chat"}
-          >
-            {isChatOpen ? <X size={22} /> : <MessageCircle size={22} />}
-            {!isChatOpen && unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full border-2 border-ink bg-[var(--player-red-fill)] px-1 text-[11px] font-bold text-[var(--player-red-text)]">
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </span>
-            )}
-          </button>
-
-          {isChatOpen && (
-            <div className="animate-menu-in fixed bottom-20 right-4 z-40 flex h-[28rem] max-h-[70vh] w-80 max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-xl border-2 border-ink bg-surface shadow-stack">
-              <div className="flex items-center justify-between border-b-[1.5px] border-line px-4 py-3">
-                <h2 className="font-display text-sm uppercase tracking-wide text-ink">Chat</h2>
-                <button
-                  type="button"
-                  onClick={() => setIsChatOpen(false)}
-                  className="rounded-md p-1 text-ink/50 transition-colors hover:bg-ground hover:text-ink"
-                  aria-label="Fermer le chat"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-
-              <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-3 text-sm scrollbar-thin scrollbar-thumb-ink/20 scrollbar-track-transparent">
-                {!state.messages || state.messages.length === 0 ? (
-                  <p className="m-auto max-w-[80%] text-center text-xs font-medium text-ink/40">
-                    Aucun message pour l'instant.
-                    <br />
-                    Dites bonjour !
-                  </p>
-                ) : (
-                  state.messages.map((msg, idx) => {
-                    const isMe = msg.senderId === currentUserId;
-                    return (
-                      <div key={idx} className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
-                        <span className="text-[10px] font-bold opacity-50 mb-0.5">{msg.senderName}</span>
-                        <div className={`px-2 py-1.5 rounded-lg max-w-[90%] break-words ${isMe ? "bg-ink text-surface rounded-br-none" : "bg-ground border border-line rounded-bl-none text-ink"}`}>
-                          {msg.text}
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-                <div ref={chatEndRef} />
-              </div>
-
-              <form onSubmit={handleChatSubmit} className="flex gap-2 border-t-[1.5px] border-line p-3">
-                <input
-                  type="text"
-                  value={chatText}
-                  onChange={(e) => setChatText(e.target.value)}
-                  placeholder="Message..."
-                  autoFocus
-                  className="flex-1 rounded-lg border-[1.5px] border-line bg-ground px-3 py-2.5 text-sm outline-none focus:border-ink sm:py-3 sm:text-base"
-                />
-                <button
-                  type="submit"
-                  disabled={!chatText.trim()}
-                  className="flex items-center justify-center rounded-lg bg-ink px-3 text-surface disabled:opacity-50"
-                >
-                  <Send size={18} />
-                </button>
-              </form>
-            </div>
-          )}
-        </>
       )}
 
       <div className="mt-auto flex gap-2">

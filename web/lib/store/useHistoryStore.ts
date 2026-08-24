@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { safeStorage } from "./safeStorage";
 
 export interface MatchRecord {
   id: string; // roomId
@@ -36,6 +37,7 @@ export const useHistoryStore = create<HistoryState>()(
     }),
     {
       name: "karre-history",
+      storage: createJSONStorage(() => safeStorage),
     }
   )
 );

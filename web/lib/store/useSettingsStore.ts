@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { safeStorage } from "./safeStorage";
 
 interface SettingsState {
   musicEnabled: boolean;
@@ -22,6 +23,7 @@ export const useSettingsStore = create<SettingsState>()(
     }),
     {
       name: "karre-settings",
+      storage: createJSONStorage(() => safeStorage),
     }
   )
 );

@@ -24,6 +24,9 @@ body {
     --surface: #ffffff;
     --ink: #1a1c1f;
     --line: #d1d5db;
+    /* Couleur des bordures "ink" — identique à --ink en clair (encre nette sur
+       fond clair) ; distincte en sombre pour ne pas reprendre le blanc du texte. */
+    --ink-border: var(--ink);
     --shadow-ink: rgba(20, 22, 26, 0.1);
 
     /* Couleurs plus douces et pastel pour le mode clair */
@@ -73,6 +76,10 @@ body {
     --surface: #1e2024;
     --ink: #f8fafc;
     --line: #33373d;
+    /* Gris moyen plutôt que le blanc quasi-pur de --ink : un contour de bouton
+       n'a pas besoin d'être aussi lumineux que du texte, et un blanc franc sur
+       fond sombre "brûle" visuellement — voir retour du 2026-08-24. */
+    --ink-border: #6b7280;
     --shadow-ink: rgba(0, 0, 0, 0.5);
 
     /* Couleurs vives mais adaptées au mode sombre */

@@ -10,6 +10,7 @@ const config: Config = {
         surface: "var(--surface)",
         ink: "var(--ink)",
         line: "var(--line)",
+        "ink-border": "var(--ink-border)",
       },
       fontFamily: {
         display: ["var(--font-poppins)", "Impact", "sans-serif"],

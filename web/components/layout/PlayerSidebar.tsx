@@ -96,7 +96,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
               <span className="font-display text-sm uppercase tracking-wide text-ink">Chat</span>
               {!isChatOpen && unreadCount > 0 && (
                 <span
-                  className={`flex h-5 min-w-[20px] items-center justify-center rounded-full border-[1.5px] border-ink bg-[var(--player-red-fill)] px-1 text-[11px] font-bold text-[var(--player-red-text)] ${
+                  className={`flex h-5 min-w-[20px] items-center justify-center rounded-full border-[1.5px] border-ink-border bg-[var(--player-red-fill)] px-1 text-[11px] font-bold text-[var(--player-red-text)] ${
                     bubblePulse ? "animate-bubble-pop" : ""
                   }`}
                 >
@@ -138,7 +138,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
                   value={chatText}
                   onChange={(e) => setChatText(e.target.value)}
                   placeholder="Message..."
-                  className="flex-1 rounded-lg border-[1.5px] border-line bg-ground px-3 py-2.5 text-sm outline-none focus:border-ink sm:py-3 sm:text-base"
+                  className="flex-1 rounded-lg border-[1.5px] border-line bg-ground px-3 py-2.5 text-sm outline-none focus:border-ink-border sm:py-3 sm:text-base"
                 />
                 <button
                   type="submit"
@@ -163,7 +163,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
               <li
                 key={player.id}
                 className={`flex items-center gap-3 rounded-lg border-[1.5px] px-2.5 py-2 transition-all ${
-                  isTurn ? "border-ink shadow-stack-sm" : "border-transparent"
+                  isTurn ? "border-ink-border shadow-stack-sm" : "border-transparent"
                 }`}
                 style={{ background: isTurn && colors ? colors.soft : "transparent" }}
               >
@@ -192,7 +192,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
       </div>
 
       {state.status === "finished" && (
-        <div className="rounded-xl border-[1.5px] border-ink bg-surface p-4 shadow-stack-sm">
+        <div className="rounded-xl border-[1.5px] border-ink-border bg-surface p-4 shadow-stack-sm">
           <p className="font-display text-lg text-ink">
             {state.winnerId
               ? `Vainqueur : ${state.players.find((p) => p.id === state.winnerId)?.displayName}`
@@ -204,7 +204,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
       {state.status === "finished" && onRematch && (
         <button
           onClick={onRematch}
-          className="flex items-center justify-center gap-2 rounded-xl border-[1.5px] border-ink bg-[var(--player-blue-fill)] px-4 py-3 font-display text-lg text-surface shadow-stack active:translate-x-px active:translate-y-px active:shadow-stack-pressed transition-all"
+          className="flex items-center justify-center gap-2 rounded-xl border-[1.5px] border-ink-border bg-[var(--player-blue-fill)] px-4 py-3 font-display text-lg text-surface shadow-stack active:translate-x-px active:translate-y-px active:shadow-stack-pressed transition-all"
         >
           <RefreshCw size={20} />
           Rejouer la partie
@@ -231,7 +231,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
       {/* Alerte de confirmation pour quitter */}
       {showQuitConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-xl border-2 border-ink bg-surface p-6 shadow-stack text-center">
+          <div className="w-full max-w-sm rounded-xl border-2 border-ink-border bg-surface p-6 shadow-stack text-center">
             <h3 className="font-display text-xl text-[var(--player-red-fill)] mb-2">Attention !</h3>
             <p className="text-sm font-bold text-ink/80 mb-6">
               Êtes-vous sûr de vouloir quitter la partie ? Si vous quittez maintenant, vous serez déclaré perdant par forfait.
@@ -239,7 +239,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
             <div className="flex gap-3">
               <button
                 onClick={() => setShowQuitConfirm(false)}
-                className="flex-1 rounded-lg border-[1.5px] border-ink bg-ground px-4 py-2 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
+                className="flex-1 rounded-lg border-[1.5px] border-ink-border bg-ground px-4 py-2 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
               >
                 Annuler
               </button>
@@ -248,7 +248,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
                   setShowQuitConfirm(false);
                   onQuit?.();
                 }}
-                className="flex-1 rounded-lg border-[1.5px] border-ink bg-[var(--player-red-fill)] px-4 py-2 font-bold text-surface shadow-stack-sm active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+                className="flex-1 rounded-lg border-[1.5px] border-ink-border bg-[var(--player-red-fill)] px-4 py-2 font-bold text-surface shadow-stack-sm active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
               >
                 Abandonner
               </button>
@@ -279,7 +279,7 @@ function ActionButton({
       onClick={onClick}
       disabled={disabled}
       className={`flex flex-1 flex-col items-center gap-1 rounded-lg border-[1.5px] px-3 py-2 text-xs font-bold shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none ${
-        variant === "danger" ? "border-ink bg-surface text-[var(--player-red-fill)]" : "border-ink bg-surface text-ink"
+        variant === "danger" ? "border-ink-border bg-surface text-[var(--player-red-fill)]" : "border-ink-border bg-surface text-ink"
       }`}
     >
       {icon}

@@ -32,7 +32,7 @@ export default function LobbyPage() {
   const joinRoom = () => requireAuth(() => joinCode && router.push(`/game/${joinCode}?mode=join`));
 
   return (
-    <main className="relative flex min-h-dvh flex-col items-center justify-center gap-10 overflow-x-hidden bg-ground px-6 py-12 text-ink transition-colors">
+    <main className="relative flex min-h-dvh flex-col items-center justify-center gap-10 overflow-x-hidden bg-transparent px-6 py-12 text-ink transition-colors">
       {/* Header Profile / Rules */}
       <div className="absolute right-6 top-6 z-50 flex items-center gap-4">
         <button

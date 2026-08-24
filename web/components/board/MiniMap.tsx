@@ -22,7 +22,7 @@ export function MiniMap({ state, className = "" }: MiniMapProps) {
   const viewBox = `${-pad} ${-pad} ${W + pad * 2} ${H + pad * 2}`;
 
   return (
-    <div className={`rounded-lg border border-ink bg-surface p-1.5 shadow-stack-sm transition-colors ${className}`}>
+    <div className={`rounded-lg border border-ink-border bg-surface p-1.5 shadow-stack-sm transition-colors ${className}`}>
       <svg viewBox={viewBox} className="h-16 w-16">
         {state.boxes.map((r, row) =>
           r.map((owner, col) => {

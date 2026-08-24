@@ -138,7 +138,7 @@ export function KarreBoard({
   return (
     <div className={`relative w-full min-w-0 select-none ${className} ${isShaking ? "animate-shake" : ""}`}>
       <div
-        className="w-full min-w-0 overflow-hidden rounded-xl border border-ink bg-surface shadow-stack touch-none transition-colors"
+        className="w-full min-w-0 overflow-hidden rounded-xl border border-ink-border bg-surface shadow-stack touch-none transition-colors"
         style={{ aspectRatio: "1 / 1" }}
         {...bind}
       >
@@ -373,7 +373,7 @@ function ZoomButton({ label, onClick }: { label: string; onClick: () => void }) 
     <button
       type="button"
       onClick={onClick}
-      className="flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-ink bg-surface font-display text-lg text-ink shadow-stack-sm transition-transform active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+      className="flex h-10 w-10 items-center justify-center rounded-full border-[1.5px] border-ink-border bg-surface font-display text-lg text-ink shadow-stack-sm transition-transform active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
     >
       {label}
     </button>

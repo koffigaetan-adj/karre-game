@@ -256,7 +256,7 @@ export function ProfileMenu() {
                       }).catch((err) => console.error("Erreur suppression historique:", err));
                     }
                   }}
-                  className="w-full rounded-lg border-[1.5px] border-ink dark:border-transparent bg-[var(--player-red-soft)] px-4 py-2 text-sm font-bold text-[var(--player-red-text)] transition-all hover:opacity-80 active:translate-x-px active:translate-y-px"
+                  className="w-full rounded-lg bg-[var(--player-red-fill)] px-4 py-3 text-sm font-bold text-white shadow-sm transition-all hover:opacity-90 hover:shadow-md hover:-translate-y-0.5 active:translate-x-px active:translate-y-px"
                 >
                   Effacer l'historique
                 </button>

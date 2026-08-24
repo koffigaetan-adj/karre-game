@@ -187,9 +187,9 @@ function SoloGame({ roomId }: { roomId: string }) {
       state={state}
       currentUserId={humanId}
       onPlayEdge={handlePlayEdge}
-      isSolo={true} 
-      onQuit={handleForfeit} 
-      onRematch={handleRematch} 
+      isSolo={true}
+      onQuit={handleForfeit}
+      onRematch={handleRematch}
     />
   );
 }
@@ -204,9 +204,9 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
   const humanId = session?.user?.email ?? "";
   const humanName = session?.user?.name ?? "";
   const humanInitials = customInitials || session?.user?.initials || (humanName ? initialsFromName(humanName) : "");
-  
+
   const size = (searchParams.get("size") as "small" | "medium" | "large") || "large";
-  
+
   const [wantsToStart, setWantsToStart] = useState(false);
   const isInitialLoad = useRef(true);
   const [isExpiredLink, setIsExpiredLink] = useState(false);
@@ -514,10 +514,10 @@ function GameView({
             <div className="w-full max-w-sm rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
               <h2 className="mb-4 font-display text-3xl uppercase tracking-wide text-ink">Partie terminée</h2>
               <p className="mb-6 font-bold text-lg text-ink/80">
-                {state.winnerId 
-                  ? (state.winnerId === currentUserId 
-                      ? "🎉 Victoire ! Vous avez gagné !" 
-                      : `Le vainqueur est ${state.players.find(p => p.id === state.winnerId)?.displayName || "un adversaire"}.`)
+                {state.winnerId
+                  ? (state.winnerId === currentUserId
+                    ? "🎉 Victoire ! Vous avez gagné !"
+                    : `Le vainqueur est ${state.players.find(p => p.id === state.winnerId)?.displayName || "un adversaire"}.`)
                   : "Match nul ! L'égalité est parfaite."}
               </p>
               <div className="flex gap-3">
@@ -548,10 +548,10 @@ function GameView({
                 Vos adversaires n'ont pas encore intégré la partie ou n'ont pas choisi leur couleur.
               </p>
               <button
-                 onClick={onCancelWait}
-                 className="w-full rounded-lg border-[1.5px] border-ink-border bg-ground px-4 py-3 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
+                onClick={onCancelWait}
+                className="w-full rounded-lg border-[1.5px] border-ink-border bg-ground px-4 py-3 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
               >
-                 Retour au salon
+                Retour au salon
               </button>
             </div>
           </div>
@@ -603,14 +603,14 @@ function GameView({
         </div>
       </div>
 
-      <PlayerSidebar 
-        state={state} 
-        onQuit={onQuit || (() => router.push("/"))} 
+      <PlayerSidebar
+        state={state}
+        onQuit={onQuit || (() => router.push("/"))}
         onRematch={onRematch}
         onChat={onChat}
-        isSolo={isSolo} 
+        isSolo={isSolo}
         currentUserId={currentUserId}
-        className="w-full lg:w-72" 
+        className="w-full lg:w-72"
       />
     </main>
   );
@@ -726,7 +726,7 @@ function WaitingRoom({
             <button
               onClick={() => {
                 const url = window.location.origin + window.location.pathname;
-                const text = `Salut !!\n\nJe vous invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
+                const text = `Salut 👋\n\nJe vous invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
                 navigator.clipboard.writeText(text);
                 showToast("Message d'invitation copié !");
               }}
@@ -738,7 +738,7 @@ function WaitingRoom({
             <button
               onClick={() => {
                 const url = window.location.origin + window.location.pathname;
-                const text = `Salut !!\n\nJe vous invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
+                const text = `Salut 👋\n\nJe vous invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
               }}
               className="flex items-center justify-center gap-2 rounded-lg border-[1.5px] border-ink-border bg-[#25D366] px-4 py-2 text-sm font-bold text-white shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
@@ -749,7 +749,7 @@ function WaitingRoom({
             <button
               onClick={() => {
                 const url = window.location.origin + window.location.pathname;
-                const text = `Salut !!\n\nJe vous invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
+                const text = `Salut 👋\n\nJe vous invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
                 window.location.href = `mailto:?subject=Invitation à jouer à Karre Game's&body=${encodeURIComponent(text)}`;
               }}
               className="flex items-center justify-center gap-2 rounded-lg border-[1.5px] border-ink-border bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
@@ -833,9 +833,8 @@ function WaitingRoom({
                 key={c}
                 disabled={takenByOther}
                 onClick={() => selectColor(c)}
-                className={`h-12 w-12 rounded-full border-2 transition-transform ${
-                  takenByOther ? "cursor-not-allowed opacity-25 grayscale" : "hover:scale-110 active:scale-95"
-                }`}
+                className={`h-12 w-12 rounded-full border-2 transition-transform ${takenByOther ? "cursor-not-allowed opacity-25 grayscale" : "hover:scale-110 active:scale-95"
+                  }`}
                 style={{
                   backgroundColor: PLAYER_COLORS[c].light.fill,
                   borderColor: selected ? "var(--ink)" : "transparent",

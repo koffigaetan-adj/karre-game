@@ -124,7 +124,17 @@ function SoloGame({ roomId }: { roomId: string }) {
     return () => clearTimeout(timer);
   }, [state]);
 
+  const [leavingAfterForfeit, setLeavingAfterForfeit] = useState(false);
+
+  // On attend que le state reflète bien "finished" (et donc que l'effet qui
+  // enregistre l'historique se soit exécuté) avant de quitter la page — un
+  // setTimeout arbitraire risquait de naviguer avant que React n'ait eu le
+  // temps de re-render avec le nouveau statut.
   const handleForfeit = () => {
+    if (state.status !== "playing") {
+      router.push("/");
+      return;
+    }
     setState((prev) => {
       if (prev.status !== "playing") return prev;
       return {
@@ -133,8 +143,14 @@ function SoloGame({ roomId }: { roomId: string }) {
         winnerId: BOT_ID, // the bot wins if human forfeits
       };
     });
-    setTimeout(() => router.push("/"), 100);
+    setLeavingAfterForfeit(true);
   };
+
+  useEffect(() => {
+    if (leavingAfterForfeit && state.status === "finished") {
+      router.push("/");
+    }
+  }, [leavingAfterForfeit, state.status, router]);
 
   const handleRematch = () => {
     setState((prev) => {
@@ -194,6 +210,7 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
   const [wantsToStart, setWantsToStart] = useState(false);
   const isInitialLoad = useRef(true);
   const [isExpiredLink, setIsExpiredLink] = useState(false);
+  const [leavingAfterForfeit, setLeavingAfterForfeit] = useState(false);
 
   const {
     state,
@@ -283,10 +300,24 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
       </main>
     );
   }
+  // Abandonner envoie le forfait au serveur puis attend la confirmation (state
+  // "finished" reçue en retour) avant de quitter — naviguer tout de suite
+  // coupait le WebSocket avant que le serveur ait répondu, donc la partie
+  // n'était jamais enregistrée dans l'historique.
   const handleForfeit = () => {
-    sendForfeit();
-    router.push("/");
+    if (state?.status === "playing") {
+      sendForfeit();
+      setLeavingAfterForfeit(true);
+    } else {
+      router.push("/");
+    }
   };
+
+  useEffect(() => {
+    if (leavingAfterForfeit && state?.status === "finished") {
+      router.push("/");
+    }
+  }, [leavingAfterForfeit, state?.status, router]);
 
   if (!state) {
     return (
@@ -644,8 +675,8 @@ function WaitingRoom({
     toastTimer.current = setTimeout(() => setToast(null), 2500);
   };
 
-  // En solo, on a juste 2 joueurs (human + IA). En multi, ça peut être 2 ou 4 (on autorise le lancement si >= 2).
-  const canStart = allPicked && state.players.length >= 2;
+  // On autorise à cliquer sur "Lancer la partie" (pour voir le plateau flouté) dès qu'on a choisi sa propre couleur.
+  const canStart = !!me?.color;
 
   return (
     <main className="relative flex min-h-dvh flex-col items-center justify-center gap-10 bg-transparent px-6 text-ink transition-colors">

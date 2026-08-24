@@ -138,7 +138,7 @@ export function KarreBoard({
   return (
     <div className={`relative w-full min-w-0 select-none ${className} ${isShaking ? "animate-shake" : ""}`}>
       <div
-        className="w-full min-w-0 overflow-hidden rounded-xl border-[1.5px] border-ink bg-surface shadow-stack touch-none transition-colors"
+        className="w-full min-w-0 overflow-hidden rounded-xl border border-ink bg-surface shadow-stack touch-none transition-colors"
         style={{ aspectRatio: "1 / 1" }}
         {...bind}
       >
@@ -177,9 +177,6 @@ export function KarreBoard({
                       height={CELL - 6}
                       rx={4}
                       fill={colors ? colors.light.fill : "var(--ground)"}
-                      stroke={colors ? "var(--ink)" : "var(--line)"}
-                      strokeWidth={colors ? 1.25 : 1}
-                      strokeOpacity={colors ? 0.85 : 0.5}
                       className={justCaptured.has(key) ? "karre-box-pop" : ""}
                       style={{ transformOrigin: `${bx}px ${by}px` }}
                     />

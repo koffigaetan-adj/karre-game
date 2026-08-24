@@ -33,14 +33,6 @@ export default function LobbyPage() {
 
   return (
     <main className="relative flex min-h-dvh flex-col items-center justify-center gap-10 overflow-x-hidden bg-ground px-6 py-12 text-ink transition-colors">
-      {/* Animated Background - Non plat avec Mesh Gradient + Bruit */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-gradient-to-br from-[var(--ground)] via-ground to-[var(--player-purple-soft)]">
-        <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-gradient-to-tr from-[var(--player-cyan-fill)] to-[var(--player-blue-fill)] opacity-[0.15] dark:opacity-10 blur-[80px] animate-pulse duration-10000" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-gradient-to-bl from-[var(--player-pink-fill)] to-[var(--player-red-fill)] opacity-[0.15] dark:opacity-10 blur-[100px] animate-pulse duration-7000 delay-2000" />
-        <div className="absolute top-[30%] left-[60%] w-[30vw] h-[30vw] rounded-full bg-gradient-to-br from-[var(--player-yellow-fill)] to-[var(--player-orange-fill)] opacity-[0.1] dark:opacity-[0.05] blur-[60px] animate-pulse duration-5000 delay-1000" />
-        <div className="absolute inset-0 opacity-[0.05] dark:opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")' }} />
-      </div>
-
       {/* Header Profile / Rules */}
       <div className="absolute right-6 top-6 z-50 flex items-center gap-4">
         <button

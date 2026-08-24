@@ -20,6 +20,28 @@ const config: Config = {
         "stack-sm": "1.5px 1.5px 0 0 var(--shadow-ink)",
         "stack-pressed": "0.5px 0.5px 0 0 var(--shadow-ink)",
       },
+      keyframes: {
+        "wave-1": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "33%": { transform: "translate(15%, 5%) scale(1.1)" },
+          "66%": { transform: "translate(5%, 20%) scale(0.9)" },
+        },
+        "wave-2": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "33%": { transform: "translate(-20%, -10%) scale(0.95)" },
+          "66%": { transform: "translate(-10%, -25%) scale(1.05)" },
+        },
+        "wave-3": {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "33%": { transform: "translate(20%, -20%) scale(1.1)" },
+          "66%": { transform: "translate(-15%, 15%) scale(0.9)" },
+        },
+      },
+      animation: {
+        "wave-1": "wave-1 20s ease-in-out infinite",
+        "wave-2": "wave-2 25s ease-in-out infinite",
+        "wave-3": "wave-3 30s ease-in-out infinite",
+      },
     },
   },
   plugins: [],

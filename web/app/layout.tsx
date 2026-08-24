@@ -54,12 +54,17 @@ export const metadata: Metadata = {
   },
 };
 
+import { AnimatedBackground } from "@/components/AnimatedBackground";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" suppressHydrationWarning className={`${poppins.variable}`}>
       <body className="bg-ground text-ink antialiased transition-colors">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <AnimatedBackground />
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

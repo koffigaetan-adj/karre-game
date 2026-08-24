@@ -420,7 +420,10 @@ function GameView({
   }, [state.status, state.winnerId, state.players, roomId, addMatch, sfxEnabled]);
 
   // Décompte "3, 2, 1, GO !" à chaque (re)démarrage de partie (début ou revanche).
-  const [countdown, setCountdown] = useState<number | "GO" | null>(null);
+  const [countdown, setCountdown] = useState<number | "GO" | null>(() => {
+    // Si la partie est déjà lancée mais qu'aucun coup n'a été joué, on déclenche le décompte pour le 2ème joueur.
+    return (state.status === "playing" && state.lastMove === null) ? 3 : null;
+  });
   const prevStatusRef = useRef(state.status);
   useEffect(() => {
     if (prevStatusRef.current !== "playing" && state.status === "playing") {
@@ -566,15 +569,24 @@ function GameView({
         )}
 
         {state.status === "playing" && countdown === null && (
-          <div key={state.currentPlayerIndex} className="animate-turn-pop mb-2 mt-2 text-center">
+          <div key={state.currentPlayerIndex} className="animate-in zoom-in-95 fade-in duration-300 mb-2 mt-2 flex justify-center">
             {state.players[state.currentPlayerIndex].id === currentUserId ? (
-              <h2 className="font-display text-2xl font-bold uppercase tracking-widest text-[var(--player-green-fill)] animate-pulse">
-                C'est à votre tour de jouer !
-              </h2>
+              <div className="flex items-center gap-3 rounded-full border-[1.5px] border-[var(--player-green-fill)] bg-[var(--player-green-soft)] px-6 py-3 shadow-lg ring-4 ring-[var(--player-green-soft)] animate-pulse">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--player-green-fill)] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-[var(--player-green-fill)]"></span>
+                </span>
+                <h2 className="font-display text-lg sm:text-xl font-bold uppercase tracking-wider text-[var(--player-green-fill)]">
+                  C'est à votre tour de jouer !
+                </h2>
+              </div>
             ) : (
-              <h2 className="font-display text-lg font-bold uppercase tracking-widest text-ink/70">
-                C'est à {state.players[state.currentPlayerIndex].displayName} de jouer
-              </h2>
+              <div className="flex items-center gap-2 rounded-full border-[1.5px] border-ink-border bg-surface px-4 py-2 opacity-80">
+                <div className="h-2 w-2 animate-bounce rounded-full bg-[var(--player-blue-fill)] opacity-70" />
+                <h2 className="font-display text-sm font-bold uppercase tracking-widest text-ink/70">
+                  C'est à {state.players[state.currentPlayerIndex].displayName} de jouer
+                </h2>
+              </div>
             )}
           </div>
         )}

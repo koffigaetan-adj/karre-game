@@ -53,7 +53,19 @@ export function useRoomSocket({
     if (base.startsWith("https://")) base = base.replace("https://", "wss://");
     if (base.endsWith("/")) base = base.slice(0, -1);
     const params = new URLSearchParams({ player_id: playerId, display_name: displayName, initials, size });
-    const ws = new WebSocket(`${base}/ws/rooms/${roomId}?${params.toString()}`);
+
+    // `new WebSocket()` lève une exception SYNCHRONE (pas un event onerror) si
+    // le schéma de l'URL est invalide (ex: une faute de frappe "wws://" au
+    // lieu de "wss://" dans NEXT_PUBLIC_WS_URL) — sans ce try/catch, une seule
+    // variable d'environnement mal configurée plante toute l'application au
+    // lieu d'afficher un message d'erreur normal.
+    let ws: WebSocket;
+    try {
+      ws = new WebSocket(`${base}/ws/rooms/${roomId}?${params.toString()}`);
+    } catch {
+      setError("URL du serveur de partie invalide (NEXT_PUBLIC_WS_URL mal configurée).");
+      return;
+    }
     wsRef.current = ws;
 
     ws.onopen = () => setConnected(true);

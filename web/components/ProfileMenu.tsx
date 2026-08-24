@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { LogOut, Moon, Sun, Music, Volume2, Pencil, History, X } from "lucide-react";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 import { useHistoryStore } from "@/lib/store/useHistoryStore";
+import { AVATAR_EMOJIS } from "@/lib/emojis";
 
 export function ProfileMenu() {
   const { data: session } = useSession();
@@ -115,24 +116,43 @@ export function ProfileMenu() {
                 <Pencil size={14} />
               </button>
             ) : (
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  maxLength={2}
-                  autoFocus
-                  value={initialsInput}
-                  onChange={(e) => setInitialsInput(e.target.value.toUpperCase())}
-                  className="w-12 rounded-lg border-2 border-ink bg-surface px-2 py-1 text-center font-display text-sm uppercase text-ink outline-none focus:border-blue-500"
-                />
-                <button
-                  onClick={() => {
-                    setCustomInitials(initialsInput || null);
-                    setIsEditingInitials(false);
-                  }}
-                  className="rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-3 py-1 font-display text-xs text-ink hover:opacity-90 active:translate-y-px"
-                >
-                  OK
-                </button>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    maxLength={2}
+                    autoFocus
+                    value={initialsInput}
+                    onChange={(e) => setInitialsInput(e.target.value.toUpperCase())}
+                    className="w-12 rounded-lg border-2 border-ink bg-surface px-2 py-1 text-center font-display text-sm uppercase text-ink outline-none focus:border-blue-500"
+                  />
+                  <button
+                    onClick={() => {
+                      setCustomInitials(initialsInput || null);
+                      setIsEditingInitials(false);
+                    }}
+                    className="rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-3 py-1 font-display text-xs text-ink hover:opacity-90 active:translate-y-px"
+                  >
+                    OK
+                  </button>
+                </div>
+                <p className="text-[10px] font-bold uppercase tracking-wide opacity-50">ou choisis un emoji</p>
+                <div className="grid grid-cols-6 gap-1">
+                  {AVATAR_EMOJIS.map((emoji) => (
+                    <button
+                      key={emoji}
+                      onClick={() => {
+                        setCustomInitials(emoji);
+                        setIsEditingInitials(false);
+                      }}
+                      className={`flex h-7 w-7 items-center justify-center rounded-md text-base transition-colors hover:bg-[var(--ground)] ${
+                        customInitials === emoji ? "border-2 border-ink bg-[var(--ground)]" : ""
+                      }`}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>

@@ -3,7 +3,9 @@
   "short_name": "Karre",
   "description": "Jeu de stratégie multijoueur sur grille en forme d'arène",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "capture_links": "existing-client-navigate",
   "background_color": "#EDE4D3",
   "theme_color": "#EDE4D3",
   "icons": [

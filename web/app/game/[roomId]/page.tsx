@@ -511,12 +511,32 @@ function GameView({
               <p className="mb-6 font-bold text-ink/80">
                 Vos adversaires n'ont pas encore intégré la partie ou n'ont pas choisi leur couleur.
               </p>
-              <button
-                onClick={onCancelWait}
-                className="w-full rounded-lg border-[1.5px] border-ink-border bg-ground px-4 py-3 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
-              >
-                Retour au salon
-              </button>
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: "Karre Game's",
+                        text: "Rejoignez ma partie de Karré !",
+                        url: window.location.href,
+                      }).catch(() => {});
+                    } else {
+                      navigator.clipboard.writeText(window.location.href);
+                      alert("Lien copié dans le presse-papiers !");
+                    }
+                  }}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg border-[1.5px] border-ink-border bg-[var(--player-blue-fill)] px-4 py-3 font-bold text-[var(--player-blue-text)] shadow-stack-sm hover:-translate-y-0.5 active:translate-x-px active:translate-y-px active:shadow-stack-pressed transition-all"
+                >
+                  <Share2 size={18} />
+                  Partager le lien
+                </button>
+                <button
+                  onClick={onCancelWait}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg border-[1.5px] border-ink-border bg-ground px-4 py-3 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px transition-colors"
+                >
+                  Retour au salon
+                </button>
+              </div>
             </div>
           </div>
         )}

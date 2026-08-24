@@ -88,7 +88,9 @@ async def get_user_history(db: AsyncSession, user_id: str):
                 }
                 for p in state.get("players", [])
             ],
-            "isDraw": state.get("status") == "finished" and not state.get("winnerId") and not state.get("winner_id")
+            "isDraw": state.get("status") == "finished" and not state.get("winnerId") and not state.get("winner_id"),
+            "endReason": state.get("endReason") or state.get("end_reason"),
+            "forfeitedBy": state.get("forfeitedBy") or state.get("forfeited_by"),
         })
         
     return history

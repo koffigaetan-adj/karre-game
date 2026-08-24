@@ -226,6 +226,7 @@ export function applyMove(
     currentPlayerIndex,
     status: gameOver ? "finished" : "playing",
     winnerId,
+    endReason: gameOver ? "completed" : prev.endReason,
     lastMove: { type, row, col, playerId },
   };
 

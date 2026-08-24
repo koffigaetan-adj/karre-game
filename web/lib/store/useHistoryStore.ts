@@ -14,6 +14,8 @@ export interface MatchRecord {
     isWinner: boolean;
   }[];
   isDraw: boolean;
+  endReason?: "completed" | "forfeit" | null;
+  forfeitedBy?: string | null;
 }
 
 interface HistoryState {

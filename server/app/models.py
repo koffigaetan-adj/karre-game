@@ -54,6 +54,11 @@ class GameState(CamelModel):
     boxes: list[list[Optional[str]]]
     status: GameStatus = "waiting"
     winner_id: Optional[str] = None
+    # Distingue une victoire "normale" (plateau rempli) d'une partie stoppée
+    # net par un abandon — l'historique ne doit pas afficher ça comme une
+    # vraie victoire/défaite (voir retour utilisateur du 2026-08-24).
+    end_reason: Optional[Literal["completed", "forfeit"]] = None
+    forfeited_by: Optional[str] = None
     last_move: Optional[Move] = None
     started_at: Optional[str] = None
     messages: list[ChatMessage] = []

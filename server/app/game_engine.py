@@ -166,6 +166,7 @@ def apply_move(prev: GameState, edge_type: EdgeType, row: int, col: int, player_
         is_tie = len(ranked) > 1 and ranked[0].score == ranked[1].score
         state.winner_id = None if is_tie else ranked[0].id
         state.status = "finished"
+        state.end_reason = "completed"
 
     state.last_move = Move(type=edge_type, row=row, col=col, player_id=player_id)
 

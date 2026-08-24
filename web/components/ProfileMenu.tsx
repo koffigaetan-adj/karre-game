@@ -54,6 +54,7 @@ export function ProfileMenu() {
     let streak = 0;
     let streakBroken = false;
     for (const m of matches) {
+      if (m.endReason === "forfeit") continue; // un abandon n'est ni une victoire ni une défaite
       const me = m.players?.find((p: any) => p.id === myId);
       if (me?.isWinner) {
         wins++;
@@ -300,18 +301,29 @@ export function ProfileMenu() {
                           {match.mode}
                         </span>
                       </div>
-                      <div className="flex flex-col gap-1">
-                        {match.players
-                          .sort((a: any, b: any) => b.score - a.score)
-                          .map((p: any) => (
-                            <div key={p.id} className="flex items-center justify-between text-sm">
-                              <span className={`font-medium ${p.isWinner ? "font-bold text-[var(--player-green-fill)]" : "text-ink"}`}>
-                                {p.displayName} {p.isWinner && "👑"}
-                              </span>
-                              <span className="font-bold">{p.score}</span>
-                            </div>
-                          ))}
-                      </div>
+                      {match.endReason === "forfeit" ? (
+                        <p className="text-sm font-medium text-ink/70">
+                          Abandonné par{" "}
+                          <span className="font-bold text-ink">
+                            {match.forfeitedBy === session.user?.email
+                              ? "vous"
+                              : match.players.find((p: any) => p.id === match.forfeitedBy)?.displayName || "un joueur"}
+                          </span>
+                        </p>
+                      ) : (
+                        <div className="flex flex-col gap-1">
+                          {match.players
+                            .sort((a: any, b: any) => b.score - a.score)
+                            .map((p: any) => (
+                              <div key={p.id} className="flex items-center justify-between text-sm">
+                                <span className={`font-medium ${p.isWinner ? "font-bold text-[var(--player-green-fill)]" : "text-ink"}`}>
+                                  {p.displayName} {p.isWinner && "👑"}
+                                </span>
+                                <span className="font-bold">{p.score}</span>
+                              </div>
+                            ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

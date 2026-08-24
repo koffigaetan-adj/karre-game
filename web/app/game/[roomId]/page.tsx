@@ -141,6 +141,8 @@ function SoloGame({ roomId }: { roomId: string }) {
         ...prev,
         status: "finished",
         winnerId: BOT_ID, // the bot wins if human forfeits
+        endReason: "forfeit",
+        forfeitedBy: humanId,
       };
     });
     setLeavingAfterForfeit(true);
@@ -418,10 +420,12 @@ function GameView({
           initials: p.initials,
           isWinner: p.id === state.winnerId,
         })),
+        endReason: state.endReason ?? null,
+        forfeitedBy: state.forfeitedBy ?? null,
       });
       playGameOver(sfxEnabled);
     }
-  }, [state.status, state.winnerId, state.players, roomId, addMatch, sfxEnabled]);
+  }, [state.status, state.winnerId, state.endReason, state.forfeitedBy, state.players, roomId, addMatch, sfxEnabled]);
 
   // Décompte "3, 2, 1, GO !" à chaque (re)démarrage de partie (début ou revanche).
   const [countdown, setCountdown] = useState<number | "GO" | null>(() => {
@@ -478,11 +482,15 @@ function GameView({
             <div className="w-full max-w-sm rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
               <h2 className="mb-4 font-display text-3xl uppercase tracking-wide text-ink">Partie terminée</h2>
               <p className="mb-6 font-bold text-lg text-ink/80">
-                {state.winnerId
-                  ? (state.winnerId === currentUserId
-                    ? "🎉 Victoire ! Vous avez gagné !"
-                    : `Le vainqueur est ${state.players.find(p => p.id === state.winnerId)?.displayName || "un adversaire"}.`)
-                  : "Match nul ! L'égalité est parfaite."}
+                {state.endReason === "forfeit"
+                  ? (state.forfeitedBy === currentUserId
+                    ? "Vous avez quitté la partie."
+                    : `${state.players.find(p => p.id === state.forfeitedBy)?.displayName || "Un joueur"} s'est déconnecté(e) ou a abandonné la partie.`)
+                  : state.winnerId
+                    ? (state.winnerId === currentUserId
+                      ? "🎉 Victoire ! Vous avez gagné !"
+                      : `Le vainqueur est ${state.players.find(p => p.id === state.winnerId)?.displayName || "un adversaire"}.`)
+                    : "Match nul ! L'égalité est parfaite."}
               </p>
               <div className="flex gap-3">
                 <button

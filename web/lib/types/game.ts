@@ -63,6 +63,11 @@ export interface GameState {
   boxes: (string | null)[][];
   status: GameStatus;
   winnerId: string | null;
+  /** Distingue une victoire "normale" (plateau rempli) d'une partie stoppée
+   * par un abandon — l'historique ne doit pas afficher un abandon comme une
+   * vraie victoire/défaite. */
+  endReason?: "completed" | "forfeit" | null;
+  forfeitedBy?: string | null;
   lastMove: Move | null;
   createdAt: string;
   /** Horodatage du passage à "playing" ; sert de base au chrono de partie. */

@@ -44,10 +44,19 @@ app.add_middleware(
 )
 
 
+# Un téléphone qui se verrouille, un PC qui se met en veille, ou juste un
+# changement d'onglet, coupe la connexion WebSocket sans que ce soit un vrai
+# abandon — on laisse largement le temps de revenir avant de compter une
+# déconnexion comme un forfait (la reconnexion automatique du client,
+# useRoomSocket, s'en charge dès que l'appareil/l'onglet redevient actif).
+RECONNECT_GRACE_SECONDS = 10 * 60
+
+
 class Room:
     def __init__(self, state: GameState):
         self.state = state
         self.connections: dict[str, WebSocket] = {}  # player_id -> socket
+        self.disconnect_timers: dict[str, asyncio.Task] = {}
 
     async def broadcast(self) -> None:
         payload = self.state.model_dump(mode="json", by_alias=True)
@@ -118,6 +127,15 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
         )
         # Game stays in "waiting" until explicitly started
 
+    # Le joueur revient à temps : on annule le forfait programmé et on le
+    # remarque comme connecté.
+    pending_timer = room.disconnect_timers.pop(player_id, None)
+    if pending_timer:
+        pending_timer.cancel()
+    for p in room.state.players:
+        if p.id == player_id:
+            p.connected = True
+
     room.connections[player_id] = websocket
     await room.broadcast()
 
@@ -150,6 +168,8 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
             elif data.get("type") == "forfeit":
                 if room.state.status == "playing":
                     room.state.status = "finished"
+                    room.state.end_reason = "forfeit"
+                    room.state.forfeited_by = player_id
                     remaining = [p for p in room.state.players if p.id != player_id]
                     if remaining:
                         best = max(remaining, key=lambda p: p.score)
@@ -226,17 +246,36 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
         for p in room.state.players:
             if p.id == player_id:
                 p.connected = False
-        
-        # Si la partie est en cours, la déconnexion compte comme un abandon
+
         if room.state.status == "playing":
-            room.state.status = "finished"
-            remaining = [p for p in room.state.players if p.id != player_id]
-            if remaining:
-                best = max(remaining, key=lambda p: p.score)
-                room.state.winner_id = best.id
-        
-        # S'il n'y a plus personne en ligne, on détruit le salon
-        if not any(p.connected for p in room.state.players):
+            # Pas de verdict immédiat : on prévient les autres joueurs que
+            # celui-ci est déconnecté (déjà visible via player.connected côté
+            # client) et on programme le forfait, annulable s'il revient.
+            async def declare_forfeit_after_grace_period() -> None:
+                try:
+                    await asyncio.sleep(RECONNECT_GRACE_SECONDS)
+                except asyncio.CancelledError:
+                    return
+                if player_id in room.connections or room.state.status != "playing":
+                    return
+                room.state.status = "finished"
+                room.state.end_reason = "forfeit"
+                room.state.forfeited_by = player_id
+                remaining = [p for p in room.state.players if p.id != player_id]
+                if remaining:
+                    best = max(remaining, key=lambda p: p.score)
+                    room.state.winner_id = best.id
+                room.disconnect_timers.pop(player_id, None)
+                await room.broadcast()
+                if not any(p.connected for p in room.state.players):
+                    ROOMS.pop(room_id, None)
+
+            room.disconnect_timers[player_id] = asyncio.create_task(declare_forfeit_after_grace_period())
+            await room.broadcast()
+        elif not any(p.connected for p in room.state.players):
+            # Hors partie en cours (salon d'attente, partie déjà finie) : pas
+            # de raison d'attendre, on nettoie tout de suite si tout le monde
+            # est parti.
             ROOMS.pop(room_id, None)
         else:
             await room.broadcast()

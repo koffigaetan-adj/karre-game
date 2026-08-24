@@ -378,6 +378,36 @@ function GameView({
           <ProfileMenu />
         </div>
         {error && <p className="text-xs font-bold text-[var(--player-red-fill)]">{error}</p>}
+        {state.status === "finished" && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm">
+            <div className="w-full max-w-sm rounded-xl border-[3px] border-ink bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
+              <h2 className="mb-4 font-display text-3xl uppercase tracking-wide text-ink">Partie terminée</h2>
+              <p className="mb-6 font-bold text-lg text-ink/80">
+                {state.winnerId 
+                  ? (state.winnerId === currentUserId 
+                      ? "🎉 Victoire ! Vous avez gagné !" 
+                      : `Le vainqueur est ${state.players.find(p => p.id === state.winnerId)?.displayName || "un adversaire"}.`)
+                  : "Match nul ! L'égalité est parfaite."}
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={onQuit || (() => router.push("/"))}
+                  className="flex-1 rounded-lg border-2 border-ink bg-ground px-4 py-3 font-bold text-ink hover:bg-ink/5 active:translate-x-px active:translate-y-px"
+                >
+                  Quitter
+                </button>
+                {onRematch && (
+                  <button
+                    onClick={onRematch}
+                    className="flex-1 rounded-lg border-2 border-ink bg-[var(--player-green-fill)] px-4 py-3 font-bold text-ink shadow-stack-sm active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+                  >
+                    Rejouer
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="relative mx-auto w-full max-w-2xl">
           <KarreBoard state={state} currentUserId={currentUserId} onPlayEdge={onPlayEdge} />

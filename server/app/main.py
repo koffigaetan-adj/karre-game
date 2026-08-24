@@ -107,15 +107,21 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
                     await room.broadcast()
             elif data.get("type") == "start_game":
                 if len(room.state.players) >= 2 and all(p.color for p in room.state.players):
-                    room.state.status = "playing"
-                    room.state.started_at = datetime.now(timezone.utc).isoformat()
+                    old_players = room.state.players
+                    old_messages = room.state.messages
+                    new_state = create_empty_game_state(room_id, room.state.size, old_players)
+                    new_state.messages = old_messages
+                    new_state.status = "playing"
+                    new_state.started_at = datetime.now(timezone.utc).isoformat()
+                    room.state = new_state
                 await room.broadcast()
             elif data.get("type") == "forfeit":
                 if room.state.status == "playing":
                     room.state.status = "finished"
-                    if len(room.state.players) == 2:
-                        other = next(p for p in room.state.players if p.id != player_id)
-                        room.state.winner_id = other.id
+                    remaining = [p for p in room.state.players if p.id != player_id]
+                    if remaining:
+                        best = max(remaining, key=lambda p: p.score)
+                        room.state.winner_id = best.id
                 await room.broadcast()
             elif data.get("type") == "chat":
                 text = data.get("text", "").strip()
@@ -159,8 +165,13 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
         # Si la partie est en cours, la déconnexion compte comme un abandon
         if room.state.status == "playing":
             room.state.status = "finished"
-            if len(room.state.players) == 2:
-                other = next(p for p in room.state.players if p.id != player_id)
-                room.state.winner_id = other.id
+            remaining = [p for p in room.state.players if p.id != player_id]
+            if remaining:
+                best = max(remaining, key=lambda p: p.score)
+                room.state.winner_id = best.id
         
-        await room.broadcast()
+        # S'il n'y a plus personne en ligne, on détruit le salon
+        if not any(p.connected for p in room.state.players):
+            ROOMS.pop(room_id, None)
+        else:
+            await room.broadcast()

@@ -128,9 +128,31 @@ export function useRoomSocket({
 
     connect();
 
+    // Un téléphone verrouillé ou un onglet mis en arrière-plan gèle souvent
+    // les setTimeout du navigateur — le setTimeout(connect, 2000) programmé
+    // dans onclose peut donc ne jamais se déclencher tant que l'écran reste
+    // éteint, laissant le client "déconnecté" indéfiniment même après le
+    // retour de l'utilisateur. On force donc une tentative de reconnexion
+    // immédiate dès que l'onglet redevient visible/actif, sans attendre le
+    // minuteur (qui, lui, reste utile pour les vraies coupures réseau).
+    function reconnectIfNeeded() {
+      if (cancelled || document.visibilityState !== "visible") return;
+      const ws = wsRef.current;
+      if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+      if (reconnectTimer) {
+        clearTimeout(reconnectTimer);
+        reconnectTimer = null;
+      }
+      connect();
+    }
+    document.addEventListener("visibilitychange", reconnectIfNeeded);
+    window.addEventListener("focus", reconnectIfNeeded);
+
     return () => {
       cancelled = true;
       if (reconnectTimer) clearTimeout(reconnectTimer);
+      document.removeEventListener("visibilitychange", reconnectIfNeeded);
+      window.removeEventListener("focus", reconnectIfNeeded);
       wsRef.current?.close();
       wsRef.current = null;
     };

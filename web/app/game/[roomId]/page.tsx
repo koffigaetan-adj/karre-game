@@ -21,6 +21,10 @@ import { Pencil, ArrowLeft, Share2, Copy, Link2, MessageCircle, Mail } from "luc
 
 const BOT_ID = "bot";
 const BOT_MOVE_DELAY_MS = 600;
+// Doit rester identique à RECONNECT_GRACE_SECONDS dans server/app/main.py —
+// purement indicatif ici (l'affichage), le serveur reste seul juge du délai
+// réel avant de déclarer un forfait.
+const RECONNECT_GRACE_SECONDS = 10 * 60;
 
 
 export default function GamePage({ params }: { params: { roomId: string } }) {
@@ -316,8 +320,13 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
   // "finished" reçue en retour) avant de quitter — naviguer tout de suite
   // coupait le WebSocket avant que le serveur ait répondu, donc la partie
   // n'était jamais enregistrée dans l'historique.
+  // Si la connexion est perdue (téléphone qui vient de se réveiller, etc.),
+  // le message de forfait ne peut de toute façon pas partir : on quitte
+  // directement plutôt que de laisser le bouton "Abandonner" ne rien faire.
+  // Le serveur finira par constater la déconnexion de son côté (délai de
+  // grâce dans room_socket) et clôturera la partie correctement.
   const handleForfeit = () => {
-    if (state?.status === "playing") {
+    if (state?.status === "playing" && connected) {
       sendForfeit();
       setLeavingAfterForfeit(true);
     } else {
@@ -405,6 +414,18 @@ function GameView({
   const { musicEnabled, sfxEnabled } = useSettingsStore();
   const { addMatch } = useHistoryStore();
 
+  // Compte à rebours affiché pendant une déconnexion : temps restant avant
+  // que le serveur ne déclare un forfait faute de reconnexion.
+  const [secondsSinceDisconnect, setSecondsSinceDisconnect] = useState(0);
+  useEffect(() => {
+    if (connected) {
+      setSecondsSinceDisconnect(0);
+      return;
+    }
+    const id = setInterval(() => setSecondsSinceDisconnect((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, [connected]);
+
   // Enregistrement de l'historique + son quand la partie se termine
   useEffect(() => {
     if (state.status === "finished") {
@@ -472,9 +493,17 @@ function GameView({
         </div>
         {error && <p className="text-xs font-bold text-[var(--player-red-fill)]">{error}</p>}
         {!connected && state.status === "playing" && (
-          <div className="flex items-center gap-2 rounded-lg border-[1.5px] border-ink-border bg-[var(--player-red-soft)] px-3 py-2 text-sm font-bold text-[var(--player-red-fill)]">
-            <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-[var(--player-red-fill)]" />
-            Connexion perdue avec le serveur — tentative de reconnexion…
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm">
+            <div className="w-full max-w-sm rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack text-center">
+              <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-line border-t-[var(--player-red-fill)]" />
+              <h2 className="mb-2 font-display text-2xl uppercase tracking-wide text-ink">Connexion perdue</h2>
+              <p className="mb-4 font-bold text-ink/70">Reconnexion en cours… la partie reprendra automatiquement dès que possible.</p>
+              <p className="font-display text-3xl tabular-nums text-[var(--player-red-fill)]">
+                {Math.floor(Math.max(0, RECONNECT_GRACE_SECONDS - secondsSinceDisconnect) / 60)}:
+                {(Math.max(0, RECONNECT_GRACE_SECONDS - secondsSinceDisconnect) % 60).toString().padStart(2, "0")}
+              </p>
+              <p className="text-xs font-bold uppercase tracking-wide text-ink/40">avant abandon automatique</p>
+            </div>
           </div>
         )}
         {state.status === "finished" && (

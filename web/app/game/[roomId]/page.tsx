@@ -17,10 +17,22 @@ import { playMusic, stopMusic, setMusicSpeed } from "@/lib/audio";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 import { useHistoryStore } from "@/lib/store/useHistoryStore";
 import { primeAudio } from "@/lib/sound";
-import { Pencil } from "lucide-react";
+import { Pencil, ArrowLeft, Share2 } from "lucide-react";
 
 const BOT_ID = "bot";
 const BOT_MOVE_DELAY_MS = 600;
+
+/** Partage le lien d'invitation du salon (feuille de partage native si dispo, sinon presse-papier). */
+function shareInvite(roomId: string) {
+  const url = window.location.href;
+  const text = `Je vous invite à me rejoindre pour une partie de Karre Game's avec le code ${roomId} ou depuis ce lien : ${url}\nSalut !!\n\nÀ très bientôt`;
+  if (navigator.share) {
+    navigator.share({ title: "Karre Game's", text }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text);
+    alert("Lien d'invitation copié dans le presse-papier !");
+  }
+}
 
 export default function GamePage({ params }: { params: { roomId: string } }) {
   return (
@@ -361,19 +373,7 @@ function GameView({
         onQuit={onQuit || (() => router.push("/"))} 
         onRematch={onRematch}
         onChat={onChat}
-        onInvite={() => {
-          const url = window.location.href;
-          const text = `Je vous invite à me rejoindre pour une partie de Karre Game's avec le code ${roomId} ou depuis ce lien : ${url}\nSalut !!\n\nÀ très bientôt`;
-          if (navigator.share) {
-            navigator.share({
-              title: "Karre Game's",
-              text,
-            }).catch(console.error);
-          } else {
-            navigator.clipboard.writeText(text);
-            alert("Lien d'invitation copié dans le presse-papier !");
-          }
-        }}
+        onInvite={() => shareInvite(roomId)}
         isSolo={isSolo} 
         currentUserId={currentUserId}
         className="w-full lg:w-72" 
@@ -438,17 +438,26 @@ function WaitingRoom({
   updateInitials: (initials: string) => void;
   startGame: () => void;
 }) {
+  const router = useRouter();
   const me = state.players.find((p) => p.id === currentUserId);
   const isHost = state.players[0]?.id === currentUserId;
   const allPicked = state.players.every((p) => p.color);
   const [editingInitials, setEditingInitials] = useState(false);
   const [initialsInput, setInitialsInput] = useState("");
+  const isMultiplayer = state.mode === "multiplayer";
 
   // En solo, on a juste 2 joueurs (human + IA). En multi, ça peut être 2 ou 4 (on autorise le lancement si >= 2).
   const canStart = allPicked && state.players.length >= 2;
 
   return (
     <main className="relative flex min-h-dvh flex-col items-center justify-center gap-10 bg-ground px-6 text-ink transition-colors">
+      <button
+        onClick={() => router.push("/")}
+        className="absolute left-6 top-6 flex h-10 w-10 items-center justify-center rounded-full border-2 border-ink bg-surface text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+        title="Retour à l'accueil"
+      >
+        <ArrowLeft size={18} />
+      </button>
       <div className="absolute right-6 top-6">
         <ProfileMenu />
       </div>
@@ -457,6 +466,16 @@ function WaitingRoom({
         <h1 className="font-display text-4xl leading-none text-ink">Salle d&apos;attente</h1>
         <p className="mt-2 text-sm font-bold uppercase tracking-wide opacity-60">Salon {state.roomId}</p>
       </div>
+
+      {isMultiplayer && (
+        <button
+          onClick={() => shareInvite(state.roomId)}
+          className="flex items-center gap-2 rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-6 py-3 font-display text-sm text-[var(--player-blue-text)] shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+        >
+          <Share2 size={18} />
+          Inviter des amis
+        </button>
+      )}
 
       <div className="flex flex-wrap justify-center gap-6">
         {state.players.map((p) => {
@@ -557,6 +576,13 @@ function WaitingRoom({
           </button>
         ) : (
           <p className="text-sm font-bold opacity-60">En attente du créateur du salon…</p>
+        )}
+        {!canStart && isMultiplayer && (
+          <p className="text-xs font-bold opacity-50">
+            {state.players.length < 2
+              ? "En attente d'autres joueurs — invite-les avec le bouton ci-dessus."
+              : "En attente que tout le monde ait choisi sa couleur…"}
+          </p>
         )}
       </div>
     </main>

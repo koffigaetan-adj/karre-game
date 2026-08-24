@@ -40,6 +40,9 @@ export const metadata: Metadata = {
     { url: "/icon-light.png", media: "(prefers-color-scheme: light)" },
     { url: "/icon-dark.png", media: "(prefers-color-scheme: dark)" },
   ],
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

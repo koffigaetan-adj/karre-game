@@ -381,7 +381,9 @@ function usePanZoom() {
     } else if (pointers.current.size === 1 && dragStart.current) {
       const dx = e.clientX - dragStart.current.x;
       const dy = e.clientY - dragStart.current.y;
-      setPan((p) => ({ ...p, x: dragStart.current!.panX + dx, y: dragStart.current!.panY + dy }));
+      const startX = dragStart.current.panX;
+      const startY = dragStart.current.panY;
+      setPan((p) => ({ ...p, x: startX + dx, y: startY + dy }));
     }
   };
 

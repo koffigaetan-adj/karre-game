@@ -17,7 +17,7 @@ import { ProfileMenu } from "@/components/ProfileMenu";
 import { playMusic, stopMusic, setMusicSpeed, primeAudio, playCountdownTick, playCountdownGo, playGameOver } from "@/lib/audio";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 import { useHistoryStore } from "@/lib/store/useHistoryStore";
-import { Pencil, ArrowLeft, Share2, Copy, Link2, MessageCircle, Mail } from "lucide-react";
+import { Pencil, ArrowLeft, Share2, Copy, Link2, MessageCircle, Mail, Trophy, Medal, Award } from "lucide-react";
 
 const BOT_ID = "bot";
 const BOT_MOVE_DELAY_MS = 600;
@@ -506,21 +506,58 @@ function GameView({
             </div>
           </div>
         )}
-        {state.status === "finished" && (
+        {state.status === "finished" && (() => {
+          const sorted = [...state.players].sort((a, b) => b.score - a.score);
+          let currentRank = 1;
+          const rankedPlayers = sorted.map((p, i) => {
+            if (i > 0 && p.score < sorted[i - 1].score) {
+              currentRank = i + 1;
+            }
+            return { ...p, rank: currentRank };
+          });
+
+          return (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm">
             <div className="w-full max-w-sm rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
-              <h2 className="mb-4 font-display text-3xl uppercase tracking-wide text-ink">Partie terminée</h2>
-              <p className="mb-6 font-bold text-lg text-ink/80">
-                {state.endReason === "forfeit"
-                  ? (state.forfeitedBy === currentUserId
+              <h2 className="mb-2 font-display text-3xl uppercase tracking-wide text-ink">Partie terminée</h2>
+              
+              {state.endReason === "forfeit" && (
+                <p className="mb-4 font-bold text-sm text-[var(--player-red-fill)] bg-[var(--player-red-fill)]/10 p-2 rounded-lg">
+                  {state.forfeitedBy === currentUserId
                     ? "Vous avez quitté la partie."
-                    : `${state.players.find(p => p.id === state.forfeitedBy)?.displayName || "Un joueur"} s'est déconnecté(e) ou a abandonné la partie.`)
-                  : state.winnerId
-                    ? (state.winnerId === currentUserId
-                      ? "🎉 Victoire ! Vous avez gagné !"
-                      : `Le vainqueur est ${state.players.find(p => p.id === state.winnerId)?.displayName || "un adversaire"}.`)
-                    : "Match nul ! L'égalité est parfaite."}
-              </p>
+                    : `${state.players.find(p => p.id === state.forfeitedBy)?.displayName || "Un joueur"} a abandonné.`}
+                </p>
+              )}
+
+              <div className="mb-6 mt-4 flex flex-col gap-2 text-left">
+                {rankedPlayers.map((p) => {
+                  const isMe = p.id === currentUserId;
+                  const isTie = rankedPlayers.filter(rp => rp.rank === p.rank).length > 1;
+                  const rankColor = p.rank === 1 ? "text-yellow-500" : p.rank === 2 ? "text-slate-400" : "text-amber-700";
+                  
+                  return (
+                    <div key={p.id} className={`flex items-center justify-between rounded-lg border-[1.5px] p-3 transition-all ${isMe ? 'border-ink bg-ink/5' : 'border-ink-border bg-ground'}`}>
+                      <div className="flex items-center gap-3">
+                        <div className="flex w-8 justify-center">
+                          {p.rank === 1 ? <Trophy className={rankColor} size={24} /> : 
+                           p.rank === 2 ? <Medal className={rankColor} size={22} /> : 
+                           <Award className={p.rank === 3 ? rankColor : "text-ink/40"} size={20} />}
+                        </div>
+                        <div className="flex flex-col items-start">
+                          <span className="font-bold text-ink">
+                            {p.displayName} {isMe && <span className="opacity-60 text-xs uppercase tracking-widest">(Vous)</span>}
+                          </span>
+                          {isTie && <span className="text-[10px] font-bold uppercase tracking-wider text-ink/40">Ex-aequo</span>}
+                        </div>
+                      </div>
+                      <div className="font-display text-xl text-ink">
+                        {p.score} <span className="text-xs opacity-50">pts</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
               <div className="flex gap-3">
                 <button
                   onClick={onQuit || (() => router.push("/"))}
@@ -539,7 +576,8 @@ function GameView({
               </div>
             </div>
           </div>
-        )}
+          );
+        })()}
 
         {isWaitingForOthers && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-ground/80 p-6 backdrop-blur-sm">

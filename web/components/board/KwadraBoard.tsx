@@ -135,6 +135,23 @@ export function KwadraBoard({
 
   // No corner seats needed as bases are in the grid
 
+  const radius = Math.floor(rows / 2);
+  const isPlaying = state.status === "playing";
+  const currentBaseCells = useMemo(() => {
+    if (!isPlaying) return [];
+    const pIdx = state.currentPlayerIndex;
+    if (state.players.length === 2) {
+      if (pIdx === 0) return [{ r: 0, c: radius }, { r: rows - 1, c: radius }];
+      if (pIdx === 1) return [{ r: radius, c: 0 }, { r: radius, c: cols - 1 }];
+    } else {
+      if (pIdx === 0) return [{ r: 0, c: radius }];
+      if (pIdx === 1) return [{ r: radius, c: cols - 1 }];
+      if (pIdx === 2) return [{ r: rows - 1, c: radius }];
+      if (pIdx === 3) return [{ r: radius, c: 0 }];
+    }
+    return [];
+  }, [isPlaying, state.currentPlayerIndex, state.players.length, rows, cols, radius]);
+
   return (
     <div className={`relative w-full min-w-0 select-none ${className} ${isShaking ? "animate-shake" : ""}`}>
       <div
@@ -168,8 +185,26 @@ export function KwadraBoard({
                 const y = row * CELL;
                 const bx = x + CELL / 2;
                 const by = y + CELL / 2;
+                
+                const isCurrentBase = currentBaseCells.some(bc => bc.r === row && bc.c === col);
+                const currentColorHex = state.players[state.currentPlayerIndex]?.color 
+                  ? PLAYER_COLORS[state.players[state.currentPlayerIndex].color!].light.fill 
+                  : "var(--ink)";
+
                 return (
                   <g key={key}>
+                    {isCurrentBase && (
+                      <rect
+                        x={x + 3}
+                        y={y + 3}
+                        width={CELL - 6}
+                        height={CELL - 6}
+                        rx={4}
+                        fill={currentColorHex}
+                        className="animate-ping opacity-60"
+                        style={{ transformOrigin: `${bx}px ${by}px`, animationDuration: "2s" }}
+                      />
+                    )}
                     <rect
                       x={x + 3}
                       y={y + 3}

@@ -1,5 +1,7 @@
 import os
 from typing import AsyncGenerator
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import declarative_base
 from dotenv import load_dotenv
@@ -13,13 +15,23 @@ DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./karrre.db")
 # Render/Neon utilisent souvent postgres://, mais asyncpg a besoin de postgresql+asyncpg://
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+asyncpg://", 1)
-elif DATABASE_URL.startswith("postgresql://"):
+elif DATABASE_URL.startswith("postgresql://") and "+asyncpg" not in DATABASE_URL:
     DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
 
 connect_args = {}
-if "?sslmode=require" in DATABASE_URL:
-    DATABASE_URL = DATABASE_URL.replace("?sslmode=require", "")
+
+# Les URL Postgres de Render/Neon embarquent sslmode= et channel_binding=
+# en query string (syntaxe libpq) qu'asyncpg ne comprend pas nativement.
+# Une simple substitution de sous-chaîne ("?sslmode=require" -> "") casse
+# l'URL dès qu'un autre paramètre suit (ex: &channel_binding=require reste
+# collé au nom de la base, sans "?" pour le délimiter) — on parse donc
+# proprement la query string au lieu de bricoler le texte brut.
+parts = urlsplit(DATABASE_URL)
+query_params = dict(parse_qsl(parts.query))
+if query_params.pop("sslmode", None) == "require":
     connect_args["ssl"] = "require"
+query_params.pop("channel_binding", None)
+DATABASE_URL = urlunsplit(parts._replace(query=urlencode(query_params)))
 
 engine = create_async_engine(DATABASE_URL, echo=False, connect_args=connect_args)
 AsyncSessionLocal = async_sessionmaker(

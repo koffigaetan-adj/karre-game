@@ -17,6 +17,7 @@ import { playMusic, stopMusic, setMusicSpeed } from "@/lib/audio";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
 import { useHistoryStore } from "@/lib/store/useHistoryStore";
 import { primeAudio } from "@/lib/sound";
+import { Pencil } from "lucide-react";
 
 const BOT_ID = "bot";
 const BOT_MOVE_DELAY_MS = 600;

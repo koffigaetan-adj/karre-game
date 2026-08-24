@@ -41,8 +41,8 @@ function SoloGame({ roomId }: { roomId: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
-  const { customInitials } = useSettingsStore();
-  
+  const { customInitials, setCustomInitials } = useSettingsStore();
+
   const humanId = session?.user?.email ?? "you";
   const humanName = session?.user?.name ?? "Joueur";
   const humanInitials = customInitials || session?.user?.initials || initialsFromName(humanName);
@@ -75,6 +75,16 @@ function SoloGame({ roomId }: { roomId: string }) {
     setState((prev) => ({
       ...prev,
       players: prev.players.map((p) => (p.id === humanId ? { ...p, color: color as PlayerColor } : p)),
+    }));
+  };
+
+  const updateInitials = (newInitials: string) => {
+    const cleaned = newInitials.trim().toUpperCase().slice(0, 3);
+    if (!cleaned) return;
+    setCustomInitials(cleaned);
+    setState((prev) => ({
+      ...prev,
+      players: prev.players.map((p) => (p.id === humanId ? { ...p, initials: cleaned } : p)),
     }));
   };
 
@@ -142,15 +152,23 @@ function SoloGame({ roomId }: { roomId: string }) {
   };
 
   if (state.status === "waiting") {
-    return <WaitingRoom state={state} currentUserId={humanId} selectColor={selectColor} startGame={startGame} />;
+    return (
+      <WaitingRoom
+        state={state}
+        currentUserId={humanId}
+        selectColor={selectColor}
+        updateInitials={updateInitials}
+        startGame={startGame}
+      />
+    );
   }
 
   return (
-    <GameView 
-      roomId={roomId} 
-      state={state} 
-      currentUserId={humanId} 
-      onPlayEdge={handlePlayEdge} 
+    <GameView
+      roomId={roomId}
+      state={state}
+      currentUserId={humanId}
+      onPlayEdge={handlePlayEdge}
       isSolo={true} 
       onQuit={handleForfeit} 
       onRematch={handleRematch} 
@@ -171,7 +189,7 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
   
   const size = (searchParams.get("size") as "small" | "medium" | "large") || "large";
 
-  const { state, connected, error, playEdge, selectColor, startGame, sendForfeit, sendRematch, sendChat } = useRoomSocket({
+  const { state, connected, error, playEdge, selectColor, updateInitials, startGame, sendForfeit, sendRematch, sendChat } = useRoomSocket({
     roomId,
     playerId: humanId,
     displayName: humanName,
@@ -197,7 +215,15 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
   }
 
   if (state.status === "waiting") {
-    return <WaitingRoom state={state} currentUserId={humanId} selectColor={selectColor} startGame={startGame} />;
+    return (
+      <WaitingRoom
+        state={state}
+        currentUserId={humanId}
+        selectColor={selectColor}
+        updateInitials={updateInitials}
+        startGame={startGame}
+      />
+    );
   }
 
   return (
@@ -402,17 +428,21 @@ function WaitingRoom({
   state,
   currentUserId,
   selectColor,
+  updateInitials,
   startGame,
 }: {
   state: GameState;
   currentUserId: string;
   selectColor: (c: string) => void;
+  updateInitials: (initials: string) => void;
   startGame: () => void;
 }) {
   const me = state.players.find((p) => p.id === currentUserId);
   const isHost = state.players[0]?.id === currentUserId;
   const allPicked = state.players.every((p) => p.color);
-  
+  const [editingInitials, setEditingInitials] = useState(false);
+  const [initialsInput, setInitialsInput] = useState("");
+
   // En solo, on a juste 2 joueurs (human + IA). En multi, ça peut être 2 ou 4 (on autorise le lancement si >= 2).
   const canStart = allPicked && state.players.length >= 2;
 
@@ -430,6 +460,7 @@ function WaitingRoom({
       <div className="flex flex-wrap justify-center gap-6">
         {state.players.map((p) => {
           const colors = p.color ? PLAYER_COLORS[p.color].light : null;
+          const isMe = p.id === currentUserId;
           return (
             <div key={p.id} className="flex flex-col items-center gap-2">
               <div
@@ -442,7 +473,46 @@ function WaitingRoom({
               >
                 {p.initials}
               </div>
-              <span className="text-sm font-bold">{p.displayName}</span>
+              {isMe && editingInitials ? (
+                <div className="flex items-center gap-1">
+                  <input
+                    type="text"
+                    maxLength={3}
+                    autoFocus
+                    value={initialsInput}
+                    onChange={(e) => setInitialsInput(e.target.value.toUpperCase())}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && initialsInput.trim()) {
+                        updateInitials(initialsInput);
+                        setEditingInitials(false);
+                      }
+                    }}
+                    className="w-14 rounded-md border-2 border-ink bg-surface px-1 py-0.5 text-center font-display text-sm uppercase text-ink outline-none"
+                  />
+                  <button
+                    onClick={() => {
+                      if (initialsInput.trim()) updateInitials(initialsInput);
+                      setEditingInitials(false);
+                    }}
+                    className="rounded-md border-2 border-ink bg-[var(--player-blue-fill)] px-2 py-0.5 font-display text-xs text-[var(--player-blue-text)]"
+                  >
+                    OK
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    if (isMe) {
+                      setInitialsInput(p.initials);
+                      setEditingInitials(true);
+                    }
+                  }}
+                  className={`flex items-center gap-1 text-sm font-bold ${isMe ? "hover:opacity-70" : ""}`}
+                >
+                  {p.displayName}
+                  {isMe && <Pencil size={12} className="opacity-50" />}
+                </button>
+              )}
             </div>
           );
         })}

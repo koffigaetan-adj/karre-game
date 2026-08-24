@@ -19,6 +19,7 @@ interface UseRoomSocketResult {
   error: string | null;
   playEdge: (type: EdgeType, row: number, col: number) => void;
   selectColor: (color: string) => void;
+  updateInitials: (initials: string) => void;
   startGame: () => void;
   sendForfeit: () => void;
   sendRematch: () => void;
@@ -47,7 +48,10 @@ export function useRoomSocket({
   useEffect(() => {
     if (!enabled) return;
 
-    const base = process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8000";
+    let base = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8000";
+    if (base.startsWith("http://")) base = base.replace("http://", "ws://");
+    if (base.startsWith("https://")) base = base.replace("https://", "wss://");
+    if (base.endsWith("/")) base = base.slice(0, -1);
     const params = new URLSearchParams({ player_id: playerId, display_name: displayName, initials, size });
     const ws = new WebSocket(`${base}/ws/rooms/${roomId}?${params.toString()}`);
     wsRef.current = ws;
@@ -76,7 +80,11 @@ export function useRoomSocket({
   const selectColor = (color: string) => {
     wsRef.current?.send(JSON.stringify({ type: "select_color", color }));
   };
-  
+
+  const updateInitials = (newInitials: string) => {
+    wsRef.current?.send(JSON.stringify({ type: "update_initials", initials: newInitials }));
+  };
+
   const startGame = () => {
     wsRef.current?.send(JSON.stringify({ type: "start_game" }));
   };
@@ -93,5 +101,5 @@ export function useRoomSocket({
     wsRef.current?.send(JSON.stringify({ type: "chat", text }));
   };
 
-  return { state, connected, error, playEdge, selectColor, startGame, sendForfeit, sendRematch, sendChat };
+  return { state, connected, error, playEdge, selectColor, updateInitials, startGame, sendForfeit, sendRematch, sendChat };
 }

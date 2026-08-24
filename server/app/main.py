@@ -98,6 +98,13 @@ async def room_socket(websocket: WebSocket, room_id: str, player_id: str, displa
                     if p.id == player_id:
                         p.color = new_color
                 await room.broadcast()
+            elif data.get("type") == "update_initials":
+                new_initials = (data.get("initials") or "").strip().upper()[:3]
+                if new_initials and room.state.status == "waiting":
+                    for p in room.state.players:
+                        if p.id == player_id:
+                            p.initials = new_initials
+                    await room.broadcast()
             elif data.get("type") == "start_game":
                 if len(room.state.players) >= 2 and all(p.color for p in room.state.players):
                     room.state.status = "playing"

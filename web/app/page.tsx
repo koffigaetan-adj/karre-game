@@ -32,7 +32,7 @@ export default function LobbyPage() {
   const joinRoom = () => requireAuth(() => joinCode && router.push(`/game/${joinCode}?mode=join`));
 
   return (
-    <main className="relative flex min-h-dvh flex-col items-center justify-center gap-8 bg-ground px-6 text-ink transition-colors">
+    <main className="relative flex min-h-dvh flex-col items-center justify-center gap-10 bg-ground px-6 py-12 text-ink transition-colors">
       {/* Profil positionné en haut à droite */}
       <div className="absolute right-6 top-6 flex items-center gap-4">
         <button
@@ -57,13 +57,23 @@ export default function LobbyPage() {
         )}
       </div>
 
+      <div className="text-center max-w-lg mt-12 md:mt-0">
+        <div className="flex justify-center mb-6">
+          <Image src="/logo-light.png" alt="Karré Logo" width={96} height={96} className="dark:hidden drop-shadow-md" />
+          <Image src="/logo-dark.png" alt="Karré Logo" width={96} height={96} className="hidden dark:block drop-shadow-md" />
+        </div>
+        <h1 className="font-display text-5xl md:text-6xl font-black tracking-tight text-ink mb-4">
+          Karre Game's
+        </h1>
+        <p className="text-lg font-bold text-ink/70">
+          Redécouvrez le grand classique du jeu de points et carrés. Jouez en solo contre l'ordinateur ou défiez vos amis en temps réel !
+        </p>
+      </div>
+
       {/* Le "couvercle de boîte" du jeu */}
       <div className="w-full max-w-md rounded-xl border-[3px] border-ink bg-surface p-8 shadow-stack">
-        <div className="mb-8 text-center flex flex-col items-center gap-2">
-          <Image src="/logo-light.png" alt="Karré Logo" width={80} height={80} className="mb-2 dark:hidden" />
-          <Image src="/logo-dark.png" alt="Karré Logo" width={80} height={80} className="mb-2 hidden dark:block" />
-          <h1 className="font-display text-5xl font-black tracking-tight text-ink">Karre Game's</h1>
-          <p className="text-sm font-bold text-ink/60">Le classique réinventé.</p>
+        <div className="mb-6 text-center">
+          <h2 className="font-display text-2xl uppercase tracking-wide text-ink">Nouvelle partie</h2>
         </div>
         <div className="grid gap-4">
           <div className="flex justify-center gap-2 mb-2">

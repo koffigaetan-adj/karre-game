@@ -624,12 +624,19 @@ function WaitingRoom({
       <div className="mt-4 flex flex-col items-center gap-3">
         {isHost ? (
           <button
-            disabled={!canStart}
             onClick={() => {
+              if (!canStart) {
+                if (state.players.length < 2) {
+                  alert("Vos adversaires n'ont pas encore rejoint la partie !");
+                } else {
+                  alert("Tout le monde n'a pas encore choisi sa couleur !");
+                }
+                return;
+              }
               primeAudio();
               startGame();
             }}
-            className="rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-8 py-4 font-bold text-xl text-[var(--player-blue-text)] shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
+            className="rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-8 py-4 font-bold text-xl text-[var(--player-blue-text)] shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
           >
             Lancer la partie
           </button>

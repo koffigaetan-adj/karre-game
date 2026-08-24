@@ -32,25 +32,25 @@ export default function LobbyPage() {
   const joinRoom = () => requireAuth(() => joinCode && router.push(`/game/${joinCode}?mode=join`));
 
   return (
-    <main className="relative flex min-h-dvh flex-col items-center justify-center gap-10 overflow-x-hidden bg-transparent px-6 py-12 text-ink transition-colors">
+    <main className="relative flex h-[100dvh] flex-col items-center justify-center gap-4 overflow-hidden bg-transparent px-4 py-6 text-ink transition-colors md:gap-10 md:px-6 md:py-12">
       {/* Header Profile / Rules */}
-      <div className="absolute right-6 top-6 z-50 flex items-center gap-4">
+      <div className="absolute right-4 top-4 z-50 flex items-center gap-3 md:right-6 md:top-6 md:gap-4">
         <button
           onClick={() => setShowInfo(true)}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-ink-border bg-[var(--player-yellow-fill)] text-[var(--player-yellow-text)] shadow-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px"
+          className="flex h-9 w-9 md:h-10 md:w-10 items-center justify-center rounded-full border border-ink-border bg-[var(--player-yellow-fill)] text-[var(--player-yellow-text)] shadow-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px"
           title="Règles du jeu"
         >
-          <Info size={20} />
+          <Info size={18} className="md:w-5 md:h-5" />
         </button>
 
         {status === "loading" ? (
-          <div className="h-11 w-32 animate-pulse rounded-full border border-line bg-surface" />
+          <div className="h-9 w-24 md:h-11 md:w-32 animate-pulse rounded-full border border-line bg-surface" />
         ) : session ? (
           <ProfileMenu />
         ) : (
           <button
             onClick={() => signIn("google")}
-            className="rounded-full border border-ink-border bg-[var(--player-blue-fill)] px-5 py-2 text-sm font-bold text-[var(--player-blue-text)] shadow-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px"
+            className="rounded-full border border-ink-border bg-[var(--player-blue-fill)] px-4 py-1.5 md:px-5 md:py-2 text-xs md:text-sm font-bold text-[var(--player-blue-text)] shadow-sm transition-all hover:-translate-y-1 active:translate-x-px active:translate-y-px"
           >
             Se connecter
           </button>
@@ -58,26 +58,26 @@ export default function LobbyPage() {
       </div>
 
       {/* Hero Content */}
-      <div className="relative z-10 w-full min-w-0 max-w-lg mt-12 text-center md:mt-0">
-        <div className="flex justify-center mb-6">
-          <Image src="/logo-light.png" alt="Karré Logo" width={112} height={112} className="dark:hidden drop-shadow-md hover:scale-105 transition-transform duration-300" />
-          <Image src="/logo-dark.png" alt="Karré Logo" width={112} height={112} className="hidden dark:block drop-shadow-md hover:scale-105 transition-transform duration-300" />
+      <div className="relative z-10 w-full min-w-0 max-w-lg mt-8 text-center sm:mt-0">
+        <div className="flex justify-center mb-4 md:mb-6">
+          <Image src="/logo-light.png" alt="Karré Logo" width={96} height={96} className="w-20 h-20 md:w-28 md:h-28 dark:hidden drop-shadow-md hover:scale-105 transition-transform duration-300" />
+          <Image src="/logo-dark.png" alt="Karré Logo" width={96} height={96} className="w-20 h-20 md:w-28 md:h-28 hidden dark:block drop-shadow-md hover:scale-105 transition-transform duration-300" />
         </div>
-        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-ink mb-4 drop-shadow-sm">
+        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-ink mb-2 md:mb-4 drop-shadow-sm">
           Karre Game's
         </h1>
-        <p className="text-base sm:text-lg font-bold text-ink/80 max-w-md mx-auto">
+        <p className="text-sm sm:text-lg font-bold text-ink/80 max-w-md mx-auto">
           Redécouvrez le classique du jeu de points et carrés.
         </p>
       </div>
 
       {/* Main Card */}
-      <div className="relative z-10 w-full min-w-0 max-w-md rounded-2xl border border-ink-border bg-surface/70 backdrop-blur-xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300">
-        <div className="mb-8 text-center">
-          <h2 className="font-display text-2xl uppercase tracking-wide text-ink">Nouvelle partie</h2>
+      <div className="relative z-10 w-full min-w-0 max-w-md rounded-2xl border border-ink-border bg-surface/70 backdrop-blur-xl p-5 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300">
+        <div className="mb-4 md:mb-8 text-center">
+          <h2 className="font-display text-xl md:text-2xl uppercase tracking-wide text-ink">Nouvelle partie</h2>
         </div>
         
-        <div className="grid gap-6">
+        <div className="grid gap-4 md:gap-6">
           {/* Size Selector */}
           <div className="flex justify-center">
             <div className="inline-flex rounded-full border border-ink-border/20 bg-ground/50 p-1 backdrop-blur-sm">
@@ -85,7 +85,7 @@ export default function LobbyPage() {
                 <button
                   key={s}
                   onClick={() => setSelectedSize(s)}
-                  className={`rounded-full px-4 py-2 text-xs font-bold transition-all ${
+                  className={`rounded-full px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-xs font-bold transition-all ${
                     selectedSize === s
                       ? "bg-ink text-surface shadow-md"
                       : "text-ink/60 hover:text-ink hover:bg-ink/5"
@@ -100,30 +100,30 @@ export default function LobbyPage() {
           </div>
 
           {/* Game Modes */}
-          <div className="grid gap-4 mt-2">
+          <div className="grid gap-3 md:gap-4 mt-1 md:mt-2">
             <button
               onClick={startSolo}
-              className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-4 py-4 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex items-center justify-between"
+              className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-yellow-fill)] to-[var(--player-orange-fill)] text-[var(--player-yellow-text)] shadow-inner">
-                  <Bot size={20} className="group-hover:scale-110 transition-transform" />
+                <div className="flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-yellow-fill)] to-[var(--player-orange-fill)] text-[var(--player-yellow-text)] shadow-inner">
+                  <Bot size={16} className="md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
                 </div>
                 <span>Jouer solo (contre le robot)</span>
               </div>
-              <Play size={16} className="opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+              <Play size={14} className="md:w-4 md:h-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
             </button>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 md:gap-4">
               <button
                 onClick={() => createRoom(2)}
-                className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-4 py-4 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-3"
+                className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-2 md:gap-3"
               >
-                <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-blue-fill)] to-[var(--player-cyan-fill)] text-[var(--player-blue-text)] shadow-inner">
-                  <Users size={24} className="group-hover:scale-110 transition-transform" />
-                  <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                <div className="relative flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-blue-fill)] to-[var(--player-cyan-fill)] text-[var(--player-blue-text)] shadow-inner">
+                  <Users size={20} className="md:w-6 md:h-6 group-hover:scale-110 transition-transform" />
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3 md:h-3.5 md:w-3.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--player-blue-text)] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[var(--player-blue-text)] border-[1.5px] border-[var(--player-blue-fill)]"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 md:h-3.5 md:w-3.5 bg-[var(--player-blue-text)] border-[1.5px] border-[var(--player-blue-fill)]"></span>
                   </span>
                 </div>
                 <span>Partie à 2 joueurs</span>
@@ -131,13 +131,13 @@ export default function LobbyPage() {
               
               <button
                 onClick={() => createRoom(4)}
-                className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-4 py-4 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-3"
+                className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-2 md:gap-3"
               >
-                <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-green-fill)] to-[#10b981] text-[var(--player-green-text)] shadow-inner">
-                  <Users size={24} className="group-hover:scale-110 transition-transform" />
-                  <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                <div className="relative flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-green-fill)] to-[#10b981] text-[var(--player-green-text)] shadow-inner">
+                  <Users size={20} className="md:w-6 md:h-6 group-hover:scale-110 transition-transform" />
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3 md:h-3.5 md:w-3.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--player-green-text)] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[var(--player-green-text)] border-[1.5px] border-[var(--player-green-fill)]"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 md:h-3.5 md:w-3.5 bg-[var(--player-green-text)] border-[1.5px] border-[var(--player-green-fill)]"></span>
                   </span>
                 </div>
                 <span>Partie à 4 joueurs</span>

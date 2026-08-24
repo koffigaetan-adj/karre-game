@@ -246,7 +246,16 @@ export function ProfileMenu() {
             {matches.length > 0 && (
               <div className="border-t-2 border-line p-4">
                 <button
-                  onClick={clearHistory}
+                  onClick={() => {
+                    clearHistory(); // Efface du state local (Zustand)
+                    setMatches([]); // Efface de l'affichage courant
+                    if (session.user?.email) {
+                      const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+                      fetch(`${baseUrl}/users/${session.user.email}/history`, {
+                        method: "DELETE",
+                      }).catch((err) => console.error("Erreur suppression historique:", err));
+                    }
+                  }}
                   className="w-full rounded-lg border-2 border-ink bg-[var(--player-red-soft)] px-4 py-2 text-sm font-bold text-[var(--player-red-text)] transition-all hover:opacity-80 active:translate-x-px active:translate-y-px"
                 >
                   Effacer l'historique

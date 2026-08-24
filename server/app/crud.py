@@ -15,6 +15,10 @@ async def get_or_create_user(db: AsyncSession, player_id: str, display_name: str
         await db.commit()
     return user
 
+async def get_game_status(db: AsyncSession, room_id: str):
+    result = await db.execute(select(Game.status).where(Game.id == room_id))
+    return result.scalar_one_or_none()
+
 async def save_game_state(db: AsyncSession, room_id: str, state: GameState):
     # Sérialiser l'état complet
     state_dict = state.model_dump(mode="json", by_alias=True)
@@ -88,3 +92,10 @@ async def get_user_history(db: AsyncSession, user_id: str):
         })
         
     return history
+
+from sqlalchemy import delete
+
+async def clear_user_history(db: AsyncSession, user_id: str):
+    stmt = delete(GamePlayer).where(GamePlayer.user_id == user_id)
+    await db.execute(stmt)
+    await db.commit()

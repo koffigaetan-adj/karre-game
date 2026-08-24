@@ -74,10 +74,27 @@ async def get_history(user_id: str):
         history = await get_user_history(db, user_id)
         return {"matches": history}
 
+@app.delete("/users/{user_id}/history")
+async def delete_history(user_id: str):
+    async with AsyncSessionLocal() as db:
+        from .crud import clear_user_history
+        await clear_user_history(db, user_id)
+        return {"status": "ok"}
+
 
 @app.websocket("/ws/rooms/{room_id}")
 async def room_socket(websocket: WebSocket, room_id: str, player_id: str, display_name: str, initials: str, size: str = "large"):
     await websocket.accept()
+    
+    # Vérifier si la partie est déjà terminée en base de données
+    async with AsyncSessionLocal() as db:
+        from .crud import get_game_status
+        status = await get_game_status(db, room_id)
+        if status == "finished":
+            await websocket.send_json({"type": "error", "message": "Cette partie est déjà terminée et ne peut plus être rejointe."})
+            await websocket.close()
+            return
+
     room = ROOMS.setdefault(room_id, Room(create_empty_game_state(room_id, size, players=[])))
 
     if not any(p.id == player_id for p in room.state.players):

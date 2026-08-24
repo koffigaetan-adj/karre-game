@@ -489,7 +489,8 @@ function WaitingRoom({
           <div className="flex flex-wrap justify-center gap-3 max-w-sm">
             <button
               onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
+                const url = window.location.origin + window.location.pathname;
+                navigator.clipboard.writeText(url);
                 alert("Lien d'invitation copié !");
               }}
               className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
@@ -499,7 +500,8 @@ function WaitingRoom({
             </button>
             <button
               onClick={() => {
-                const text = `Je t'invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${window.location.href}\n\nÀ très bientôt !`;
+                const url = window.location.origin + window.location.pathname;
+                const text = `Rejoins ma partie sur Karre Game's !\nCode du salon : ${state.roomId}\nLien direct : ${url}`;
                 navigator.clipboard.writeText(text);
                 alert("Message d'invitation copié !");
               }}
@@ -510,7 +512,8 @@ function WaitingRoom({
             </button>
             <button
               onClick={() => {
-                const text = `Je t'invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${window.location.href}\n\nÀ très bientôt !`;
+                const url = window.location.origin + window.location.pathname;
+                const text = `Rejoins ma partie sur Karre Game's !\nCode du salon : ${state.roomId}\nLien direct : ${url}`;
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
               }}
               className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-[#25D366] px-4 py-2 text-sm font-bold text-white shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
@@ -520,7 +523,8 @@ function WaitingRoom({
             </button>
             <button
               onClick={() => {
-                const text = `Je t'invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${window.location.href}\n\nÀ très bientôt !`;
+                const url = window.location.origin + window.location.pathname;
+                const text = `Rejoins ma partie sur Karre Game's !\nCode du salon : ${state.roomId}\nLien direct : ${url}`;
                 window.location.href = `mailto:?subject=Invitation à jouer à Karre Game's&body=${encodeURIComponent(text)}`;
               }}
               className="flex items-center justify-center gap-2 rounded-lg border-2 border-ink bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"

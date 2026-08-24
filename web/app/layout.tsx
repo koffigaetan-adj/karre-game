@@ -43,6 +43,21 @@ export const metadata: Metadata = {
   other: {
     "mobile-web-app-capable": "yes",
   },
+  openGraph: {
+    title: "Karre Game's",
+    description: "Rejoins-moi pour une partie de Karré en temps réel !",
+    url: "https://karre-games.vercel.app",
+    siteName: "Karre Game's",
+    images: [
+      {
+        url: "https://karre-games.vercel.app/logo-light.png", // absolute URL is recommended for OG images
+        width: 512,
+        height: 512,
+      },
+    ],
+    locale: "fr_FR",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

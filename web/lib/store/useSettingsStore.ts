@@ -22,7 +22,7 @@ export const useSettingsStore = create<SettingsState>()(
       setCustomInitials: (initials) => set({ customInitials: initials }),
     }),
     {
-      name: "karre-settings",
+      name: "Kwadra-settings",
       storage: createJSONStorage(() => safeStorage),
     }
   )

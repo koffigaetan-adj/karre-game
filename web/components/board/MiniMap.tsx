@@ -11,7 +11,7 @@ interface MiniMapProps {
 /**
  * Vue miniature non-interactive de l'arène, pour se repérer une fois zoomé
  * sur le plateau principal (mobile notamment). La forme en losange vient des
- * cases jouables elles-mêmes (voir KarreBoard) — pas d'une rotation SVG.
+ * cases jouables elles-mêmes (voir KwadraBoard) — pas d'une rotation SVG.
  */
 export function MiniMap({ state, className = "" }: MiniMapProps) {
   const { rows, cols } = state;

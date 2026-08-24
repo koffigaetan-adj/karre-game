@@ -4,7 +4,7 @@
  * La grille logique reste un plateau rectangulaire classique (dots-and-boxes) :
  * `rows` x `cols` cases, (rows+1) x cols bordures horizontales, rows x (cols+1)
  * bordures verticales. L'aspect "losange/arène" est purement visuel : le
- * <KarreBoard> fait pivoter le rendu SVG de 45°. Garder la logique sur une
+ * <KwadraBoard> fait pivoter le rendu SVG de 45°. Garder la logique sur une
  * grille carrée simplifie énormément la détection de capture et le
  * multijoueur (pas de coordonnées spéciales à synchroniser).
  */

@@ -19,7 +19,7 @@ interface HoveredEdgeInfo {
   col: number;
 }
 
-interface KarreBoardProps {
+interface KwadraBoardProps {
   state: GameState;
   /** id de l'utilisateur local ; omis en mode hotseat (tout le monde peut cliquer) */
   currentUserId?: string;
@@ -38,7 +38,7 @@ interface KarreBoardProps {
  * Pan/zoom tactile géré via transform CSS (pas de dépendance externe) —
  * remplaçable par react-zoom-pan-pinch si besoin de gestes plus riches.
  */
-export function KarreBoard({
+export function KwadraBoard({
   state,
   currentUserId,
   onPlayEdge,
@@ -46,7 +46,7 @@ export function KarreBoard({
   className = "",
   onHoverEdge,
   remoteHover = null,
-}: KarreBoardProps) {
+}: KwadraBoardProps) {
   const { rows, cols } = state;
 
   const W = cols * CELL;
@@ -90,7 +90,7 @@ export function KarreBoard({
         const owner = state.boxes[r][c];
         const player = state.players.find((p) => p.id === owner);
         const colorHex = player?.color ? PLAYER_COLORS[player.color].light.fill : "#ffffff";
-        
+
         // Coordonnées approximatives pour le confetti
         // Le plateau est centré, on lance depuis le centre global
         confetti({
@@ -116,7 +116,7 @@ export function KarreBoard({
     if (!interactive || !isMyTurn) return;
     const grid = type === "h" ? state.horizontalEdges : state.verticalEdges;
     if (grid[row][col] !== null) return;
-    
+
     playClick(sfxEnabled);
     onPlayEdge(type, row, col);
   };
@@ -177,7 +177,7 @@ export function KarreBoard({
                       height={CELL - 6}
                       rx={4}
                       fill={colors ? colors.light.fill : "var(--ground)"}
-                      className={justCaptured.has(key) ? "karre-box-pop" : ""}
+                      className={justCaptured.has(key) ? "Kwadra-box-pop" : ""}
                       style={{ transformOrigin: `${bx}px ${by}px` }}
                     />
                     {colors && (
@@ -341,7 +341,7 @@ export function KarreBoard({
                   const b3 = row < rows && col > 0 ? state.boxes[row][col - 1] : "OUTSIDE";
                   const b4 = row < rows && col < cols ? state.boxes[row][col] : "OUTSIDE";
                   if (b1 === "OUTSIDE" && b2 === "OUTSIDE" && b3 === "OUTSIDE" && b4 === "OUTSIDE") return null;
-                  
+
                   return (
                     <circle
                       key={`dot-${row}-${col}`}
@@ -392,7 +392,7 @@ function usePanZoom() {
   const onPointerDown = (e: React.PointerEvent) => {
     try {
       (e.target as Element).setPointerCapture?.(e.pointerId);
-    } catch (err) {}
+    } catch (err) { }
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.current.size === 1) {
       dragStart.current = { x: e.clientX, y: e.clientY, panX: pan.x, panY: pan.y };
@@ -425,7 +425,7 @@ function usePanZoom() {
   const endPointer = (e: React.PointerEvent) => {
     try {
       (e.target as Element).releasePointerCapture?.(e.pointerId);
-    } catch (err) {}
+    } catch (err) { }
     pointers.current.delete(e.pointerId);
     if (pointers.current.size < 2) lastDist.current = null;
     if (pointers.current.size === 0) dragStart.current = null;

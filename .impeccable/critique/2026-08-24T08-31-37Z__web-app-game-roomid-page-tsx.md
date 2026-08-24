@@ -17,7 +17,7 @@ Method: dual-agent (A: aaf677c5aa83d90c6 · B: aac1a2dd660aa69ee) — run sequen
 | 1 | Visibility of System Status | 2 | WebSocket disconnect mid-game leaves the board frozen with zero feedback |
 | 2 | Match System / Real World | 3 | Permanently-disabled "Passer" button represents a move that doesn't exist in the game's rules |
 | 3 | User Control and Freedom | 3 | Forfeit/rematch are solid; no recovery path once a connection silently drops |
-| 4 | Consistency and Standards | 2 | Settings toggles use raw `neutral-300/700` gray, violating the "never gray" brand rule; "Karre Game's" vs "Karré" naming drift |
+| 4 | Consistency and Standards | 2 | Settings toggles use raw `neutral-300/700` gray, violating the "never gray" brand rule; "Kwadra" vs "Karré" naming drift |
 | 5 | Error Prevention | 2 | Empty join-code silently no-ops with no message |
 | 6 | Recognition Rather Than Recall | 3 | Room code, player list, minimap stay visible during play |
 | 7 | Flexibility and Efficiency | 2 | No shortcuts, no remembered preferences, fixed bot pacing |
@@ -28,7 +28,7 @@ Method: dual-agent (A: aaf677c5aa83d90c6 · B: aac1a2dd660aa69ee) — run sequen
 
 ## Design Specificity Verdict
 
-**LLM assessment**: The token system (kraft/walnut palette, ink borders, stacked-cardboard shadows, flat print-ink player colors) is genuinely bespoke — this is not generic Tailwind-default styling. But the single most identity-defining claim in your own product brief — a *diamond-shaped arena* — is not actually built. `KarreBoard.tsx` renders a plain axis-aligned rectangular grid; there is no 45° rotation transform anywhere in the code, despite a comment in the file itself claiming "pivotée de 45° au rendu," and despite `MiniMap.tsx`'s comment claiming the opposite (that the diamond "comes from the playable cells themselves, not a rotation"). Neither is true — the board is a rectangle. Since the board is what a player looks at for 95% of a session, this is the biggest specificity gap: right now, strip the kraft coloring away and this could be any dots-and-boxes clone.
+**LLM assessment**: The token system (kraft/walnut palette, ink borders, stacked-cardboard shadows, flat print-ink player colors) is genuinely bespoke — this is not generic Tailwind-default styling. But the single most identity-defining claim in your own product brief — a *diamond-shaped arena* — is not actually built. `KwadraBoard.tsx` renders a plain axis-aligned rectangular grid; there is no 45° rotation transform anywhere in the code, despite a comment in the file itself claiming "pivotée de 45° au rendu," and despite `MiniMap.tsx`'s comment claiming the opposite (that the diamond "comes from the playable cells themselves, not a rotation"). Neither is true — the board is a rectangle. Since the board is what a player looks at for 95% of a session, this is the biggest specificity gap: right now, strip the kraft coloring away and this could be any dots-and-boxes clone.
 
 **Deterministic scan**: `detect.mjs` returned exit code 0, zero findings, against both `web/app` and `web/components`. This is a static source scanner — it caught real things like the token system being clean and gradient-free, but it does **not** catch layout/viewport bugs, missing typefaces, or contrast failures, all of which were found manually. Treat a clean detector run as "no obvious code smells," not "no UX problems."
 
@@ -40,7 +40,7 @@ The *material system* (color, shadow, borders, no-gradient discipline) is the st
 
 ## What's Working
 
-- **The capture moment** (`KarreBoard.tsx`): thick ink-stroked tiles, flat player-color fills, ink "rivet" dots at every grid intersection, plus the pop/shake/confetti feedback loop on capture — this is the most game-specific, most alive part of the whole app.
+- **The capture moment** (`KwadraBoard.tsx`): thick ink-stroked tiles, flat player-color fills, ink "rivet" dots at every grid intersection, plus the pop/shake/confetti feedback loop on capture — this is the most game-specific, most alive part of the whole app.
 - **The token system** (`globals.css`): kraft/walnut backgrounds, `shadow-stack`/`shadow-stack-sm`/`shadow-stack-pressed`, ink borders — consistently applied across buttons, cards, and modals. Confirmed zero gradients anywhere (`grep -rn "gradient"` returned nothing) — the one hard brand constraint is fully honored.
 - **Dark mode** is a real reinterpretation (warm walnut/lamp-lit), not a naive gray inversion — each player color gets distinct light/dark values instead of reusing the same hex.
 
@@ -53,7 +53,7 @@ Suggested command: `$impeccable adapt`
 
 **[P0] The board isn't actually a diamond**
 Why it matters: your own product positioning says the diamond arena carries the brand identity equally with real-time multiplayer. The shipped board is a plain rectangle — comments in the code even contradict each other about whether a rotation exists. This is the biggest gap between what the product claims to be and what it visibly is.
-Fix: either implement the rotation (or the Manhattan-distance diamond-shape approach already used elsewhere in this project's history) on `KarreBoard.tsx`, or rewrite the comments/positioning copy to stop promising a shape that isn't there.
+Fix: either implement the rotation (or the Manhattan-distance diamond-shape approach already used elsewhere in this project's history) on `KwadraBoard.tsx`, or rewrite the comments/positioning copy to stop promising a shape that isn't there.
 Suggested command: `$impeccable overdrive` (board is the signature component; this deserves a real push, not a patch)
 
 **[P1] Native `window.alert()` breaks the crafted feel at reassurance-critical moments**
@@ -84,7 +84,7 @@ Suggested command: `$impeccable audit` (to catch the rest of this drift systemat
 - Only one typeface is actually loaded (`Poppins`, via `next/font/google` in `layout.tsx`) — `tailwind.config.ts` maps both `font-display` and `font-body` to the same `--font-poppins` variable. DESIGN.md's documented two-voice system (a condensed display face + a separate body face) does not exist in the running app; this was found independently by both assessments.
 - WhatsApp share button hardcodes brand green `#25D366`, which visually clashes with the flatter, desaturated pine-green player color used right next to it.
 - `PlayerSidebar.tsx` ships a permanently-disabled "Passer" (Skip) button with no tooltip — always visible, never usable, represents a move dots-and-boxes doesn't have.
-- App metadata/titles say "Karre Game's" everywhere, inconsistent with the "Karré" brand name.
+- App metadata/titles say "Kwadra" everywhere, inconsistent with the "Karré" brand name.
 - Confetti always originates from a fixed screen point rather than the captured box's actual position, so the celebration feels disconnected from the specific board event on wider desktop layouts.
 - Dark mode could not be directly screenshotted in this pass (gated behind a logged-in session) — its visuals beyond the raw CSS token values are unverified.
 

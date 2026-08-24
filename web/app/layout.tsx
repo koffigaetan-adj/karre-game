@@ -19,13 +19,13 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Karre Game's",
+  title: "Kwadra",
   description: "Jeu de stratégie multijoueur sur grille en forme d'arène",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Karre Game's",
+    title: "Kwadra",
   },
   // Favicon transparent, K noir en clair / blanc en sombre — suit le thème du
   // système d'exploitation (prefers-color-scheme), pas le thème choisi dans
@@ -38,13 +38,13 @@ export const metadata: Metadata = {
     "mobile-web-app-capable": "yes",
   },
   openGraph: {
-    title: "Karre Game's",
+    title: "Kwadra",
     description: "Rejoins-moi pour une partie de Karré en temps réel !",
-    url: "https://karre-games.vercel.app",
-    siteName: "Karre Game's",
+    url: "https://Kwadra-games.vercel.app",
+    siteName: "Kwadra",
     images: [
       {
-        url: "https://karre-games.vercel.app/logo-light.png", // absolute URL is recommended for OG images
+        url: "https://Kwadra-games.vercel.app/logo-light.png", // absolute URL is recommended for OG images
         width: 512,
         height: 512,
       },

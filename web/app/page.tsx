@@ -64,7 +64,7 @@ export default function LobbyPage() {
           <Image src="/logo-dark.png" alt="Karré Logo" width={96} height={96} className="w-20 h-20 md:w-28 md:h-28 hidden dark:block drop-shadow-md hover:scale-105 transition-transform duration-300" />
         </div>
         <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-ink mb-2 md:mb-4 drop-shadow-sm">
-          Karre Game's
+          Kwadra
         </h1>
         <p className="text-sm sm:text-lg font-bold text-ink/80 max-w-md mx-auto">
           Redécouvrez le classique du jeu de points et carrés.
@@ -76,7 +76,7 @@ export default function LobbyPage() {
         <div className="mb-4 md:mb-8 text-center">
           <h2 className="font-display text-xl md:text-2xl uppercase tracking-wide text-ink">Nouvelle partie</h2>
         </div>
-        
+
         <div className="grid gap-4 md:gap-6">
           {/* Size Selector */}
           <div className="flex justify-center">
@@ -85,11 +85,10 @@ export default function LobbyPage() {
                 <button
                   key={s}
                   onClick={() => setSelectedSize(s)}
-                  className={`rounded-full px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-xs font-bold transition-all ${
-                    selectedSize === s
+                  className={`rounded-full px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-xs font-bold transition-all ${selectedSize === s
                       ? "bg-ink text-surface shadow-md"
                       : "text-ink/60 hover:text-ink hover:bg-ink/5"
-                  }`}
+                    }`}
                 >
                   {s === "small" && "Petite (9x9)"}
                   {s === "medium" && "Moyenne (13x13)"}
@@ -128,7 +127,7 @@ export default function LobbyPage() {
                 </div>
                 <span>Partie à 2 joueurs</span>
               </button>
-              
+
               <button
                 onClick={() => createRoom(4)}
                 className="group relative overflow-hidden rounded-xl border border-transparent bg-surface/80 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/30 dark:hover:bg-black/30 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-2 md:gap-3"

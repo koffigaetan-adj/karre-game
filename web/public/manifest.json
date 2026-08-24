@@ -1,6 +1,6 @@
 {
-  "name": "Karre Game's",
-  "short_name": "Karre",
+  "name": "Kwadra",
+  "short_name": "Kwadra",
   "description": "Jeu de stratégie multijoueur sur grille en forme d'arène",
   "start_url": "/",
   "scope": "/",

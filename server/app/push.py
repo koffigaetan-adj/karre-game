@@ -21,7 +21,7 @@ from .crud import get_push_subscriptions, delete_push_subscription
 
 VAPID_PUBLIC_KEY = os.getenv("VAPID_PUBLIC_KEY", "")
 VAPID_PRIVATE_KEY = os.getenv("VAPID_PRIVATE_KEY", "")
-VAPID_CLAIM_EMAIL = os.getenv("VAPID_CLAIM_EMAIL", "mailto:contact@karre-games.app")
+VAPID_CLAIM_EMAIL = os.getenv("VAPID_CLAIM_EMAIL", "mailto:contact@Kwadra-games.app")
 
 
 async def send_turn_notification(user_id: str, room_id: str, opponent_name: str) -> None:

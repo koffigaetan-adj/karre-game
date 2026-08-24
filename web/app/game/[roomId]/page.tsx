@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState, Suspense } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
 
-import { KarreBoard } from "@/components/board/KarreBoard";
+import { KwadraBoard } from "@/components/board/KwadraBoard";
 import { MiniMap } from "@/components/board/MiniMap";
 import { PlayerSidebar } from "@/components/layout/PlayerSidebar";
 import { applyMove, createEmptyGameState } from "@/lib/game/engine";
@@ -482,7 +482,7 @@ function GameView({
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-display text-2xl leading-none text-ink">
-              Karre Game's <span className="text-base font-bold opacity-50">· Salon {roomId}</span>
+              Kwadra <span className="text-base font-bold opacity-50">· Salon {roomId}</span>
             </h1>
             <div className="flex items-center gap-2">
               <span className="text-sm font-bold text-[var(--player-blue-fill)]">{statusLabel}</span>
@@ -545,7 +545,7 @@ function GameView({
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-ground/80 p-6 backdrop-blur-sm">
             <div className="w-full max-w-sm rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
               <h2 className="mb-2 font-display text-2xl uppercase tracking-wide text-ink">En attente</h2>
-              
+
               <div className="mb-6 mt-4 flex justify-center gap-2">
                 <div className="h-3 w-3 animate-bounce rounded-full bg-[var(--player-blue-fill)]" style={{ animationDelay: "0ms" }} />
                 <div className="h-3 w-3 animate-bounce rounded-full bg-[var(--player-red-fill)]" style={{ animationDelay: "150ms" }} />
@@ -560,10 +560,10 @@ function GameView({
                   onClick={() => {
                     if (navigator.share) {
                       navigator.share({
-                        title: "Karre Game's",
+                        title: "Kwadra",
                         text: "Rejoignez ma partie de Karré !",
                         url: window.location.href,
-                      }).catch(() => {});
+                      }).catch(() => { });
                     } else {
                       navigator.clipboard.writeText(window.location.href);
                       alert("Lien copié dans le presse-papiers !");
@@ -620,7 +620,7 @@ function GameView({
         )}
 
         <div className="relative mx-auto w-full max-w-2xl">
-          <KarreBoard
+          <KwadraBoard
             state={state}
             currentUserId={currentUserId}
             onPlayEdge={onPlayEdge}
@@ -754,7 +754,7 @@ function WaitingRoom({
             <button
               onClick={() => {
                 const url = window.location.origin + window.location.pathname;
-                const text = `Salut 👋\n\nJe vous invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
+                const text = `Salut 👋\n\nJe vous invite à me rejoindre pour une partie de Kwadra avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
                 navigator.clipboard.writeText(text);
                 showToast("Message d'invitation copié !");
               }}
@@ -766,7 +766,7 @@ function WaitingRoom({
             <button
               onClick={() => {
                 const url = window.location.origin + window.location.pathname;
-                const text = `Salut 👋\n\nJe vous invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
+                const text = `Salut 👋\n\nJe vous invite à me rejoindre pour une partie de Kwadra avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
                 window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, "_blank");
               }}
               className="flex items-center justify-center gap-2 rounded-lg border-[1.5px] border-ink-border bg-[#25D366] px-4 py-2 text-sm font-bold text-white shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
@@ -777,8 +777,8 @@ function WaitingRoom({
             <button
               onClick={() => {
                 const url = window.location.origin + window.location.pathname;
-                const text = `Salut 👋\n\nJe vous invite à me rejoindre pour une partie de Karre Game's avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
-                window.location.href = `mailto:?subject=Invitation à jouer à Karre Game's&body=${encodeURIComponent(text)}`;
+                const text = `Salut 👋\n\nJe vous invite à me rejoindre pour une partie de Kwadra avec le code ${state.roomId} ou depuis ce lien : ${url}\n\nÀ très bientôt`;
+                window.location.href = `mailto:?subject=Invitation à jouer à Kwadra&body=${encodeURIComponent(text)}`;
               }}
               className="flex items-center justify-center gap-2 rounded-lg border-[1.5px] border-ink-border bg-surface px-4 py-2 text-sm font-bold text-ink shadow-stack-sm transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex-1 min-w-[140px]"
             >

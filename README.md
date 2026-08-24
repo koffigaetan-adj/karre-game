@@ -1,11 +1,11 @@
-# Karré (Karre Game's)
+# Karré (Kwadra)
 
 Jeu de stratégie multijoueur "dots-and-boxes" sur arène en losange, avec
 salons privés, chat, historique de parties et mode solo contre un bot.
 
 En production :
-- Frontend : [karre-games.vercel.app](https://karre-games.vercel.app) (Vercel)
-- Backend temps réel : `karre-game.onrender.com` (Render)
+- Frontend : [Kwadra-games.vercel.app](https://Kwadra-games.vercel.app) (Vercel)
+- Backend temps réel : `Kwadra-game.onrender.com` (Render)
 - Base de données : Postgres (Neon)
 
 ## Comment c'est fait
@@ -13,8 +13,8 @@ En production :
 La grille de jeu reste, en interne, une grille rectangulaire classique
 (dots-and-boxes) : c'est ce qui permet une logique de capture simple et un
 state facilement synchronisable. L'aspect "losange / arène" est un effet
-purement visuel : `KarreBoard` fait pivoter le rendu SVG de 45° (voir
-`web/components/board/KarreBoard.tsx`), avec chaque texte d'initiales
+purement visuel : `KwadraBoard` fait pivoter le rendu SVG de 45° (voir
+`web/components/board/KwadraBoard.tsx`), avec chaque texte d'initiales
 contre-pivoté pour rester lisible.
 
 Auth : Auth.js (NextAuth) + Google OAuth — pas de Supabase. Temps réel :
@@ -59,7 +59,7 @@ gameskarrés/
 │   │   ├── ProfileMenu.tsx             # Menu profil (déconnexion, réglages son/musique…)
 │   │   ├── ThemeProvider.tsx           # Thème clair/sombre
 │   │   ├── board/
-│   │   │   ├── KarreBoard.tsx          # Plateau SVG interactif (le cœur du jeu)
+│   │   │   ├── KwadraBoard.tsx          # Plateau SVG interactif (le cœur du jeu)
 │   │   │   └── MiniMap.tsx             # Mini-carte d'orientation (mobile)
 │   │   └── layout/
 │   │       └── PlayerSidebar.tsx       # Dashboard joueurs / actions (Inviter, Quitter…)
@@ -162,4 +162,4 @@ une seule commande.
 - Typographie : `DESIGN.md` documente un système à deux polices
   (Anton + Karla) alors que seul Poppins est actuellement chargé dans
   `layout.tsx` — à harmoniser.
-- Cohérence de nommage : "Karré" vs "Karre Game's" selon les écrans.
+- Cohérence de nommage : "Karré" vs "Kwadra" selon les écrans.

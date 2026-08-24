@@ -38,7 +38,7 @@ export const useHistoryStore = create<HistoryState>()(
       clearHistory: () => set({ matches: [] }),
     }),
     {
-      name: "karre-history",
+      name: "Kwadra-history",
       storage: createJSONStorage(() => safeStorage),
     }
   )

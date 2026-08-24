@@ -18,6 +18,10 @@ const karla = Karla({
 
 export const viewport = {
   themeColor: "#EDE4D3",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export const metadata: Metadata = {

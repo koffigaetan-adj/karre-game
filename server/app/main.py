@@ -66,6 +66,14 @@ def create_room(room_id: str, size: str = "large"):
     ROOMS[room_id] = Room(create_empty_game_state(room_id, size, players=[]))
     return {"roomId": room_id}
 
+from .crud import get_user_history
+
+@app.get("/users/{user_id}/history")
+async def get_history(user_id: str):
+    async with AsyncSessionLocal() as db:
+        history = await get_user_history(db, user_id)
+        return {"matches": history}
+
 
 @app.websocket("/ws/rooms/{room_id}")
 async def room_socket(websocket: WebSocket, room_id: str, player_id: str, display_name: str, initials: str, size: str = "large"):

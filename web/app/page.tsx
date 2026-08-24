@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { ProfileMenu } from "@/components/ProfileMenu";
-import { Info } from "lucide-react";
+import { Info, Bot } from "lucide-react";
 
 /** Lobby : connexion Google (Auth.js), puis Solo / Créer une partie / Rejoindre via code. */
 export default function LobbyPage() {
@@ -86,9 +86,10 @@ export default function LobbyPage() {
 
           <button
             onClick={startSolo}
-            className="rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-4 py-4 text-sm font-bold text-[var(--player-blue-text)] shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed"
+            className="rounded-lg border-2 border-ink bg-[var(--player-blue-fill)] px-4 py-4 text-sm font-bold text-[var(--player-blue-text)] shadow-stack transition-all active:translate-x-px active:translate-y-px active:shadow-stack-pressed flex items-center justify-center gap-2"
           >
-            Jouer contre le Robot 🤖
+            <Bot size={18} />
+            Jouer solo (contre le robot)
           </button>
 
           <div className="grid grid-cols-2 gap-4">

@@ -51,3 +51,40 @@ async def save_game_state(db: AsyncSession, room_id: str, state: GameState):
                 gp.is_winner = is_winner
                 
     await db.commit()
+
+async def get_user_history(db: AsyncSession, user_id: str):
+    # Récupérer toutes les parties finies auxquelles l'utilisateur a participé
+    stmt = (
+        select(GamePlayer, Game)
+        .join(Game, GamePlayer.game_id == Game.id)
+        .where(GamePlayer.user_id == user_id, Game.status == "finished")
+        .order_by(Game.created_at.desc())
+        .limit(50)
+    )
+    result = await db.execute(stmt)
+    rows = result.all()
+    
+    history = []
+    for gp, game in rows:
+        state = game.state
+        if not state:
+            continue
+            
+        history.append({
+            "id": game.id,
+            "date": game.created_at.isoformat() if game.created_at else "",
+            "mode": state.get("mode", "multiplayer"),
+            "players": [
+                {
+                    "id": p.get("id"),
+                    "displayName": p.get("displayName") or p.get("display_name"),
+                    "score": p.get("score", 0),
+                    "initials": p.get("initials", ""),
+                    "isWinner": state.get("winnerId") == p.get("id") or state.get("winner_id") == p.get("id")
+                }
+                for p in state.get("players", [])
+            ],
+            "isDraw": state.get("status") == "finished" and not state.get("winnerId") and not state.get("winner_id")
+        })
+        
+    return history

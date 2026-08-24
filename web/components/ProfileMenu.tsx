@@ -11,9 +11,11 @@ export function ProfileMenu() {
   const { data: session } = useSession();
   const { theme, setTheme } = useTheme();
   const { musicEnabled, setMusicEnabled, sfxEnabled, setSfxEnabled, customInitials, setCustomInitials } = useSettingsStore();
-  const { matches, clearHistory } = useHistoryStore();
+  const { matches: localMatches, clearHistory } = useHistoryStore();
   const [isOpen, setIsOpen] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [matches, setMatches] = useState<any[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [isEditingInitials, setIsEditingInitials] = useState(false);
   const [initialsInput, setInitialsInput] = useState("");
   const [mounted, setMounted] = useState(false);
@@ -141,6 +143,22 @@ export function ProfileMenu() {
             onClick={() => {
               setIsOpen(false);
               setShowHistory(true);
+              
+              if (session.user?.email) {
+                setIsLoadingHistory(true);
+                const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+                fetch(`${baseUrl}/users/${session.user.email}/history`)
+                  .then(r => r.json())
+                  .then(data => {
+                    if (data && data.matches) {
+                      setMatches(data.matches);
+                    }
+                  })
+                  .catch(err => console.error("Erreur historique:", err))
+                  .finally(() => setIsLoadingHistory(false));
+              } else {
+                setMatches(localMatches);
+              }
             }}
             className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-bold text-ink transition-colors hover:bg-[var(--ground)]"
           >
@@ -169,7 +187,11 @@ export function ProfileMenu() {
             </div>
             
             <div className="flex-1 overflow-y-auto p-4">
-              {matches.length === 0 ? (
+              {isLoadingHistory ? (
+                <div className="flex h-32 items-center justify-center">
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-line border-t-ink"></div>
+                </div>
+              ) : matches.length === 0 ? (
                 <p className="text-center text-sm font-medium text-ink/60">Aucune partie terminée pour le moment.</p>
               ) : (
                 <div className="flex flex-col gap-3">
@@ -185,8 +207,8 @@ export function ProfileMenu() {
                       </div>
                       <div className="flex flex-col gap-1">
                         {match.players
-                          .sort((a, b) => b.score - a.score)
-                          .map((p) => (
+                          .sort((a: any, b: any) => b.score - a.score)
+                          .map((p: any) => (
                             <div key={p.id} className="flex items-center justify-between text-sm">
                               <span className={`font-medium ${p.isWinner ? "font-bold text-[var(--player-green-fill)]" : "text-ink"}`}>
                                 {p.displayName} {p.isWinner && "👑"}

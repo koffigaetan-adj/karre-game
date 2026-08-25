@@ -33,7 +33,7 @@ interface KwadraBoardProps {
 }
 
 /**
- * Plateau "Karré" : grille logique rectangulaire classique (dots-and-boxes),
+ * Plateau "Kwadra" : grille logique rectangulaire classique (dots-and-boxes),
  * pivotée de 45° au rendu pour obtenir l'aspect losange/arène demandé.
  * Pan/zoom tactile géré via transform CSS (pas de dépendance externe) —
  * remplaçable par react-zoom-pan-pinch si besoin de gestes plus riches.

@@ -1,5 +1,5 @@
 ---
-name: Karré
+name: Kwadra
 description: A private multiplayer arena game, styled as a physical board game on a plain neutral light/dark surface
 colors:
   ink: "#1A1C1F"
@@ -37,13 +37,13 @@ components:
     padding: "12px 20px"
 ---
 
-# Design System: Karré
+# Design System: Kwadra
 
 ## Overview
 
 **Creative North Star: "Kraft & Counters"**
 
-Karré reads as a real board game unboxed on the table between friends — not a web dashboard with a game bolted on. Light and dark are both plain, familiar app themes (true neutral white/black-gray, the "basic" light/dark everyone already knows) — the game's character comes from the player colors, the ink borders, and the flat stacked-cardboard shadows, not from a tinted background. Nothing is generic SaaS chrome (no soft ambient glows, no glassy cards, no default framework blue), but nothing is costume-y either.
+Kwadra reads as a real board game unboxed on the table between friends — not a web dashboard with a game bolted on. Light and dark are both plain, familiar app themes (true neutral white/black-gray, the "basic" light/dark everyone already knows) — the game's character comes from the player colors, the ink borders, and the flat stacked-cardboard shadows, not from a tinted background. Nothing is generic SaaS chrome (no soft ambient glows, no glassy cards, no default framework blue), but nothing is costume-y either.
 
 No gradients anywhere — flat ink and flat spot color only.
 

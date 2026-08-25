@@ -42,7 +42,7 @@ async def send_turn_notification(user_id: str, room_id: str, opponent_name: str)
                     },
                     data=(
                         '{"title": "À toi de jouer !", '
-                        f'"body": "{opponent_name} a joué — c\'est ton tour sur Karré.", '
+                        f'"body": "{opponent_name} a joué — c\'est ton tour sur Kwadra.", '
                         f'"url": "/game/{room_id}"}}'
                     ),
                     vapid_private_key=VAPID_PRIVATE_KEY,

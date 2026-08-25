@@ -1,5 +1,5 @@
 /**
- * Schéma de données du state de la partie "Karré".
+ * Schéma de données du state de la partie "Kwadra".
  *
  * La grille logique reste un plateau rectangulaire classique (dots-and-boxes) :
  * `rows` x `cols` cases, (rows+1) x cols bordures horizontales, rows x (cols+1)

@@ -8,7 +8,7 @@ from pydantic.alias_generators import to_camel
 EdgeType = Literal["h", "v"]
 PlayerColor = Literal["blue", "red", "green", "yellow", "purple", "orange", "cyan", "pink"]
 GameStatus = Literal["waiting", "playing", "finished"]
-BoardSize = Literal["small", "medium", "large"]
+BoardSize = Literal["small", "medium", "large", "giant"]
 
 
 class CamelModel(BaseModel):

@@ -35,6 +35,13 @@ def create_empty_game_state(room_id: str, size: BoardSize, players: list[Player]
         rows = 13
         cols = 13
         radius = 6
+    elif size == "giant":
+        # Doit rester synchronisé avec createEmptyGameState (web/lib/game/engine.ts),
+        # qui gère "giant" depuis l'ajout de la grille 21x21 — le backend
+        # retombait sinon silencieusement sur 17x17 et désynchronisait le salon.
+        rows = 21
+        cols = 21
+        radius = 10
 
     horizontal_edges = [[WALL_EDGE] * cols for _ in range(rows + 1)]
     vertical_edges = [[WALL_EDGE] * (cols + 1) for _ in range(rows)]

@@ -3,7 +3,7 @@
 // le strict nécessaire pour que le navigateur autorise l'abonnement Push.
 
 self.addEventListener("push", (event) => {
-  let data = { title: "Karré", body: "Nouvelle notification", url: "/" };
+  let data = { title: "Kwadra", body: "Nouvelle notification", url: "/" };
   try {
     if (event.data) data = { ...data, ...event.data.json() };
   } catch {

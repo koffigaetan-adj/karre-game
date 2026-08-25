@@ -353,6 +353,7 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
         selectColor={selectColor}
         updateInitials={updateInitials}
         startGame={() => setWantsToStart(true)}
+        error={error}
       />
     );
   }
@@ -602,7 +603,7 @@ function GameView({
                     if (navigator.share) {
                       navigator.share({
                         title: "Kwadra",
-                        text: "Rejoignez ma partie de Karré !",
+                        text: "Rejoignez ma partie de Kwadra !",
                         url: window.location.href,
                       }).catch(() => { });
                     } else {
@@ -725,12 +726,14 @@ function WaitingRoom({
   selectColor,
   updateInitials,
   startGame,
+  error = null,
 }: {
   state: GameState;
   currentUserId: string;
   selectColor: (c: string) => void;
   updateInitials: (initials: string) => void;
   startGame: () => void;
+  error?: string | null;
 }) {
   const router = useRouter();
   const me = state.players.find((p) => p.id === currentUserId);
@@ -766,6 +769,11 @@ function WaitingRoom({
       <div className="text-center">
         <h1 className="font-display text-4xl leading-none text-ink">Salle d&apos;attente</h1>
         <p className="mt-2 text-sm font-bold uppercase tracking-wide opacity-60">Salon {state.roomId}</p>
+        {error && (
+          <p className="mx-auto mt-2 max-w-sm rounded-lg border-[1.5px] border-[var(--player-red-fill)] bg-[var(--player-red-fill)]/10 px-3 py-2 text-xs font-bold text-[var(--player-red-fill)]">
+            {error}
+          </p>
+        )}
       </div>
 
       {isMultiplayer && (

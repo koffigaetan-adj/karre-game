@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Kwadra",
-    description: "Rejoins-moi pour une partie de Karré en temps réel !",
+    description: "Rejoins-moi pour une partie de Kwadra en temps réel !",
     url: "https://Kwadra-games.vercel.app",
     siteName: "Kwadra",
     images: [

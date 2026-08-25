@@ -10,7 +10,7 @@ load_dotenv()
 
 # Par défaut on utilise SQLite en asynchrone pour faciliter les tests si aucune URL n'est fournie,
 # mais en production on utilisera postgresql+asyncpg://...
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./karrre.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./kwadra.db")
 
 # Render/Neon utilisent souvent postgres://, mais asyncpg a besoin de postgresql+asyncpg://
 if DATABASE_URL.startswith("postgres://"):

@@ -19,6 +19,13 @@ async def get_game_status(db: AsyncSession, room_id: str):
     result = await db.execute(select(Game.status).where(Game.id == room_id))
     return result.scalar_one_or_none()
 
+async def get_active_game_states(db: AsyncSession):
+    """États des parties encore en cours ("playing"), pour restaurer les
+    salons en mémoire au démarrage du serveur après un redéploiement/crash."""
+    result = await db.execute(select(Game.id, Game.state).where(Game.status == "playing"))
+    return result.all()
+
+
 async def save_game_state(db: AsyncSession, room_id: str, state: GameState):
     # Sérialiser l'état complet
     state_dict = state.model_dump(mode="json", by_alias=True)

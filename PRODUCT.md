@@ -12,7 +12,7 @@ Small private groups of friends (2-4 people) who already know each other, playin
 
 ## Product Purpose
 
-Karré is a real-time multiplayer strategy game: a dots-and-boxes variant played on a diamond-shaped arena. Players take turns drawing one edge of the grid; completing the 4th edge of a square captures it (and can capture two squares at once when one line closes both), and a capture grants an extra turn. Most squares captured when the grid is full wins. Includes a solo mode against a local rule-based bot (no LLM).
+Kwadra is a real-time multiplayer strategy game: a dots-and-boxes variant played on a diamond-shaped arena. Players take turns drawing one edge of the grid; completing the 4th edge of a square captures it (and can capture two squares at once when one line closes both). House rule change (2026-08): a capture no longer grants an extra turn — play always passes to the next player. Most squares captured when the grid is full wins. Includes a solo mode against a local rule-based bot (no LLM).
 
 ## Positioning
 
@@ -34,7 +34,7 @@ Two things carry the identity equally: the diamond arena board itself (a rotated
 
 ## Brand Commitments
 
-- Name: Karré.
+- Name: Kwadra.
 - No gradients, anywhere in the UI — explicit, firm constraint from the user.
 - Casual/for-friends tone: this is a private game among people who know each other, not a public/enterprise product — the UI should feel like a game, not a dashboard or admin tool.
 

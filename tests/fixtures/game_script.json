@@ -1,0 +1,4708 @@
+{
+  "scenarios": [
+    {
+      "name": "duel-medium",
+      "size": "medium",
+      "roomId": "parity-duel-medium",
+      "seed": 42,
+      "players": [
+        {
+          "id": "alice@example.com",
+          "displayName": "Alice",
+          "initials": "AL"
+        },
+        {
+          "id": "bob@example.com",
+          "displayName": "Bob",
+          "initials": "BO"
+        }
+      ],
+      "initial": {
+        "rows": 13,
+        "cols": 13,
+        "horizontalEdges": [
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL"
+          ],
+          [
+            "bob@example.com",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "bob@example.com"
+          ],
+          [
+            "bob@example.com",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "bob@example.com"
+          ],
+          [
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ]
+        ],
+        "verticalEdges": [
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL"
+          ],
+          [
+            "bob@example.com",
+            "bob@example.com",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "bob@example.com",
+            "bob@example.com"
+          ],
+          [
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ]
+        ],
+        "boxes": [
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            null,
+            null,
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "OUTSIDE"
+          ],
+          [
+            "bob@example.com",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "bob@example.com"
+          ],
+          [
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            null,
+            null,
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ]
+        ]
+      },
+      "moves": [
+        {
+          "type": "h",
+          "row": 5,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 2,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 9
+        },
+        {
+          "type": "v",
+          "row": 9,
+          "col": 9
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 8,
+          "col": 9
+        },
+        {
+          "type": "v",
+          "row": 3,
+          "col": 9
+        },
+        {
+          "type": "h",
+          "row": 8,
+          "col": 2
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 2
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 8
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 9
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 3
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 10
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 4
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 8
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 3
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 9
+        },
+        {
+          "type": "v",
+          "row": 7,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 8,
+          "col": 9
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 10
+        },
+        {
+          "type": "v",
+          "row": 9,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 11
+        },
+        {
+          "type": "v",
+          "row": 8,
+          "col": 3
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 3
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 7,
+          "col": 10
+        },
+        {
+          "type": "v",
+          "row": 3,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 11
+        },
+        {
+          "type": "v",
+          "row": 2,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 9,
+          "col": 3
+        },
+        {
+          "type": "h",
+          "row": 9,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 3,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 7,
+          "col": 4
+        },
+        {
+          "type": "v",
+          "row": 3,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 8,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 2,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 11,
+          "col": 7
+        },
+        {
+          "type": "h",
+          "row": 3,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 9,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 7,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 2
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 8,
+          "col": 4
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 4
+        },
+        {
+          "type": "v",
+          "row": 9,
+          "col": 7
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 8
+        },
+        {
+          "type": "h",
+          "row": 11,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 8
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 9,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 1,
+          "col": 7
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 11
+        },
+        {
+          "type": "v",
+          "row": 10,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 8,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 9
+        },
+        {
+          "type": "h",
+          "row": 9,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 2,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 7,
+          "col": 11
+        },
+        {
+          "type": "h",
+          "row": 9,
+          "col": 7
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 9
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 1
+        },
+        {
+          "type": "v",
+          "row": 11,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 4
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 10
+        },
+        {
+          "type": "v",
+          "row": 7,
+          "col": 3
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 4
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 3,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 2
+        },
+        {
+          "type": "v",
+          "row": 2,
+          "col": 8
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 2
+        },
+        {
+          "type": "v",
+          "row": 8,
+          "col": 10
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 10
+        },
+        {
+          "type": "v",
+          "row": 7,
+          "col": 9
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 3
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 9
+        },
+        {
+          "type": "v",
+          "row": 9,
+          "col": 8
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 10
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 2
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 8
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 10,
+          "col": 8
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 3
+        },
+        {
+          "type": "h",
+          "row": 3,
+          "col": 7
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 10,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 9,
+          "col": 9
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 8
+        },
+        {
+          "type": "v",
+          "row": 1,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 3
+        },
+        {
+          "type": "v",
+          "row": 7,
+          "col": 8
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 11
+        },
+        {
+          "type": "h",
+          "row": 8,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 2,
+          "col": 7
+        },
+        {
+          "type": "h",
+          "row": 10,
+          "col": 7
+        },
+        {
+          "type": "h",
+          "row": 10,
+          "col": 8
+        },
+        {
+          "type": "v",
+          "row": 8,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 7
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 9
+        },
+        {
+          "type": "h",
+          "row": 10,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 8,
+          "col": 3
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 3,
+          "col": 8
+        },
+        {
+          "type": "v",
+          "row": 10,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 9,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 11,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 7
+        },
+        {
+          "type": "h",
+          "row": 11,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 7,
+          "col": 2
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 8
+        },
+        {
+          "type": "h",
+          "row": 10,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 8,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 1
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 3
+        },
+        {
+          "type": "v",
+          "row": 8,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 3,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 8,
+          "col": 8
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 10
+        },
+        {
+          "type": "v",
+          "row": 7,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 8,
+          "col": 7
+        },
+        {
+          "type": "h",
+          "row": 3,
+          "col": 8
+        },
+        {
+          "type": "v",
+          "row": 2,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 8,
+          "col": 8
+        },
+        {
+          "type": "h",
+          "row": 3,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 8,
+          "col": 10
+        },
+        {
+          "type": "h",
+          "row": 9,
+          "col": 8
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 10,
+          "col": 5
+        }
+      ],
+      "steps": [
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            1,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            1,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            1,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            1,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            1,
+            0
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            1,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            1,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            1,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            1,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            1,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            1,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            1,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            1,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            1,
+            1
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            2,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            2,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            2,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            2,
+            1
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            3,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            3,
+            1
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            4,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            4,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            4,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            4,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            4,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            4,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            4,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            4,
+            1
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            4,
+            1
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            4,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            4,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            4,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            4,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            4,
+            2
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            5,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            5,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            5,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            5,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            5,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            5,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            5,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            5,
+            2
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            6,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            6,
+            2
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            7,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            7,
+            2
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            8,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            8,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            8,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            8,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            8,
+            2
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            8,
+            3
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            9,
+            3
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            9,
+            4
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            9,
+            4
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            9,
+            4
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            9,
+            4
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            9,
+            5
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            10,
+            5
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            10,
+            6
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            10,
+            6
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            10,
+            6
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            12,
+            6
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            12,
+            6
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            13,
+            6
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            13,
+            6
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            14,
+            6
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            14,
+            6
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            15,
+            6
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            15,
+            6
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            15,
+            6
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            15,
+            6
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            17,
+            6
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 0,
+          "scores": [
+            17,
+            8
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            19,
+            8
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            19,
+            9
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            19,
+            9
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            19,
+            10
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            20,
+            10
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 0,
+          "scores": [
+            20,
+            12
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            21,
+            12
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            21,
+            13
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            23,
+            13
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            23,
+            14
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            25,
+            14
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            25,
+            15
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            27,
+            15
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            27,
+            16
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            28,
+            16
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            28,
+            17
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            30,
+            17
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            30,
+            18
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            30,
+            18
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 0,
+          "scores": [
+            30,
+            20
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            32,
+            20
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 0,
+          "scores": [
+            32,
+            22
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            33,
+            22
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            33,
+            22
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            35,
+            22
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 0,
+          "scores": [
+            35,
+            24
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            36,
+            24
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            36,
+            25
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            37,
+            25
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            37,
+            26
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            38,
+            26
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            38,
+            27
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            39,
+            27
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 0,
+          "scores": [
+            39,
+            29
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            40,
+            29
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            40,
+            30
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            41,
+            30
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 0,
+          "scores": [
+            41,
+            32
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            43,
+            32
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 0,
+          "scores": [
+            43,
+            34
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            45,
+            34
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 0,
+          "scores": [
+            45,
+            36
+          ]
+        }
+      ],
+      "final": {
+        "rows": 13,
+        "cols": 13,
+        "horizontalEdges": [
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com"
+          ],
+          [
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ]
+        ],
+        "verticalEdges": [
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ]
+        ],
+        "boxes": [
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "OUTSIDE"
+          ],
+          [
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com"
+          ],
+          [
+            "OUTSIDE",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ]
+        ],
+        "currentPlayerIndex": 0,
+        "status": "finished",
+        "winnerId": "alice@example.com",
+        "endReason": "completed",
+        "lastMove": {
+          "type": "v",
+          "row": 10,
+          "col": 5,
+          "playerId": "bob@example.com"
+        },
+        "scores": [
+          45,
+          36
+        ]
+      }
+    },
+    {
+      "name": "quad-small",
+      "size": "small",
+      "roomId": "parity-quad-small",
+      "seed": 42,
+      "players": [
+        {
+          "id": "alice@example.com",
+          "displayName": "Alice",
+          "initials": "AL"
+        },
+        {
+          "id": "bob@example.com",
+          "displayName": "Bob",
+          "initials": "BO"
+        },
+        {
+          "id": "carol@example.com",
+          "displayName": "Carol",
+          "initials": "CA"
+        },
+        {
+          "id": "dan@example.com",
+          "displayName": "Dan",
+          "initials": "DA"
+        }
+      ],
+      "initial": {
+        "rows": 9,
+        "cols": 9,
+        "horizontalEdges": [
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL"
+          ],
+          [
+            "dan@example.com",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "bob@example.com"
+          ],
+          [
+            "dan@example.com",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "bob@example.com"
+          ],
+          [
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "carol@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "carol@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ]
+        ],
+        "verticalEdges": [
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL"
+          ],
+          [
+            "dan@example.com",
+            "dan@example.com",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "bob@example.com",
+            "bob@example.com"
+          ],
+          [
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            null,
+            null,
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "carol@example.com",
+            "carol@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ]
+        ],
+        "boxes": [
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            null,
+            null,
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "OUTSIDE"
+          ],
+          [
+            "dan@example.com",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "bob@example.com"
+          ],
+          [
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            null,
+            null,
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            null,
+            null,
+            null,
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "carol@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ]
+        ]
+      },
+      "moves": [
+        {
+          "type": "h",
+          "row": 4,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 3,
+          "col": 3
+        },
+        {
+          "type": "h",
+          "row": 3,
+          "col": 3
+        },
+        {
+          "type": "v",
+          "row": 3,
+          "col": 7
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 3
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 4
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 2
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 1,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 2,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 3,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 2
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 3,
+          "col": 2
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 3,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 3,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 3
+        },
+        {
+          "type": "h",
+          "row": 3,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 2,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 6
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 3
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 1,
+          "col": 4
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 7
+        },
+        {
+          "type": "v",
+          "row": 2,
+          "col": 3
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 2,
+          "col": 3
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 2
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 2
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 1
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 3
+        },
+        {
+          "type": "v",
+          "row": 3,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 1
+        },
+        {
+          "type": "h",
+          "row": 3,
+          "col": 2
+        },
+        {
+          "type": "v",
+          "row": 4,
+          "col": 6
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 3,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 7,
+          "col": 4
+        },
+        {
+          "type": "v",
+          "row": 7,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 7,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 3
+        },
+        {
+          "type": "h",
+          "row": 4,
+          "col": 4
+        },
+        {
+          "type": "v",
+          "row": 2,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 2
+        },
+        {
+          "type": "h",
+          "row": 5,
+          "col": 5
+        },
+        {
+          "type": "v",
+          "row": 5,
+          "col": 3
+        },
+        {
+          "type": "v",
+          "row": 6,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 2,
+          "col": 5
+        },
+        {
+          "type": "h",
+          "row": 2,
+          "col": 4
+        },
+        {
+          "type": "h",
+          "row": 6,
+          "col": 3
+        }
+      ],
+      "steps": [
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 2,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 3,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 2,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 3,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 2,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 3,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 2,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 3,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            2,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 2,
+          "scores": [
+            2,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 3,
+          "scores": [
+            2,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            2,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            2,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 2,
+          "scores": [
+            2,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 3,
+          "scores": [
+            2,
+            0,
+            1,
+            0
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 0,
+          "scores": [
+            2,
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            2,
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 2,
+          "scores": [
+            2,
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 3,
+          "scores": [
+            2,
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            2,
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            2,
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 2,
+          "scores": [
+            2,
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 3,
+          "scores": [
+            2,
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            2,
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 1,
+          "scores": [
+            2,
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 2,
+          "scores": [
+            2,
+            2,
+            1,
+            2
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 3,
+          "scores": [
+            2,
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            2,
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            3,
+            2,
+            2,
+            2
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 2,
+          "scores": [
+            3,
+            3,
+            2,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 3,
+          "scores": [
+            3,
+            3,
+            2,
+            2
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 0,
+          "scores": [
+            3,
+            3,
+            2,
+            2
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            4,
+            3,
+            2,
+            2
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 2,
+          "scores": [
+            4,
+            5,
+            2,
+            2
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 3,
+          "scores": [
+            4,
+            5,
+            4,
+            2
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            4,
+            5,
+            4,
+            3
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            5,
+            5,
+            4,
+            3
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 2,
+          "scores": [
+            5,
+            5,
+            4,
+            3
+          ]
+        },
+        {
+          "captured": 0,
+          "currentPlayerIndex": 3,
+          "scores": [
+            5,
+            5,
+            4,
+            3
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            5,
+            5,
+            4,
+            4
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            7,
+            5,
+            4,
+            4
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 2,
+          "scores": [
+            7,
+            7,
+            4,
+            4
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 3,
+          "scores": [
+            7,
+            7,
+            6,
+            4
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            7,
+            7,
+            6,
+            5
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 1,
+          "scores": [
+            8,
+            7,
+            6,
+            5
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 2,
+          "scores": [
+            8,
+            8,
+            6,
+            5
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 3,
+          "scores": [
+            8,
+            8,
+            7,
+            5
+          ]
+        },
+        {
+          "captured": 1,
+          "currentPlayerIndex": 0,
+          "scores": [
+            8,
+            8,
+            7,
+            6
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 1,
+          "scores": [
+            10,
+            8,
+            7,
+            6
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 2,
+          "scores": [
+            10,
+            10,
+            7,
+            6
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 3,
+          "scores": [
+            10,
+            10,
+            9,
+            6
+          ]
+        },
+        {
+          "captured": 2,
+          "currentPlayerIndex": 0,
+          "scores": [
+            10,
+            10,
+            9,
+            8
+          ]
+        }
+      ],
+      "final": {
+        "rows": 9,
+        "cols": 9,
+        "horizontalEdges": [
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "carol@example.com",
+            "carol@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "carol@example.com",
+            "dan@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "dan@example.com",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "dan@example.com",
+            "bob@example.com",
+            "dan@example.com",
+            "bob@example.com",
+            "carol@example.com",
+            "dan@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com"
+          ],
+          [
+            "dan@example.com",
+            "bob@example.com",
+            "dan@example.com",
+            "dan@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "dan@example.com",
+            "carol@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "bob@example.com",
+            "carol@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "carol@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "carol@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ]
+        ],
+        "verticalEdges": [
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "carol@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "carol@example.com",
+            "dan@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "bob@example.com",
+            "carol@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "carol@example.com",
+            "alice@example.com",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "dan@example.com",
+            "dan@example.com",
+            "alice@example.com",
+            "carol@example.com",
+            "alice@example.com",
+            "dan@example.com",
+            "dan@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "bob@example.com"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "dan@example.com",
+            "carol@example.com",
+            "carol@example.com",
+            "dan@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "carol@example.com",
+            "dan@example.com",
+            "dan@example.com",
+            "carol@example.com",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "alice@example.com",
+            "dan@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ],
+          [
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL",
+            "carol@example.com",
+            "carol@example.com",
+            "WALL",
+            "WALL",
+            "WALL",
+            "WALL"
+          ]
+        ],
+        "boxes": [
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "carol@example.com",
+            "carol@example.com",
+            "bob@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "carol@example.com",
+            "dan@example.com",
+            "carol@example.com",
+            "bob@example.com",
+            "dan@example.com",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "bob@example.com",
+            "carol@example.com",
+            "bob@example.com",
+            "carol@example.com",
+            "alice@example.com",
+            "dan@example.com",
+            "alice@example.com",
+            "OUTSIDE"
+          ],
+          [
+            "dan@example.com",
+            "bob@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "carol@example.com",
+            "bob@example.com",
+            "dan@example.com",
+            "alice@example.com",
+            "bob@example.com"
+          ],
+          [
+            "OUTSIDE",
+            "bob@example.com",
+            "carol@example.com",
+            "dan@example.com",
+            "alice@example.com",
+            "alice@example.com",
+            "bob@example.com",
+            "bob@example.com",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "dan@example.com",
+            "dan@example.com",
+            "alice@example.com",
+            "carol@example.com",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "alice@example.com",
+            "alice@example.com",
+            "dan@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ],
+          [
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "carol@example.com",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE",
+            "OUTSIDE"
+          ]
+        ],
+        "currentPlayerIndex": 0,
+        "status": "finished",
+        "winnerId": null,
+        "endReason": "completed",
+        "lastMove": {
+          "type": "h",
+          "row": 6,
+          "col": 3,
+          "playerId": "dan@example.com"
+        },
+        "scores": [
+          10,
+          10,
+          9,
+          8
+        ]
+      }
+    }
+  ]
+}

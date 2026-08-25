@@ -66,8 +66,17 @@ export function useRoomSocket({
     if (base.startsWith("http://")) base = base.replace("http://", "ws://");
     if (base.startsWith("https://")) base = base.replace("https://", "wss://");
     if (base.endsWith("/")) base = base.slice(0, -1);
-    const params = new URLSearchParams({ player_id: playerId, display_name: displayName, initials, size, players: players.toString() });
-    const wsUrl = `${base}/ws/rooms/${roomId}?${params.toString()}`;
+
+    // Le serveur de partie exige une preuve d'identité : un ticket HMAC émis
+    // par /api/ws-ticket à partir de la session NextAuth. Sans lui, n'importe
+    // qui pouvait se connecter en usurpant le player_id d'un autre joueur.
+    async function fetchTicket(): Promise<string> {
+      const res = await fetch("/api/ws-ticket", { cache: "no-store" });
+      if (!res.ok) throw new Error("ticket_refused");
+      const data = (await res.json()) as { ticket?: string };
+      if (!data.ticket) throw new Error("ticket_missing");
+      return data.ticket;
+    }
 
     // Une coupure réseau (WiFi qui saute pendant la partie) ne doit pas
     // laisser le joueur planté devant un plateau figé sans explication —
@@ -75,9 +84,23 @@ export function useRoomSocket({
     // monté, plutôt que d'abandonner après le premier onclose.
     let cancelled = false;
     let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+    let keepaliveTimer: ReturnType<typeof setInterval> | null = null;
 
-    function connect() {
+    async function connect() {
       if (cancelled) return;
+
+      let ticket: string;
+      try {
+        ticket = await fetchTicket();
+      } catch {
+        setError("Connexion au serveur impossible (session invalide ou serveur web injoignable).");
+        reconnectTimer = setTimeout(connect, 2000);
+        return;
+      }
+      if (cancelled) return;
+
+      const params = new URLSearchParams({ player_id: playerId, display_name: displayName, initials, size, players: players.toString(), ticket });
+      const wsUrl = `${base}/ws/rooms/${roomId}?${params.toString()}`;
 
       // `new WebSocket()` lève une exception SYNCHRONE (pas un event onerror)
       // si le schéma de l'URL est invalide (ex: une faute de frappe "wws://"
@@ -97,8 +120,24 @@ export function useRoomSocket({
         if (cancelled) return;
         setConnected(true);
         setError(null);
+        // Keepalive : les réseaux mobiles (4G, WiFi de téléphone) ferment
+        // silencieusement une WebSocket inactive après ~30-60 s de silence
+        // (expiration NAT). Sans trafic régulier, le joueur qui regarde
+        // l'adversaire réfléchir 2 minutes revient sur un plateau figé sans
+        // savoir que la socket est morte. Un ping toutes les 25 s garde le
+        // tunnel ouvert ; le serveur répond "pong" (géré dans onmessage).
+        if (keepaliveTimer) clearInterval(keepaliveTimer);
+        keepaliveTimer = setInterval(() => {
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: "ping" }));
+          }
+        }, 25000);
       };
       ws.onclose = () => {
+        if (keepaliveTimer) {
+          clearInterval(keepaliveTimer);
+          keepaliveTimer = null;
+        }
         if (cancelled) return;
         setConnected(false);
         reconnectTimer = setTimeout(connect, 2000);
@@ -110,6 +149,7 @@ export function useRoomSocket({
         const data = JSON.parse(event.data) as
           | { type: "state"; state: GameState }
           | { type: "error"; message: string }
+          | { type: "pong" }
           | { type: "opponent_hover"; playerId: string; edgeType: EdgeType | null; row: number | null; col: number | null };
         if (data.type === "state") {
           setState(data.state);
@@ -122,6 +162,9 @@ export function useRoomSocket({
           } else {
             setRemoteHover({ playerId: data.playerId, type: data.edgeType, row: data.row, col: data.col });
           }
+        } else if (data.type === "pong") {
+          // Réponse au keepalive : la réception elle-même prouve que le
+          // tunnel est vivant, rien d'autre à faire.
         } else {
           setError(data.message);
         }
@@ -153,6 +196,7 @@ export function useRoomSocket({
     return () => {
       cancelled = true;
       if (reconnectTimer) clearTimeout(reconnectTimer);
+      if (keepaliveTimer) clearInterval(keepaliveTimer);
       document.removeEventListener("visibilitychange", reconnectIfNeeded);
       window.removeEventListener("focus", reconnectIfNeeded);
       wsRef.current?.close();
@@ -202,11 +246,25 @@ export function useRoomSocket({
     wsRef.current?.send(JSON.stringify({ type: "chat", text }));
   };
 
+  const lastHoverRef = useRef<{ key: string; t: number }>({ key: "", t: 0 });
+
   const sendHover = (type: EdgeType, row: number, col: number) => {
+    // Balayer le plateau au doigt génère des dizaines d'événements
+    // pointerenter à la seconde — inutile d'inonder le réseau pour un aperçu
+    // purement cosmétique. On plafonne le débit (~12 msg/s max) et on
+    // dé-duplique le même bord.
+    const now = Date.now();
+    const key = `${type}:${row}:${col}`;
+    const last = lastHoverRef.current;
+    if (key === last.key && now - last.t < 500) return;
+    if (now - last.t < 80) return;
+    lastHoverRef.current = { key, t: now };
     wsRef.current?.send(JSON.stringify({ type: "hover", edgeType: type, row, col }));
   };
 
   const clearHover = () => {
+    if (!lastHoverRef.current.key) return; // déjà effacé, rien à envoyer
+    lastHoverRef.current = { key: "", t: Date.now() };
     wsRef.current?.send(JSON.stringify({ type: "hover", edgeType: null, row: null, col: null }));
   };
 

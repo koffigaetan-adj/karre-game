@@ -33,7 +33,7 @@ export default function LobbyPage() {
   const joinRoom = () => requireAuth(() => joinCode && router.push(`/game/${joinCode}?mode=join`));
 
   return (
-    <main className="relative flex h-[100dvh] flex-col items-center justify-center gap-4 overflow-hidden bg-transparent px-4 py-6 text-ink transition-colors md:gap-10 md:px-6 md:py-12">
+    <main className="relative flex h-[100dvh] flex-col items-center justify-center gap-[clamp(0.5rem,2.2dvh,2.5rem)] overflow-hidden bg-transparent px-4 text-ink transition-colors md:px-6">
       {/* Header Profile / Rules */}
       <div className="absolute right-4 top-4 z-50 flex items-center gap-3 md:right-6 md:top-6 md:gap-4">
         <button
@@ -59,36 +59,36 @@ export default function LobbyPage() {
       </div>
 
       {/* Hero Content */}
-      <div className="relative z-10 w-full min-w-0 max-w-md mt-8 text-center sm:mt-0">
-        <div className="flex justify-center mb-4 md:mb-6">
-          <Image src="/logo-light.png" alt="Kwadra Logo" width={96} height={96} className="w-20 h-20 md:w-28 md:h-28 dark:hidden drop-shadow-md hover:scale-105 transition-transform duration-300" />
-          <Image src="/logo-dark.png" alt="Kwadra Logo" width={96} height={96} className="w-20 h-20 md:w-28 md:h-28 hidden dark:block drop-shadow-md hover:scale-105 transition-transform duration-300" />
+      <div className="relative z-10 w-full min-w-0 max-w-md shrink-0 text-center">
+        <div className="flex justify-center mb-[clamp(0.25rem,1dvh,1rem)]">
+          <Image src="/logo-light.png" alt="Kwadra Logo" width={96} height={96} className="h-[clamp(2.25rem,7dvh,5rem)] w-[clamp(2.25rem,7dvh,5rem)] dark:hidden drop-shadow-md hover:scale-105 transition-transform duration-300" />
+          <Image src="/logo-dark.png" alt="Kwadra Logo" width={96} height={96} className="h-[clamp(2.25rem,7dvh,5rem)] w-[clamp(2.25rem,7dvh,5rem)] hidden dark:block drop-shadow-md hover:scale-105 transition-transform duration-300" />
         </div>
-        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-ink mb-2 md:mb-3 drop-shadow-sm">
+        <h1 className="font-display text-[clamp(1.25rem,4.5dvh,3rem)] font-black leading-tight tracking-tight text-ink mb-[clamp(0.125rem,0.5dvh,0.5rem)] drop-shadow-sm">
           Kwadra
         </h1>
-        <p className="text-sm sm:text-base font-bold text-ink/80 max-w-sm mx-auto">
+        <p className="text-[clamp(0.65rem,1.6dvh,1rem)] font-bold text-ink/80 max-w-sm mx-auto">
           Redécouvrez le classique du jeu de points et carrés.
         </p>
       </div>
 
       {/* Main Card */}
-      <div className="relative z-10 w-full min-w-0 max-w-md rounded-2xl border border-ink-border bg-surface/70 backdrop-blur-xl p-5 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-300">
-        <div className="mb-4 md:mb-8 text-center">
-          <h2 className="font-display text-lg md:text-xl uppercase tracking-wide text-ink">Nouvelle partie</h2>
+      <div className="relative z-10 w-full min-w-0 max-w-md shrink-0 rounded-2xl border border-ink-border bg-surface/70 backdrop-blur-xl p-[clamp(0.75rem,2.5dvh,1.5rem)] shadow-xl hover:shadow-2xl transition-all duration-300">
+        <div className="mb-[clamp(0.5rem,1.5dvh,1.25rem)] text-center">
+          <h2 className="font-display text-[clamp(0.9rem,2.2dvh,1.25rem)] uppercase tracking-wide text-ink">Nouvelle partie</h2>
         </div>
 
-        <div className="grid gap-4 md:gap-6">
+        <div className="grid grid-cols-1 gap-[clamp(0.5rem,1.5dvh,1rem)]">
           {/* Size Selector */}
-          <div className="flex justify-center">
-            <div className="inline-flex rounded-full border border-ink-border/20 bg-ground/50 p-1 backdrop-blur-sm relative">
+          <div className="w-full">
+            <div className="flex w-full rounded-full border border-ink-border/20 bg-ground/50 p-1 backdrop-blur-sm relative">
               {(["small", "medium", "large", "giant"] as const).map((s) => {
                 const isSelected = selectedSize === s;
                 return (
                   <button
                     key={s}
                     onClick={() => setSelectedSize(s)}
-                    className={`relative rounded-full px-3 py-1.5 md:px-4 md:py-2 text-[10px] md:text-[11px] font-bold uppercase tracking-widest transition-colors z-10 ${
+                    className={`relative flex-1 min-w-0 truncate rounded-full px-[clamp(0.25rem,2vw,0.75rem)] py-[clamp(0.25rem,0.9dvh,0.5rem)] text-[clamp(0.5rem,2.4vw,0.6875rem)] font-bold uppercase tracking-widest transition-colors z-10 ${
                       isSelected ? "text-surface" : "text-ink/60 hover:text-ink hover:bg-ink/5"
                     }`}
                   >
@@ -104,7 +104,7 @@ export default function LobbyPage() {
                     {s === "small" && "Petite"}
                     {s === "medium" && "Moyenne"}
                     {s === "large" && "Classique"}
-                    {s === "giant" && "Géante (21x21)"}
+                    {s === "giant" && "Géante"}
                   </button>
                 );
               })}
@@ -112,13 +112,13 @@ export default function LobbyPage() {
           </div>
 
           {/* Game Modes */}
-          <div className="grid gap-3 md:gap-4 mt-1 md:mt-2">
+          <div className="grid grid-cols-1 gap-[clamp(0.375rem,1dvh,0.75rem)]">
             <button
               onClick={startSolo}
-              className="group relative overflow-hidden rounded-xl border border-transparent bg-white/30 dark:bg-black/30 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/50 dark:hover:bg-black/50 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex items-center justify-between"
+              className="group relative overflow-hidden rounded-xl border border-transparent bg-white/30 dark:bg-black/30 px-3 py-[clamp(0.5rem,1.5dvh,1rem)] text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/50 dark:hover:bg-black/50 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-yellow-fill)] to-[var(--player-orange-fill)] text-[var(--player-yellow-text)] shadow-inner">
+                <div className="flex h-[clamp(1.75rem,4.5dvh,2.5rem)] w-[clamp(1.75rem,4.5dvh,2.5rem)] items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-yellow-fill)] to-[var(--player-orange-fill)] text-[var(--player-yellow-text)] shadow-inner">
                   <Bot size={16} className="md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
                 </div>
                 <span>Jouer solo (contre le robot)</span>
@@ -129,9 +129,9 @@ export default function LobbyPage() {
             <div className="grid grid-cols-2 gap-3 md:gap-4">
               <button
                 onClick={() => createRoom(2)}
-                className="group relative overflow-hidden rounded-xl border border-transparent bg-white/30 dark:bg-black/30 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/50 dark:hover:bg-black/50 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-2 md:gap-3"
+                className="group relative overflow-hidden rounded-xl border border-transparent bg-white/30 dark:bg-black/30 px-3 py-[clamp(0.5rem,1.5dvh,1rem)] text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/50 dark:hover:bg-black/50 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-[clamp(0.25rem,0.9dvh,0.75rem)]"
               >
-                <div className="relative flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-blue-fill)] to-[var(--player-cyan-fill)] text-[var(--player-blue-text)] shadow-inner">
+                <div className="relative flex h-[clamp(2rem,5dvh,3rem)] w-[clamp(2rem,5dvh,3rem)] items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-blue-fill)] to-[var(--player-cyan-fill)] text-[var(--player-blue-text)] shadow-inner">
                   <Users size={20} className="md:w-6 md:h-6 group-hover:scale-110 transition-transform" />
                   <span className="absolute -top-1 -right-1 flex h-3 w-3 md:h-3.5 md:w-3.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--player-blue-text)] opacity-75"></span>
@@ -143,9 +143,9 @@ export default function LobbyPage() {
 
               <button
                 onClick={() => createRoom(4)}
-                className="group relative overflow-hidden rounded-xl border border-transparent bg-white/30 dark:bg-black/30 px-3 py-3 md:px-4 md:py-4 text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/50 dark:hover:bg-black/50 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-2 md:gap-3"
+                className="group relative overflow-hidden rounded-xl border border-transparent bg-white/30 dark:bg-black/30 px-3 py-[clamp(0.5rem,1.5dvh,1rem)] text-xs md:text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-1 hover:bg-white/50 dark:hover:bg-black/50 hover:border-ink/50 hover:shadow-md active:translate-x-px active:translate-y-px flex flex-col items-center gap-[clamp(0.25rem,0.9dvh,0.75rem)]"
               >
-                <div className="relative flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-green-fill)] to-[#10b981] text-[var(--player-green-text)] shadow-inner">
+                <div className="relative flex h-[clamp(2rem,5dvh,3rem)] w-[clamp(2rem,5dvh,3rem)] items-center justify-center rounded-full bg-gradient-to-br from-[var(--player-green-fill)] to-[#10b981] text-[var(--player-green-text)] shadow-inner">
                   <Users size={20} className="md:w-6 md:h-6 group-hover:scale-110 transition-transform" />
                   <span className="absolute -top-1 -right-1 flex h-3 w-3 md:h-3.5 md:w-3.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--player-green-text)] opacity-75"></span>
@@ -157,18 +157,18 @@ export default function LobbyPage() {
             </div>
           </div>
 
-          <div className="relative mt-2 border-t border-dashed border-line pt-6">
+          <div className="relative border-t border-dashed border-line pt-[clamp(0.5rem,1.5dvh,1rem)]">
             <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-surface/80 backdrop-blur-sm px-3 text-xs font-bold uppercase tracking-wider text-ink/50">Ou</span>
-            <div className="flex gap-3">
+            <div className="flex gap-2 sm:gap-3">
               <input
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
                 placeholder="Code de partie…"
-                className="flex-1 rounded-xl border-[1.5px] border-ink-border/30 bg-white/30 dark:bg-black/30 px-4 py-3 text-sm font-bold text-ink outline-none placeholder:font-medium placeholder:opacity-30 placeholder:text-ink focus:border-ink/70 focus:bg-white/50 dark:focus:bg-black/50 focus:ring-4 focus:ring-ink/10 transition-all shadow-inner hover:bg-white/50 dark:hover:bg-black/50"
+                className="min-w-0 flex-1 rounded-xl border-[1.5px] border-ink-border/30 bg-white/30 dark:bg-black/30 px-[clamp(0.625rem,3vw,1rem)] py-[clamp(0.5rem,1.5dvh,0.75rem)] text-sm font-bold text-ink outline-none placeholder:font-medium placeholder:opacity-30 placeholder:text-ink focus:border-ink/70 focus:bg-white/50 dark:focus:bg-black/50 focus:ring-4 focus:ring-ink/10 transition-all shadow-inner hover:bg-white/50 dark:hover:bg-black/50"
               />
               <button
                 onClick={joinRoom}
-                className="rounded-xl border-[1.5px] border-ink-border bg-ink text-surface px-6 py-3 text-sm font-bold shadow-md transition-all hover:-translate-y-1 hover:shadow-lg active:translate-x-px active:translate-y-px"
+                className="shrink-0 rounded-xl border-[1.5px] border-ink-border bg-ink text-surface px-[clamp(0.875rem,4vw,1.5rem)] py-[clamp(0.5rem,1.5dvh,0.75rem)] text-sm font-bold shadow-md transition-all hover:-translate-y-1 hover:shadow-lg active:translate-x-px active:translate-y-px"
               >
                 Rejoindre
               </button>

@@ -85,19 +85,19 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
     <aside className={`flex flex-col gap-4 ${className}`}>
       {/* CHAT — carte repliable en haut de la sidebar, jamais par-dessus le plateau */}
       {!isSolo && state.status !== "waiting" && (
-        <div className="flex flex-col overflow-hidden rounded-xl border-[1.5px] border-line bg-surface transition-colors">
+        <div className="flex flex-col overflow-hidden rounded-xl border-[1.5px] border-[#075e54] bg-[#075e54] transition-colors shadow-md">
           <button
             type="button"
             onClick={() => setIsChatOpen((o) => !o)}
-            className="flex items-center justify-between gap-2 px-4 py-3 text-left"
+            className="flex items-center justify-between gap-2 px-4 py-3 text-left w-full"
             aria-expanded={isChatOpen}
           >
             <span className="flex items-center gap-2">
-              <MessageCircle size={16} className="text-ink/50" />
-              <span className="font-display text-sm uppercase tracking-wide text-ink">Chat</span>
+              <MessageCircle size={18} className="text-white/80" />
+              <span className="font-display text-sm uppercase tracking-wide text-white">Chat</span>
               {!isChatOpen && unreadCount > 0 && (
                 <span
-                  className={`flex h-5 min-w-[20px] items-center justify-center rounded-full border-[1.5px] border-ink-border bg-[var(--player-red-fill)] px-1 text-[11px] font-bold text-[var(--player-red-text)] ${
+                  className={`flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#25D366] px-1 text-[11px] font-bold text-white shadow-sm ${
                     bubblePulse ? "animate-bubble-pop" : ""
                   }`}
                 >
@@ -105,48 +105,51 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
                 </span>
               )}
             </span>
-            <ChevronDown size={16} className={`text-ink/40 transition-transform ${isChatOpen ? "rotate-180" : ""}`} />
+            <ChevronDown size={16} className={`text-white/80 transition-transform ${isChatOpen ? "rotate-180" : ""}`} />
           </button>
 
           {isChatOpen && (
-            <div className="flex flex-col border-t-[1.5px] border-line">
-              <div className="flex h-64 flex-col gap-2 overflow-y-auto p-3 text-sm scrollbar-none sm:h-72">
-                {!state.messages || state.messages.length === 0 ? (
-                  <p className="m-auto max-w-[80%] text-center text-xs font-medium text-ink/40">
-                    Aucun message pour l'instant.
-                    <br />
-                    Dites bonjour !
-                  </p>
-                ) : (
-                  state.messages.map((msg, idx) => {
-                    const isMe = msg.senderId === currentUserId;
-                    return (
-                      <div key={idx} className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
-                        <span className="text-[10px] font-bold opacity-50 mb-0.5">{msg.senderName}</span>
-                        <div className={`px-2 py-1.5 rounded-lg max-w-[90%] break-words ${isMe ? "bg-ink text-surface rounded-br-none" : "bg-ground border border-line rounded-bl-none text-ink"}`}>
-                          {msg.text}
+            <div className="flex flex-col bg-[#efeae2] border-t border-[#075e54]">
+              <div className="flex h-64 flex-col gap-2 overflow-y-auto p-4 text-sm scrollbar-none sm:h-72 relative">
+                <div className="absolute inset-0 opacity-[0.06] bg-[url('https://i.pinimg.com/originals/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg')] bg-repeat z-0 pointer-events-none" style={{ backgroundSize: '300px' }}></div>
+                <div className="z-10 flex flex-col gap-2">
+                  {!state.messages || state.messages.length === 0 ? (
+                    <p className="m-auto max-w-[80%] text-center text-xs font-medium text-black/50 bg-white/70 px-3 py-2 rounded-lg shadow-sm">
+                      Aucun message pour l'instant.
+                      <br />
+                      Dites bonjour !
+                    </p>
+                  ) : (
+                    state.messages.map((msg, idx) => {
+                      const isMe = msg.senderId === currentUserId;
+                      return (
+                        <div key={idx} className={`flex flex-col ${isMe ? "items-end" : "items-start"} mb-1`}>
+                          {!isMe && <span className="text-[10px] font-bold text-black/50 mb-0.5 ml-1">{msg.senderName}</span>}
+                          <div className={`px-3 py-1.5 rounded-lg shadow-sm max-w-[90%] break-words relative ${isMe ? "bg-[#dcf8c6] text-black rounded-tr-none" : "bg-white text-black rounded-tl-none"}`}>
+                            {msg.text}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })
-                )}
+                      );
+                    })
+                  )}
+                </div>
                 <div ref={chatEndRef} />
               </div>
 
-              <form onSubmit={handleChatSubmit} className="flex gap-2 border-t-[1.5px] border-line p-3">
+              <form onSubmit={handleChatSubmit} className="flex gap-2 bg-[#f0f0f0] p-3 items-center z-10 relative">
                 <input
                   type="text"
                   value={chatText}
                   onChange={(e) => setChatText(e.target.value)}
                   placeholder="Message..."
-                  className="flex-1 rounded-lg border-[1.5px] border-line bg-ground px-3 py-2.5 text-sm outline-none focus:border-ink-border sm:py-3 sm:text-base"
+                  className="flex-1 rounded-full border-none bg-white px-4 py-2 text-sm text-black outline-none shadow-sm focus:ring-2 focus:ring-[#00a884] sm:py-2.5 sm:text-base"
                 />
                 <button
                   type="submit"
                   disabled={!chatText.trim()}
-                  className="flex items-center justify-center rounded-lg bg-ink px-3 text-surface disabled:opacity-50"
+                  className="flex items-center justify-center h-10 w-10 shrink-0 rounded-full bg-[#00a884] text-white shadow-sm disabled:opacity-50 transition-transform active:scale-95"
                 >
-                  <Send size={18} />
+                  <Send size={18} className="ml-0.5 -mt-0.5" />
                 </button>
               </form>
             </div>

@@ -300,7 +300,7 @@ function MultiplayerGame({ roomId }: { roomId: string }) {
             <ArrowLeft size={18} />
           </button>
         </div>
-        <div className="flex flex-col items-center gap-6 rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack max-w-sm w-full">
+        <div className="flex flex-col items-center gap-6 rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack max-w-[calc(100vw-2rem)] md:max-w-sm w-full">
           <h2 className="font-display text-2xl uppercase tracking-wide text-ink">Invitation</h2>
           <p className="font-bold opacity-80">Connecte-toi pour rejoindre le salon {roomId}</p>
           <button
@@ -418,6 +418,14 @@ function GameView({
   const { musicEnabled, sfxEnabled } = useSettingsStore();
   const { addMatch } = useHistoryStore();
 
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const showToast = (message: string) => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast(message);
+    toastTimer.current = setTimeout(() => setToast(null), 2500);
+  };
+
   // Compte à rebours affiché pendant une déconnexion : temps restant avant
   // que le serveur ne déclare un forfait faute de reconnexion.
   const [secondsSinceDisconnect, setSecondsSinceDisconnect] = useState(0);
@@ -498,7 +506,7 @@ function GameView({
         {error && <p className="text-xs font-bold text-[var(--player-red-fill)]">{error}</p>}
         {!connected && state.status === "playing" && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm">
-            <div className="w-full max-w-sm rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack text-center">
+            <div className="w-full max-w-[calc(100vw-2rem)] md:max-w-sm rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack text-center">
               <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-line border-t-[var(--player-red-fill)]" />
               <h2 className="mb-2 font-display text-2xl uppercase tracking-wide text-ink">Connexion perdue</h2>
               <p className="mb-4 font-bold text-ink/70">Reconnexion en cours… la partie reprendra automatiquement dès que possible.</p>
@@ -522,7 +530,7 @@ function GameView({
 
           return (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm">
-            <div className="w-full max-w-sm rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
+            <div className="w-full max-w-[calc(100vw-2rem)] md:max-w-sm rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
               <h2 className="mb-2 font-display text-3xl uppercase tracking-wide text-ink">Partie terminée</h2>
               
               {state.endReason === "forfeit" && (
@@ -585,7 +593,7 @@ function GameView({
 
         {isWaitingForOthers && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-ground/80 p-6 backdrop-blur-sm">
-            <div className="w-full max-w-sm rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
+            <div className="w-full max-w-[calc(100vw-2rem)] md:max-w-sm rounded-xl border-2 border-ink-border bg-surface p-8 shadow-stack text-center animate-in fade-in zoom-in duration-300">
               <h2 className="mb-2 font-display text-2xl uppercase tracking-wide text-ink">En attente</h2>
 
               <div className="mb-6 mt-4 flex justify-center gap-2">
@@ -606,9 +614,8 @@ function GameView({
                         text: "Rejoignez ma partie de Kwadra !",
                         url: window.location.href,
                       }).catch(() => { });
-                    } else {
                       navigator.clipboard.writeText(window.location.href);
-                      alert("Lien copié dans le presse-papiers !");
+                      showToast("Lien copié dans le presse-papiers !");
                     }
                   }}
                   className="flex w-full items-center justify-center gap-2 rounded-lg border-[1.5px] border-ink-border bg-[var(--player-blue-fill)] px-4 py-3 font-bold text-[var(--player-blue-text)] shadow-stack-sm hover:-translate-y-0.5 active:translate-x-px active:translate-y-px active:shadow-stack-pressed transition-all"
@@ -663,6 +670,14 @@ function GameView({
           <MiniMap state={state} className="absolute left-3 top-3 pointer-events-none" />
         </div>
       </div>
+
+      {toast && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-6 z-50 flex justify-center px-6">
+          <div className="animate-toast-in rounded-lg border-[1.5px] border-ink-border bg-surface px-4 py-3 text-sm font-bold text-ink shadow-stack">
+            {toast}
+          </div>
+        </div>
+      )}
 
       <PlayerSidebar
         state={state}
@@ -779,7 +794,7 @@ function WaitingRoom({
       {isMultiplayer && (
         <div className="flex flex-col items-center gap-4">
           <p className="font-bold text-sm opacity-60">Inviter des amis :</p>
-          <div className="flex flex-wrap justify-center gap-3 max-w-sm">
+          <div className="flex flex-wrap justify-center gap-3 w-full max-w-[calc(100vw-2rem)] md:max-w-sm">
             <button
               onClick={() => {
                 const url = window.location.origin + window.location.pathname;
@@ -890,7 +905,7 @@ function WaitingRoom({
         })}
       </div>
 
-      <div className="flex w-full max-w-sm flex-col items-center gap-5 rounded-xl border-2 border-ink-border bg-surface p-6 shadow-stack">
+      <div className="flex w-full max-w-[calc(100vw-2rem)] md:max-w-sm flex-col items-center gap-5 rounded-xl border-2 border-ink-border bg-surface p-6 shadow-stack">
         <h2 className="font-display text-sm uppercase tracking-wide text-ink">Choisis ta couleur</h2>
         <div className="grid grid-cols-4 gap-4">
           {PLAYER_COLOR_ORDER.map((c) => {

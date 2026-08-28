@@ -59,7 +59,7 @@ export default function LobbyPage() {
       </div>
 
       {/* Hero Content */}
-      <div className="relative z-10 w-full min-w-0 max-w-md shrink-0 text-center">
+      <div className="relative z-10 w-full min-w-0 max-w-[calc(100vw-2rem)] md:max-w-md shrink-0 text-center">
         <div className="flex justify-center mb-[clamp(0.25rem,1dvh,1rem)]">
           <Image src="/logo-light.png" alt="Kwadra Logo" width={96} height={96} className="h-[clamp(2.25rem,7dvh,5rem)] w-[clamp(2.25rem,7dvh,5rem)] dark:hidden drop-shadow-md hover:scale-105 transition-transform duration-300" />
           <Image src="/logo-dark.png" alt="Kwadra Logo" width={96} height={96} className="h-[clamp(2.25rem,7dvh,5rem)] w-[clamp(2.25rem,7dvh,5rem)] hidden dark:block drop-shadow-md hover:scale-105 transition-transform duration-300" />
@@ -73,7 +73,7 @@ export default function LobbyPage() {
       </div>
 
       {/* Main Card */}
-      <div className="relative z-10 w-full min-w-0 max-w-md shrink-0 rounded-2xl border border-ink-border bg-surface/70 backdrop-blur-xl p-[clamp(0.75rem,2.5dvh,1.5rem)] shadow-xl hover:shadow-2xl transition-all duration-300">
+      <div className="relative z-10 w-full min-w-0 max-w-[calc(100vw-2rem)] md:max-w-md shrink-0 rounded-2xl border border-ink-border bg-surface/70 backdrop-blur-xl p-[clamp(0.75rem,2.5dvh,1.5rem)] shadow-xl hover:shadow-2xl transition-all duration-300">
         <div className="mb-[clamp(0.5rem,1.5dvh,1.25rem)] text-center">
           <h2 className="font-display text-[clamp(0.9rem,2.2dvh,1.25rem)] uppercase tracking-wide text-ink">Nouvelle partie</h2>
         </div>
@@ -179,7 +179,7 @@ export default function LobbyPage() {
 
       {showInfo && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="w-full max-w-md rounded-xl border-2 border-ink-border bg-surface p-6 shadow-stack animate-in zoom-in-95 duration-300">
+          <div className="w-full max-w-[calc(100vw-2rem)] md:max-w-md rounded-xl border-2 border-ink-border bg-surface p-6 shadow-stack animate-in zoom-in-95 duration-300">
             <h2 className="mb-4 font-display text-2xl text-ink">Comment jouer ?</h2>
             <div className="space-y-4 text-sm font-medium text-ink/80">
               <p className="flex gap-3"><span className="text-xl">🎯</span> <span><strong>Le But du jeu :</strong> Conquérir le plateau en capturant plus de cases que vos adversaires.</span></p>

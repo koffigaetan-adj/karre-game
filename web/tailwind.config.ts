@@ -14,7 +14,7 @@ const config: Config = {
       },
       fontFamily: {
         display: ["var(--font-poppins)", "Impact", "sans-serif"],
-        body: ["var(--font-poppins)", "system-ui", "sans-serif"],
+        body: ["var(--font-inter)", "system-ui", "sans-serif"],
       },
       boxShadow: {
         stack: "2px 2px 0 0 var(--shadow-ink)",

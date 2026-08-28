@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, Inter } from "next/font/google";
 import { AuthProvider } from "@/lib/auth/AuthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
@@ -8,6 +8,11 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "700", "800", "900"],
   variable: "--font-poppins",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 export const viewport = {
@@ -58,8 +63,8 @@ import { AnimatedBackground } from "@/components/AnimatedBackground";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" suppressHydrationWarning className={`${poppins.variable}`}>
-      <body className="bg-ground text-ink antialiased transition-colors">
+    <html lang="fr" suppressHydrationWarning className={`${poppins.variable} ${inter.variable}`}>
+      <body className="bg-ground text-ink antialiased transition-colors overflow-x-hidden max-w-[100vw] relative">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <AuthProvider>
             <AnimatedBackground />

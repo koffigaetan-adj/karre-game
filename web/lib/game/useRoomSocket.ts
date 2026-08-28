@@ -85,6 +85,7 @@ export function useRoomSocket({
     let cancelled = false;
     let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
     let keepaliveTimer: ReturnType<typeof setInterval> | null = null;
+    let pongTimeout: ReturnType<typeof setTimeout> | null = null;
 
     async function connect() {
       if (cancelled) return;
@@ -130,13 +131,25 @@ export function useRoomSocket({
         keepaliveTimer = setInterval(() => {
           if (ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify({ type: "ping" }));
+            
+            if (pongTimeout) clearTimeout(pongTimeout);
+            pongTimeout = setTimeout(() => {
+              if (ws.readyState === WebSocket.OPEN) {
+                console.warn("Kwadra: Aucune réponse au ping (silent disconnect), fermeture forcée de la socket.");
+                ws.close();
+              }
+            }, 5000);
           }
-        }, 25000);
+        }, 15000);
       };
       ws.onclose = () => {
         if (keepaliveTimer) {
           clearInterval(keepaliveTimer);
           keepaliveTimer = null;
+        }
+        if (pongTimeout) {
+          clearTimeout(pongTimeout);
+          pongTimeout = null;
         }
         if (cancelled) return;
         setConnected(false);
@@ -164,7 +177,11 @@ export function useRoomSocket({
           }
         } else if (data.type === "pong") {
           // Réponse au keepalive : la réception elle-même prouve que le
-          // tunnel est vivant, rien d'autre à faire.
+          // tunnel est vivant, on annule le minuteur de déconnexion.
+          if (pongTimeout) {
+            clearTimeout(pongTimeout);
+            pongTimeout = null;
+          }
         } else {
           setError(data.message);
         }
@@ -197,6 +214,7 @@ export function useRoomSocket({
       cancelled = true;
       if (reconnectTimer) clearTimeout(reconnectTimer);
       if (keepaliveTimer) clearInterval(keepaliveTimer);
+      if (pongTimeout) clearTimeout(pongTimeout);
       document.removeEventListener("visibilitychange", reconnectIfNeeded);
       window.removeEventListener("focus", reconnectIfNeeded);
       wsRef.current?.close();

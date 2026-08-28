@@ -108,12 +108,11 @@ export function KwadraBoard({
         const player = state.players.find((p) => p.id === owner);
         const colorHex = player?.color ? PLAYER_COLORS[player.color].light.fill : "#ffffff";
 
-        // Coordonnées approximatives pour le confetti
-        // Le plateau est centré, on lance depuis le centre global
+        // Coordonnées approximatives pour le confetti basées sur la case
         confetti({
           particleCount: 40,
           spread: 60,
-          origin: { y: 0.6 },
+          origin: { x: (c + 0.5) / cols, y: (r + 0.5) / rows },
           colors: [colorHex],
           disableForReducedMotion: true,
           zIndex: 100,

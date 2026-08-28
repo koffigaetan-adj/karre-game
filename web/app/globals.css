@@ -42,7 +42,7 @@ body {
 
     --player-green-fill: #4ade80;
     --player-green-ring: #2bb05d;
-    --player-green-text: #ffffff;
+    --player-green-text: #064e3b;
     --player-green-soft: #4ade802a;
 
     --player-yellow-fill: #fbbf24;
@@ -57,7 +57,7 @@ body {
 
     --player-orange-fill: #fb923c;
     --player-orange-ring: #f97316;
-    --player-orange-text: #ffffff;
+    --player-orange-text: #7c2d12;
     --player-orange-soft: #fb923c2a;
 
     --player-cyan-fill: #22d3ee;
@@ -95,7 +95,7 @@ body {
 
     --player-green-fill: #22c55e;
     --player-green-ring: #4ade80;
-    --player-green-text: #ffffff;
+    --player-green-text: #052e16;
     --player-green-soft: #22c55e40;
 
     --player-yellow-fill: #eab308;
@@ -110,12 +110,12 @@ body {
 
     --player-orange-fill: #f97316;
     --player-orange-ring: #fb923c;
-    --player-orange-text: #ffffff;
+    --player-orange-text: #431407;
     --player-orange-soft: #f9731640;
 
     --player-cyan-fill: #06b6d4;
     --player-cyan-ring: #22d3ee;
-    --player-cyan-text: #ffffff;
+    --player-cyan-text: #083344;
     --player-cyan-soft: #06b6d440;
 
     --player-pink-fill: #ec4899;

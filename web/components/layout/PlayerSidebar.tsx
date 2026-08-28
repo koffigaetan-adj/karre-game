@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 import { PLAYER_COLORS } from "@/lib/types/game";
 import type { GameState } from "@/lib/types/game";
-import { LogOut, Share2, SkipForward, RefreshCw, Send, MessageCircle, ChevronDown } from "lucide-react";
+import { LogOut, Share2, SkipForward, RefreshCw, Send, MessageCircle, ChevronDown, CheckCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { playChatNotification } from "@/lib/audio";
 import { useSettingsStore } from "@/lib/store/useSettingsStore";
@@ -85,7 +85,7 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
     <aside className={`flex flex-col gap-4 ${className}`}>
       {/* CHAT — carte repliable en haut de la sidebar, jamais par-dessus le plateau */}
       {!isSolo && state.status !== "waiting" && (
-        <div className="flex flex-col overflow-hidden rounded-xl border-[1.5px] border-[#075e54] bg-[#075e54] transition-colors shadow-md">
+        <div className="flex flex-col overflow-hidden rounded-xl border-[1.5px] border-[#075e54] dark:border-[#1f2c34] bg-[#075e54] dark:bg-[#1f2c34] transition-colors shadow-md">
           <button
             type="button"
             onClick={() => setIsChatOpen((o) => !o)}
@@ -93,11 +93,11 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
             aria-expanded={isChatOpen}
           >
             <span className="flex items-center gap-2">
-              <MessageCircle size={18} className="text-white/80" />
-              <span className="font-display text-sm uppercase tracking-wide text-white">Chat</span>
+              <MessageCircle size={18} className="text-white/80 dark:text-[#8696a0]" />
+              <span className="font-display text-sm uppercase tracking-wide text-white dark:text-[#e9edef]">Chat</span>
               {!isChatOpen && unreadCount > 0 && (
                 <span
-                  className={`flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#25D366] px-1 text-[11px] font-bold text-white shadow-sm ${
+                  className={`flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#25D366] dark:bg-[#00a884] px-1 text-[11px] font-bold text-white shadow-sm ${
                     bubblePulse ? "animate-bubble-pop" : ""
                   }`}
                 >
@@ -105,16 +105,16 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
                 </span>
               )}
             </span>
-            <ChevronDown size={16} className={`text-white/80 transition-transform ${isChatOpen ? "rotate-180" : ""}`} />
+            <ChevronDown size={16} className={`text-white/80 dark:text-[#8696a0] transition-transform ${isChatOpen ? "rotate-180" : ""}`} />
           </button>
 
           {isChatOpen && (
-            <div className="flex flex-col bg-[#efeae2] border-t border-[#075e54]">
+            <div className="flex flex-col bg-[#efeae2] dark:bg-[#0b141a] border-t border-[#075e54] dark:border-[#1f2c34]">
               <div className="flex h-64 flex-col gap-2 overflow-y-auto p-4 text-sm scrollbar-none sm:h-72 relative">
-                <div className="absolute inset-0 opacity-[0.06] bg-[url('https://i.pinimg.com/originals/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg')] bg-repeat z-0 pointer-events-none" style={{ backgroundSize: '300px' }}></div>
+                <div className="absolute inset-0 opacity-[0.06] dark:opacity-[0.04] dark:invert-[1] bg-[url('https://i.pinimg.com/originals/8c/98/99/8c98994518b575bfd8c949e91d20548b.jpg')] bg-repeat z-0 pointer-events-none" style={{ backgroundSize: '300px' }}></div>
                 <div className="z-10 flex flex-col gap-2">
                   {!state.messages || state.messages.length === 0 ? (
-                    <p className="m-auto max-w-[80%] text-center text-xs font-medium text-black/50 bg-white/70 px-3 py-2 rounded-lg shadow-sm">
+                    <p className="m-auto max-w-[80%] text-center text-xs font-medium text-black/50 dark:text-[#e9edef]/70 bg-white/70 dark:bg-[#202c33]/70 px-3 py-2 rounded-lg shadow-sm">
                       Aucun message pour l'instant.
                       <br />
                       Dites bonjour !
@@ -124,9 +124,16 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
                       const isMe = msg.senderId === currentUserId;
                       return (
                         <div key={idx} className={`flex flex-col ${isMe ? "items-end" : "items-start"} mb-1`}>
-                          {!isMe && <span className="text-[10px] font-bold text-black/50 mb-0.5 ml-1">{msg.senderName}</span>}
-                          <div className={`px-3 py-1.5 rounded-lg shadow-sm max-w-[90%] break-words relative ${isMe ? "bg-[#dcf8c6] text-black rounded-tr-none" : "bg-white text-black rounded-tl-none"}`}>
-                            {msg.text}
+                          {!isMe && <span className="text-[10px] font-bold text-black/50 dark:text-[#8696a0] mb-0.5 ml-1">{msg.senderName}</span>}
+                          <div className={`px-3 py-1.5 rounded-lg shadow-sm max-w-[90%] break-words relative ${isMe ? "bg-[#dcf8c6] dark:bg-[#005c4b] text-black dark:text-[#e9edef] rounded-tr-none" : "bg-white dark:bg-[#202c33] text-black dark:text-[#e9edef] rounded-tl-none"}`}>
+                            <div className="flex items-end gap-2">
+                              <span>{msg.text}</span>
+                              {isMe && (
+                                <span className="text-[#53bdeb] shrink-0 translate-y-[2px]">
+                                  <CheckCheck size={14} strokeWidth={2.5} />
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       );
@@ -136,13 +143,13 @@ export function PlayerSidebar({ state, isSolo = false, currentUserId, onInvite, 
                 <div ref={chatEndRef} />
               </div>
 
-              <form onSubmit={handleChatSubmit} className="flex gap-2 bg-[#f0f0f0] p-3 items-center z-10 relative">
+              <form onSubmit={handleChatSubmit} className="flex gap-2 bg-[#f0f0f0] dark:bg-[#202c33] p-3 items-center z-10 relative">
                 <input
                   type="text"
                   value={chatText}
                   onChange={(e) => setChatText(e.target.value)}
                   placeholder="Message..."
-                  className="flex-1 rounded-full border-none bg-white px-4 py-2 text-sm text-black outline-none shadow-sm focus:ring-2 focus:ring-[#00a884] sm:py-2.5 sm:text-base"
+                  className="flex-1 rounded-full border-none bg-white dark:bg-[#2a3942] px-4 py-2 text-sm text-black dark:text-[#e9edef] outline-none shadow-sm focus:ring-2 focus:ring-[#00a884] placeholder:text-black/40 dark:placeholder:text-[#8696a0] sm:py-2.5 sm:text-base"
                 />
                 <button
                   type="submit"
